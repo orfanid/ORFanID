@@ -12,9 +12,8 @@ import org.apache.commons.cli.*;
 
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.orfangenes.util.Constants.*;
 
@@ -53,21 +52,22 @@ public class ORFanGenes {
 
     public static void run(String query, String outputdir, int organismTaxID, String blastType, String max_target_seqs, String evalue) {
 
-        final String namesFile = getFilePath("names.dmp");
-        final String nodesFile = getFilePath("nodes.dmp");
-        final String rankedlineage = getFilePath("rankedlineage.dmp");
+//        final String namesFile = getFilePath("names.dmp");
+        final String rankedLineage = getFilePath("rankedlineage.dmp");
 
-        List<Integer> blastHitsTaxIDs = Arrays.asList(9606, 9605);
-        TaxTree taxTree = new TaxTree(namesFile, nodesFile, rankedlineage, blastHitsTaxIDs);
 
         // Generating BLAST file
         Sequence sequence = new Sequence(blastType, query, outputdir, organismTaxID);
         sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
         BlastResultsProcessor processor = new BlastResultsProcessor(outputdir);
         List<BlastResult> blastResults = processor.getBlastResults();
-        Classifier classifier = new Classifier(sequence, taxTree, organismTaxID);
-        Map<Gene, String> geneClassification = classifier.getGeneClassification(blastResults);
-        ResultsGenerator.generateResult(geneClassification, outputdir, processor, taxTree, sequence.getGenes());
+        List<Integer> staxids = blastResults.stream().map(BlastResult::getStaxid).collect(Collectors.toList());
+        Set<Integer> blastHitsTaxIDs = new HashSet<>(staxids);
+        blastHitsTaxIDs.add(organismTaxID);
+        TaxTree taxTree = new TaxTree(rankedLineage, blastHitsTaxIDs);
+//        Classifier classifier = new Classifier(sequence, taxTree, organismTaxID);
+//        Map<Gene, String> geneClassification = classifier.getGeneClassification(blastResults);
+//        ResultsGenerator.generateResult(geneClassification, outputdir, processor, taxTree, sequence.getGenes());
     }
 
     private static String getFilePath(String filename){

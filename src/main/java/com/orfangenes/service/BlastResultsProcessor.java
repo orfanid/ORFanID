@@ -144,7 +144,8 @@ public class BlastResultsProcessor {
 
         while (nextRank != null && !isComplete) {
             try {
-                currentRankNode.addChild(tree.getNode(hierarchy.get(nextRank)));
+                //TODO: Uncomment this line. I commented this only for the testing purpose
+//                currentRankNode.addChild(tree.getNode(hierarchy.get(nextRank)));
                 isComplete = true;
                 createTree(tree, hierarchy, nextRank);
             } catch (NullPointerException e) {

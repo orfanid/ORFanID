@@ -55,4 +55,8 @@ public class Constants {
     public static final String ARG_MAX_TARGET_SEQS = "max_target_seqs";
     public static final String ARG_EVALUE = "evalue";
     public static final String ARG_OUT = "out";
+
+    // colours
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\u001B[0m";
 }
