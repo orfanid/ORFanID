@@ -48,11 +48,6 @@ public class InternalController {
             FileHandler.createResultsOutputDir(outputPath);
             FileHandler.saveInputSequence(outputPath, sequence);
             FileHandler.saveResultMetadata(outputPath, sequence, sessionID);
-            log.info("inputFilePath" + inputFilePath +"\n" +
-                    "outputPath" + outputPath +"\n" +
-                    "organismTax" + organismTax +"\n" +
-                    "sequenceType" + sequence.getType() +"\n" +
-                    "MaxTargetSequence" + sequence.getMaxTargetSequence() +"\n" );
             ORFanGenes.run(
                     inputFilePath,
                     outputPath,

@@ -1,4 +1,4 @@
-package com.orfangenes.control;
+package com.orfangenes.service;
 
 import static com.orfangenes.util.Constants.*;
 import lombok.Builder;

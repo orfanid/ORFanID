@@ -1,9 +1,9 @@
 package com.orfangenes;
 
-import com.orfangenes.control.BlastResultsProcessor;
-import com.orfangenes.control.Classifier;
-import com.orfangenes.control.ResultsGenerator;
-import com.orfangenes.control.Sequence;
+import com.orfangenes.service.BlastResultsProcessor;
+import com.orfangenes.service.Classifier;
+import com.orfangenes.service.ResultsGenerator;
+import com.orfangenes.service.Sequence;
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.Gene;
 import com.orfangenes.model.taxonomy.TaxTree;
@@ -55,10 +55,10 @@ public class ORFanGenes {
 
         final String namesFile = getFilePath("names.dmp");
         final String nodesFile = getFilePath("nodes.dmp");
-        final String rankedlineage = getFilePath("selected_rankedlineage.dmp");
+        final String rankedlineage = getFilePath("rankedlineage.dmp");
 
         List<Integer> blastHitsTaxIDs = Arrays.asList(9606, 9605);
-        TaxTree taxTree = new TaxTree(rankedlineage, blastHitsTaxIDs);
+        TaxTree taxTree = new TaxTree(namesFile, nodesFile, rankedlineage, blastHitsTaxIDs);
 
         // Generating BLAST file
         Sequence sequence = new Sequence(blastType, query, outputdir, organismTaxID);

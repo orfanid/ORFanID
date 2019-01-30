@@ -1,4 +1,4 @@
-package com.orfangenes.control;
+package com.orfangenes.service;
 
 import com.orfangenes.model.Gene;
 import com.orfangenes.model.ORFGene;

@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
@@ -29,6 +30,7 @@ public class FileHandler {
     }
 
     public static void saveInputSequence(String outputPath, InputSequence sequence) {
+        Assert.assertFalse("Sequence cannot be empty", sequence == null | sequence.getSequence().length() <= 0);
         try {
             String inputFilePath = outputPath + "/" + INPUT_FASTA;
             FileOutputStream fileOutputStream = new FileOutputStream(inputFilePath);
