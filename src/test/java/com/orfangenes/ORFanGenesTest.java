@@ -22,7 +22,7 @@ public class ORFanGenesTest {
   public void setUp() throws Exception {
 
     this.organismTaxID = 511145;
-    this.query = "/Users/hewapathirana/projects/ORFanFinder/out/1548828660644_PB3/input.fasta";
+    this.query = "/Users/hewapathirana/projects/ORFan/orfanid/src/main/resources/static/assets/data/Ecoli_511145.fasta";
     this.outputdir = "/Users/hewapathirana/projects/ORFanFinder/out/1548828660644_PB3";
     this.blastType = " protein";
     this.max_target_seqs = "550";

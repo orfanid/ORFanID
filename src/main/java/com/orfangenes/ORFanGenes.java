@@ -2,11 +2,11 @@ package com.orfangenes;
 
 import com.orfangenes.service.BlastResultsProcessor;
 import com.orfangenes.service.Classifier;
-import com.orfangenes.service.ResultsGenerator;
+//import com.orfangenes.service.ResultsGenerator;
 import com.orfangenes.service.Sequence;
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.Gene;
-import com.orfangenes.model.taxonomy.TaxTree;
+import com.orfangenes.service.TaxTree;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 
@@ -52,9 +52,7 @@ public class ORFanGenes {
 
     public static void run(String query, String outputdir, int organismTaxID, String blastType, String max_target_seqs, String evalue) {
 
-//        final String namesFile = getFilePath("names.dmp");
-        final String rankedLineage = getFilePath("rankedlineage.dmp");
-
+        final String rankedLineageFilepath = getFilePath("rankedlineage.dmp");
 
         // Generating BLAST file
         Sequence sequence = new Sequence(blastType, query, outputdir, organismTaxID);
@@ -64,8 +62,8 @@ public class ORFanGenes {
         List<Integer> staxids = blastResults.stream().map(BlastResult::getStaxid).collect(Collectors.toList());
         Set<Integer> blastHitsTaxIDs = new HashSet<>(staxids);
         blastHitsTaxIDs.add(organismTaxID);
-        TaxTree taxTree = new TaxTree(rankedLineage, blastHitsTaxIDs);
-//        Classifier classifier = new Classifier(sequence, taxTree, organismTaxID);
+        TaxTree taxTree = new TaxTree(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
+        Classifier classifier = new Classifier(sequence, taxTree, organismTaxID);
 //        Map<Gene, String> geneClassification = classifier.getGeneClassification(blastResults);
 //        ResultsGenerator.generateResult(geneClassification, outputdir, processor, taxTree, sequence.getGenes());
     }
