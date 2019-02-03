@@ -3,8 +3,8 @@ package com.orfangenes.service;
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.taxonomy.TaxNode;
 import com.orfangenes.model.taxonomy.RankedLineage;
+import static com.orfangenes.util.Constants.*;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -19,13 +19,13 @@ import java.util.stream.Stream;
 @Slf4j
 public class TaxTree implements Serializable {
 
-  private Map<String, Integer> taxIdByName = new HashMap<>();
-  private Map<Integer, List<String>> rankedLineageWithNames = new HashMap<>();
-  private List<RankedLineage> rankedLineageList = new ArrayList<>();
-  private Map<String, List<RankedLineage>> taxonomyTreeForGenes = new HashMap<>();
-  private RankedLineage inputRankedLineage = new RankedLineage();
-  private int organismTaxID;
-  private Set<Integer> blastHitsTaxIDs;
+    private int organismTaxID;
+    private Set<Integer> blastHitsTaxIDs;
+    private RankedLineage inputRankedLineage = new RankedLineage();
+    private Map<Integer, List<String>> rankedLineageWithNames = new HashMap<>();
+    private List<RankedLineage> rankedLineageList = new ArrayList<>();
+    private Map<String, List<RankedLineage>> taxonomyTreeForGenes = new HashMap<>();
+
     public List<String> rankedLineageFileColumnNames =
             Arrays.asList("tax_id", "tax_name", "species", "genus", "family", "order", "class", "phylum", "kingdom", "superkingdom");
 
@@ -54,8 +54,6 @@ public class TaxTree implements Serializable {
                   .collect(Collectors.toList());
       if (rankedLineageRecord.size() == 10) {
         int taxonomyId = Integer.parseInt(rankedLineageRecord.get(0));
-        String scientificName = rankedLineageRecord.get(1);
-        taxIdByName.put(scientificName, taxonomyId);
         if (this.blastHitsTaxIDs.contains(taxonomyId)) {
           this.rankedLineageWithNames.put(taxonomyId, rankedLineageRecord);
         }
@@ -68,8 +66,8 @@ public class TaxTree implements Serializable {
   }
 
   private void buildRankedLineageWithTaxonomyNodes(){
+
       try {
-          System.out.println("--------------------------------------------------------- \n");
           // go through each ranked lineage record to construct ranked lineage with Taxonomy nodes
           for (Map.Entry<Integer, List<String>> record : rankedLineageWithNames.entrySet()) {
 
@@ -81,28 +79,21 @@ public class TaxTree implements Serializable {
               taxNode.setName(lineageNames.get(1));
               taxNode.setNRank(rankedLineageFileColumnNames.get(2));
               tempNodeLineage.add(taxNode);
-              System.out.print(taxNode.toString());
               for (int i = 3; i < lineageNames.size(); i++) { // skip taxonomy Id column
-                  String  lineageName = lineageNames.get(i);
-                  int MISSING_NODE = -1;
-                  int taxonomyId = (lineageName != null && !lineageName.equals(""))? taxIdByName.get(lineageName): MISSING_NODE;
                   taxNode = new TaxNode();
-                  taxNode.setNID(taxonomyId);
+                  String  taxonomyName = lineageNames.get(i);
+                  taxNode.setName((taxonomyName != null && !taxonomyName.equals(""))? taxonomyName:NOT_AVAILABLE);
                   taxNode.setNRank(rankedLineageFileColumnNames.get(i));
-                  taxNode.setName(lineageNames.get(i));
-                  System.out.print(taxNode.toString());
                   tempNodeLineage.add(taxNode);
               }
               rankedLineageList.add(new RankedLineage(record.getKey(), tempNodeLineage));
-              System.out.println();
           }
-          System.out.println("---------------------------------------------------------");
       } catch (Exception e) {
           log.error("Error occurred during tree construction : " + e.getMessage());
       }
   }
 
-  public Map<String, List<RankedLineage>> buildRankedLineageList(List<BlastResult> blastResults){
+  Map<String, List<RankedLineage>> buildRankedLineageList(List<BlastResult> blastResults){
 
       buildRankedLineageWithTaxonomyNodes();
       this.inputRankedLineage = filterRankedLineagesByTaxonomyId(this.organismTaxID);
@@ -127,7 +118,7 @@ public class TaxTree implements Serializable {
               .collect(Collectors.toList()).get(0);
   }
 
-  public RankedLineage getInputRankedLineage() {
+  RankedLineage getInputRankedLineage() {
       return inputRankedLineage;
   }
 }
