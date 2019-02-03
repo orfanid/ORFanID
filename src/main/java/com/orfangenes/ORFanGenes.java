@@ -64,7 +64,10 @@ public class ORFanGenes {
         blastHitsTaxIDs.add(organismTaxID);
         TaxTree taxTree = new TaxTree(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
         Classifier classifier = new Classifier(sequence, taxTree, organismTaxID);
-//        Map<Gene, String> geneClassification = classifier.getGeneClassification(blastResults);
+        Map<String, String> geneClassification = classifier.getGeneClassification(blastResults);
+        for (Map.Entry<String, String> stringStringEntry : geneClassification.entrySet()) {
+          log.info(stringStringEntry.toString());
+        }
 //        ResultsGenerator.generateResult(geneClassification, outputdir, processor, taxTree, sequence.getGenes());
     }
 

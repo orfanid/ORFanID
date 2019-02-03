@@ -61,9 +61,11 @@ public class TaxNode implements Serializable {
     public String toString() {
         String node;
         if (nID == -1) {
-            node = ANSI_RED + "*****" + "->" + "N/A" + "(" + nRank + ")\t" + ANSI_RESET + "|";
+//            node = ANSI_RED + "*****" + "->" + "N/A" + "(" + nRank + ")\t" + ANSI_RESET + "|";
+            node = ANSI_RED + "N/A" + "\t" + ANSI_RESET + "|";
         } else {
-            node = nID + "->" + name + "(" + nRank + ")\t|";
+//            node = nID + "->" + name + "(" + nRank + "\t|";
+            node =name + "\t|";
         }
         return node;
     }

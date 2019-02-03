@@ -41,6 +41,11 @@ public class BlastResult implements Serializable {
 
   public void setStaxid(String taxID) {
     try {
+      if (taxID.contains(";")) {
+        // If many tax IDs are obtained from the last result, get the first one
+        String[] taxIDs = taxID.split(";");
+        taxID = taxIDs[0];
+      }
       this.staxid = Integer.parseInt(taxID.trim());
     } catch (NumberFormatException e) {
       this.staxid = -1;
