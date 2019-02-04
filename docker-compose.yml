@@ -1,0 +1,14 @@
+version: '2'
+services:
+  blastservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9097:9097"
+    volumes:
+      - /Users/hewapathirana/workspace/docker/tmp:/tmp
+      - /Users/hewapathirana/workspace/docker/query:/query
+      - /Users/hewapathirana/workspace/docker/db:/db
+      - /Users/hewapathirana/workspace/docker/outtmp:/outtmp
+      - /Users/hewapathirana/projects/ORFanFinder/out/:/dataoutputdir
