@@ -106,7 +106,7 @@ public class FileHandler {
             for (Object singleResult : results) {
                 if (singleResult instanceof JSONObject) {
                     JSONObject result = (JSONObject) singleResult;
-                    String id = (String)result.get("id");
+                    String id = (String) result.get("id");
                     if (id.equals(geneID)) {
                         return result.toString();
                     }
