@@ -15,8 +15,8 @@ public class Classifier {
     private TaxTree tree;
     private int organismTaxID;
 
-    Map<String, List<RankedLineage>> taxonomyTreeForGenes;
-    RankedLineage inputRankedLineage;
+    Map<String, List<List<String>>> taxonomyTreeForGenes;
+    List<String> inputRankedLineage;
 
     public Classifier(TaxTree tree, int organismTaxID, List<BlastResult> blastResults) {
         this.tree = tree;
@@ -31,31 +31,33 @@ public class Classifier {
     public Map<String, String> getGeneClassification() {
         List<String> classificationLevels =
                 Arrays.asList(
-                        ORFAN_GENE, GENUS_RESTRICTED_GENE, FAMILY_RESTRICTED_GENE,
+                        STRICT_ORFAN, ORFAN_GENE, GENUS_RESTRICTED_GENE, FAMILY_RESTRICTED_GENE,
                         ORDER_RESTRICTED_GENE, CLASS_RESTRICTED_GENE, PHYLUM_RESTRICTED_GENE,
                         KINGDOM_RESTRICTED_GENE, DOMAIN_RESTRICTED_GENE, MULTI_DOMAIN_GENE);
         Map<String, String> classification = new HashMap<>();
         displayTree();
         try {
             // travel though each gene
-            for (Map.Entry<String, List<RankedLineage>> entry : taxonomyTreeForGenes.entrySet()){
+            for (Map.Entry<String, List<List<String>>> entry : taxonomyTreeForGenes.entrySet()){
                 String GeneId = entry.getKey();
-                List<RankedLineage> blastResultsRankedLineages = entry.getValue();
-                // travel though each lineage (eg: Species, Genus, Family, Class, Order, Kingdom, Super kingdom), start from Super kingdom
-                for (int columnNo = tree.rankedLineageFileColumnNames.size()-2; columnNo > 0; columnNo--){
+                List<List<String>> blastResultsRankedLineages = entry.getValue();
+                // travel though each lineage:
+                // TaxId(0),Subspecies(1), Species(2), Genus(3), Family(4), Order(5), Class(6), phylum(7), Kingdom(8), Super kingdom(9)
+                // start from Super kingdom and travel towards Subspecies
+                for (int columnNo = 9; columnNo > 0; columnNo--){
                     Set<String> blastResultsCommonIds = new HashSet<>();
                     // travel though each blast hits
-                    for (RankedLineage rankedLineage : blastResultsRankedLineages) {
+                    for (List<String> rankedLineage : blastResultsRankedLineages) {
                         // get distinct taxonomy Ids
-                        blastResultsCommonIds.add(rankedLineage.getLineage().get(columnNo-1).getName());
+                        blastResultsCommonIds.add(rankedLineage.get(columnNo));
                     }
-                    if(blastResultsCommonIds.size() >= 1 && !inputRankedLineage.getLineage().get(columnNo - 1).getName().equals(blastResultsCommonIds.iterator().next())){
+                    if(blastResultsCommonIds.size() >= 1 && !inputRankedLineage.get(columnNo).equals(blastResultsCommonIds.iterator().next())){
                         classification.put(GeneId, classificationLevels.get(columnNo));
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           log.error(e.getMessage());
         }
         return classification;
     }
@@ -63,23 +65,31 @@ public class Classifier {
     public void displayTree(){
 
         System.out.println("\n\nInput Taxonomy: " + organismTaxID + "\n=================\n");
-        System.out.print(organismTaxID + " --> ");
-        for (TaxNode taxNode : inputRankedLineage.getLineage()){
-            System.out.print(taxNode.toString());
+        for (String taxNode : inputRankedLineage){
+            System.out.print(formatString(taxNode));
         }
         System.out.println("\n");
 
         // travel though each gene
-        for (Map.Entry<String, List<RankedLineage>> entry : taxonomyTreeForGenes.entrySet()){
+        for (Map.Entry<String, List<List<String>>> entry : taxonomyTreeForGenes.entrySet()){
             String GeneId = entry.getKey();
             System.out.println("\nGene Id: " + GeneId + "\n=================\n");
-            for ( RankedLineage rankedLineage : entry.getValue()){
-                System.out.print(rankedLineage.getTaxonomyId() + " --> ");
-                for (TaxNode taxNode : rankedLineage.getLineage()){
-                    System.out.print(taxNode.toString());
+            for ( List<String> rankedLineage : entry.getValue()){
+                for (String taxNode : rankedLineage){
+                    System.out.print(formatString(taxNode));
                 }
                 System.out.println();
             }
         }
+    }
+
+    public String formatString(String name) {
+        String node;
+        if (name.equals(NOT_AVAILABLE) || name.equals("")) {
+            node = ANSI_RED + NOT_AVAILABLE + "\t" + ANSI_RESET + "|";
+        } else {
+            node =name + "\t|";
+        }
+        return node;
     }
 }

@@ -21,14 +21,11 @@ public class TaxTree implements Serializable {
 
     private int organismTaxID;
     private Set<Integer> blastHitsTaxIDs;
-    private RankedLineage inputRankedLineage = new RankedLineage();
     private Map<Integer, List<String>> rankedLineageWithNames = new HashMap<>();
-    private List<RankedLineage> rankedLineageList = new ArrayList<>();
-    private Map<String, List<RankedLineage>> taxonomyTreeForGenes = new HashMap<>();
-
+    private List<String> inputRankedLineage = new ArrayList<>();
+    private Map<String, List<List<String>>> taxonomyTreeForGenes = new HashMap<>();
     public List<String> rankedLineageFileColumnNames =
-            Arrays.asList("tax_id", "tax_name", "species", "genus", "family", "order", "class", "phylum", "kingdom", "superkingdom");
-
+            Arrays.asList("tax_id", "subspecies", "species", "genus", "family", "order", "class", "phylum", "kingdom", "superkingdom");
 
     public TaxTree(String rankedLineageFilePath, Set<Integer> blastHitsTaxIDs, int organismTaxID) {
 
@@ -65,60 +62,81 @@ public class TaxTree implements Serializable {
     }
   }
 
-  private void buildRankedLineageWithTaxonomyNodes(){
+//  private void buildRankedLineageWithTaxonomyNodes(){
+//
+//      try {
+//          // go through each ranked lineage record to construct ranked lineage with Taxonomy nodes
+//          for (Map.Entry<Integer, List<String>> record : rankedLineageWithNames.entrySet()) {
+//
+//              List<TaxNode> tempNodeLineage = new ArrayList<>();
+//              List<String> lineageNames = record.getValue();
+//              TaxNode taxNode = new TaxNode();
+//              taxNode.setNID(record.getKey());
+//              System.out.print(record.getKey() + "\t|");
+//              taxNode.setName(lineageNames.get(1)); // scientific name/sub species level
+//              taxNode.setNRank(rankedLineageFileColumnNames.get(1));
+//              tempNodeLineage.add(taxNode);
+//              for (int i = 2; i < lineageNames.size(); i++) { // skip taxonomy Id column
+//                  taxNode = new TaxNode();
+//                  String  taxonomyName = lineageNames.get(i);
+//                  taxNode.setName((taxonomyName != null && !taxonomyName.equals(""))? taxonomyName:NOT_AVAILABLE);
+//                  taxNode.setNRank(rankedLineageFileColumnNames.get(i));
+//                  tempNodeLineage.add(taxNode);
+//              }
+//              rankedLineageList.add(new RankedLineage(record.getKey(), tempNodeLineage));
+//          }
+//      } catch (Exception e) {
+//          log.error("Error occurred during tree construction : " + e.getMessage());
+//      }
+//  }
+
+//    Map<String, List<RankedLineage>> buildRankedLineageList(List<BlastResult> blastResults){
+//
+//        buildRankedLineageWithTaxonomyNodes();
+//        this.inputRankedLineage = filterRankedLineagesByTaxonomyId(this.organismTaxID);
+//
+//        for (BlastResult blastResult : blastResults) {
+//            String geneId = blastResult.getQueryid();
+//            int subjectTaxonomyId = blastResult.getStaxid();
+//            taxonomyTreeForGenes.computeIfAbsent(geneId, k -> new ArrayList<>())
+//                    .add(filterRankedLineagesByTaxonomyId(subjectTaxonomyId));
+//        }
+//        return taxonomyTreeForGenes;
+//    }
+//
+//    /**
+//     * Given a Taxonomy Id, this method will return the RankedLineage
+//     * @param taxonomyId
+//     * @return
+//     */
+//    private RankedLineage filterRankedLineagesByTaxonomyId(int taxonomyId){
+//        return rankedLineageList.stream()
+//                .filter(rankedLineage -> rankedLineage.getTaxonomyId()==taxonomyId)
+//                .collect(Collectors.toList()).get(0);
+//    }
+
+  Map<String, List<List<String>>> buildRankedLineageList(List<BlastResult> blastResults){
 
       try {
-          // go through each ranked lineage record to construct ranked lineage with Taxonomy nodes
-          for (Map.Entry<Integer, List<String>> record : rankedLineageWithNames.entrySet()) {
-
-              List<TaxNode> tempNodeLineage = new ArrayList<>();
-              List<String> lineageNames = record.getValue();
-              TaxNode taxNode = new TaxNode();
-              taxNode.setNID(record.getKey());
-              System.out.print(record.getKey() + "\t|");
-              taxNode.setName(lineageNames.get(1));
-              taxNode.setNRank(rankedLineageFileColumnNames.get(2));
-              tempNodeLineage.add(taxNode);
-              for (int i = 3; i < lineageNames.size(); i++) { // skip taxonomy Id column
-                  taxNode = new TaxNode();
-                  String  taxonomyName = lineageNames.get(i);
-                  taxNode.setName((taxonomyName != null && !taxonomyName.equals(""))? taxonomyName:NOT_AVAILABLE);
-                  taxNode.setNRank(rankedLineageFileColumnNames.get(i));
-                  tempNodeLineage.add(taxNode);
-              }
-              rankedLineageList.add(new RankedLineage(record.getKey(), tempNodeLineage));
+          this.inputRankedLineage = filterRankedLineagesByTaxonomyId(this.organismTaxID);
+          // travel though each gene
+          for (BlastResult blastResult : blastResults) {
+              String geneId = blastResult.getQueryid();
+              int subjectTaxonomyId = blastResult.getStaxid();
+              taxonomyTreeForGenes.computeIfAbsent(geneId, k -> new ArrayList<>())
+                      .add(filterRankedLineagesByTaxonomyId(subjectTaxonomyId));
           }
       } catch (Exception e) {
-          log.error("Error occurred during tree construction : " + e.getMessage());
-      }
-  }
-
-  Map<String, List<RankedLineage>> buildRankedLineageList(List<BlastResult> blastResults){
-
-      buildRankedLineageWithTaxonomyNodes();
-      this.inputRankedLineage = filterRankedLineagesByTaxonomyId(this.organismTaxID);
-
-      for (BlastResult blastResult : blastResults) {
-          String geneId = blastResult.getQueryid();
-          int subjectTaxonomyId = blastResult.getStaxid();
-          taxonomyTreeForGenes.computeIfAbsent(geneId, k -> new ArrayList<>())
-                  .add(filterRankedLineagesByTaxonomyId(subjectTaxonomyId));
+          log.error("RankedLineage Tree build error: " +  e.getMessage());
       }
       return taxonomyTreeForGenes;
   }
 
-    /**
-     * Given a Taxonomy Id, this method will return the RankedLineage
-     * @param taxonomyId
-     * @return
-     */
-  private RankedLineage filterRankedLineagesByTaxonomyId(int taxonomyId){
-      return rankedLineageList.stream()
-              .filter(rankedLineage -> rankedLineage.getTaxonomyId()==taxonomyId)
-              .collect(Collectors.toList()).get(0);
+  private List<String> filterRankedLineagesByTaxonomyId(int taxonomyId){
+     return rankedLineageWithNames.get(taxonomyId);
   }
 
-  RankedLineage getInputRankedLineage() {
+  List<String> getInputRankedLineage() {
       return inputRankedLineage;
   }
 }
