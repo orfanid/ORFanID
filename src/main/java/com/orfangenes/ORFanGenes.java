@@ -66,7 +66,7 @@ public class ORFanGenes {
 
         TaxTree taxTree = new TaxTree(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
         Classifier classifier = new Classifier(taxTree, organismTaxID, blastResults);
-        Map<String, String> geneClassification = classifier.getGeneClassification();
+        Map<String, String> geneClassification = classifier.getGeneClassification(outputdir);
         for (Map.Entry<String, String> stringStringEntry : geneClassification.entrySet()) {
             log.info(stringStringEntry.getKey() + "--->" + stringStringEntry.getValue());
         }

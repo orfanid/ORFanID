@@ -3,7 +3,11 @@ package com.orfangenes.service;
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.taxonomy.RankedLineage;
 import com.orfangenes.model.taxonomy.TaxNode;
+import com.orfangenes.util.Constants;
+import com.orfangenes.util.FileHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.*;
 
@@ -22,18 +26,24 @@ public class Classifier {
         this.tree = tree;
         this.organismTaxID = organismTaxID;
 
-        // for the blast
+        // Mapping between Gene ID and Lineage
         this.taxonomyTreeForGenes = tree.buildRankedLineageList(blastResults);
-        // for the input organism
+        // Lineage for input organism
         this.inputRankedLineage = tree.getInputRankedLineage();
     }
 
-    public Map<String, String> getGeneClassification() {
+    public Map<String, String> getGeneClassification(String outputdir) {
         List<String> classificationLevels =
-                Arrays.asList(
-                        STRICT_ORFAN, ORFAN_GENE, GENUS_RESTRICTED_GENE, FAMILY_RESTRICTED_GENE,
-                        ORDER_RESTRICTED_GENE, CLASS_RESTRICTED_GENE, PHYLUM_RESTRICTED_GENE,
-                        KINGDOM_RESTRICTED_GENE, DOMAIN_RESTRICTED_GENE, MULTI_DOMAIN_GENE);
+                Arrays.asList(STRICT_ORFAN, // 0
+                                ORFAN_GENE, // 1
+                                GENUS_RESTRICTED_GENE, // 2
+                                FAMILY_RESTRICTED_GENE, // 3
+                                ORDER_RESTRICTED_GENE, // 4
+                                CLASS_RESTRICTED_GENE, // 5
+                                PHYLUM_RESTRICTED_GENE, // 6
+                                KINGDOM_RESTRICTED_GENE, // 7
+                                DOMAIN_RESTRICTED_GENE, // 8
+                                MULTI_DOMAIN_GENE); // 9
         Map<String, String> classification = new HashMap<>();
         displayTree();
         try {
@@ -59,7 +69,51 @@ public class Classifier {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        generateORFanGeneSummary(classification, outputdir);
         return classification;
+    }
+
+    private void generateORFanGeneSummary(Map<String, String> classification, String outputdir) {
+        Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
+        orfanGeneCount.put(Constants.MULTI_DOMAIN_GENE, 0);
+        orfanGeneCount.put(Constants.DOMAIN_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.KINGDOM_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.PHYLUM_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.CLASS_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.ORDER_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.FAMILY_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.GENUS_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.ORFAN_GENE, 0);
+        orfanGeneCount.put(Constants.STRICT_ORFAN, 0);
+
+        for (Map.Entry<String, String> entry : classification.entrySet()) {
+            String classificationLevel = entry.getValue();
+            int count = orfanGeneCount.get(classificationLevel);
+            count++;
+            orfanGeneCount.put(classificationLevel, count);
+        }
+
+        // Generating ORFan Genes summary data to be shown in the table
+        JSONArray orfanGenesSummary = new JSONArray();
+        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+            JSONObject summaryObject = new JSONObject();
+            summaryObject.put("type", entry.getKey());
+            summaryObject.put("count", entry.getValue());
+            orfanGenesSummary.add(summaryObject);
+        }
+        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
+
+        // Generating ORFan Genes Summary Chart data
+        JSONObject chartJSON = new JSONObject();
+        JSONArray x = new JSONArray();
+        JSONArray y = new JSONArray();
+        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+            x.add(entry.getKey());
+            y.add(entry.getValue());
+        }
+        chartJSON.put("x", x);
+        chartJSON.put("y", y);
+        FileHandler.saveOutputFiles(chartJSON, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
     }
 
     public void displayTree() {

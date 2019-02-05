@@ -44,13 +44,18 @@ public class TaxTree implements Serializable {
 
     private void processRankedLineage(String lineageFileLine) {
         try {
+            // Ignoring last "  |" in file
             String lineageLine = lineageFileLine.substring(0, lineageFileLine.length() - 2);
+
             String[] lineageLineData = lineageLine.split("\t\\|");
             List<String> lineageDataList = Arrays.asList(lineageLineData);
+
+            // Ignoring tabs in string
             List<String> rankedLineageRecord =
                     lineageDataList.stream()
                             .map(value -> value.contains("\t") ? value.substring(1) : value)
                             .collect(Collectors.toList());
+
             if (rankedLineageRecord.size() == 10) {
                 int taxonomyId = Integer.parseInt(rankedLineageRecord.get(0));
                 if (this.blastHitsTaxIDs.contains(taxonomyId)) {
@@ -72,6 +77,7 @@ public class TaxTree implements Serializable {
             for (BlastResult blastResult : blastResults) {
                 String geneId = blastResult.getQueryid();
                 int subjectTaxonomyId = blastResult.getStaxid();
+                // Creates a mapping between Gene ID, and its lineage
                 taxonomyTreeForGenes.computeIfAbsent(geneId, k -> new ArrayList<>())
                         .add(filterRankedLineagesByTaxonomyId(subjectTaxonomyId));
             }
