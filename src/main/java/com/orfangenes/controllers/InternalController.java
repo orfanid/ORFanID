@@ -37,7 +37,7 @@ public class InternalController {
     public String analyse(@Valid @ModelAttribute("sequence") InputSequence sequence, BindingResult result, Model model) {
 
         Assert.assertFalse("Error", result.hasErrors());
-        final String sessionID = String.valueOf(System.currentTimeMillis()) + "_" + RandomStringUtils.randomAlphanumeric(3);
+        final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
         String outputPath = outputdir + sessionID;
         String inputFilePath = outputPath + "/" + INPUT_FASTA;
 
@@ -111,7 +111,7 @@ public class InternalController {
         // Adding saved data to results file
         String resultsFilePath = outputdir + FILE_RESULTS;
         JSONArray results;
-        try{
+        try {
             results = FileHandler.getArrayFromFile(resultsFilePath);
             results.add(metadata);
         } catch (NullPointerException e) {
@@ -130,7 +130,7 @@ public class InternalController {
         JSONArray results = new JSONArray();
 
         File[] sessions = new File(outputdir).listFiles(File::isDirectory);
-        for (File session: sessions) {
+        for (File session : sessions) {
             String sessionPath = session.getPath();
             String metadataFilePath = sessionPath + "/" + FILE_RESULT_METADATA;
             JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
