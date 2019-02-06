@@ -20,12 +20,12 @@ import static com.orfangenes.util.Constants.*;
 @Slf4j
 public class ORFanGenes {
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         log.info("Starting application....");
         log.info("Program arguments: " + Arrays.toString(args));
         try {
             CommandLine cmd = ORFanGenes.parseArgs(args);
-            run(    cmd.getOptionValue(ARG_QUERY),
+            run(cmd.getOptionValue(ARG_QUERY),
                     cmd.getOptionValue(ARG_OUT),
                     Integer.parseInt(cmd.getOptionValue(ARG_QUERY)),
                     cmd.getOptionValue(ARG_TYPE),
@@ -40,12 +40,12 @@ public class ORFanGenes {
     public static CommandLine parseArgs(String[] args) throws ParseException {
         log.info("Parameters: " + args.toString());
         Options options = new Options();
-        options.addOption(ARG_QUERY,true, "Input Sequence file in FASTA format");
-        options.addOption(ARG_TYPE,true, "Input Sequence type(protein/dna)");
-        options.addOption(ARG_TAX,true, "NCBI taxonomy ID of the species");
-        options.addOption(ARG_MAX_TARGET_SEQS,true, "Number of target sequences");
-        options.addOption(ARG_EVALUE,true, "BLAST E-Value Threshold");
-        options.addOption(ARG_OUT,true, "Output directory");
+        options.addOption(ARG_QUERY, true, "Input Sequence file in FASTA format");
+        options.addOption(ARG_TYPE, true, "Input Sequence type(protein/dna)");
+        options.addOption(ARG_TAX, true, "NCBI taxonomy ID of the species");
+        options.addOption(ARG_MAX_TARGET_SEQS, true, "Number of target sequences");
+        options.addOption(ARG_EVALUE, true, "BLAST E-Value Threshold");
+        options.addOption(ARG_OUT, true, "Output directory");
         CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
@@ -59,20 +59,22 @@ public class ORFanGenes {
         sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
         BlastResultsProcessor processor = new BlastResultsProcessor(outputdir);
         List<BlastResult> blastResults = processor.getBlastResults();
+        // Getting unique taxonomy IDs from BLAST result
         List<Integer> staxids = blastResults.stream().map(BlastResult::getStaxid).collect(Collectors.toList());
         Set<Integer> blastHitsTaxIDs = new HashSet<>(staxids);
         blastHitsTaxIDs.add(organismTaxID);
+
         TaxTree taxTree = new TaxTree(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
         Classifier classifier = new Classifier(taxTree, organismTaxID, blastResults);
-        Map<String, String> geneClassification = classifier.getGeneClassification();
+        Map<String, String> geneClassification = classifier.getGeneClassification(outputdir);
         for (Map.Entry<String, String> stringStringEntry : geneClassification.entrySet()) {
-          log.info(stringStringEntry.getKey() + "--->" + stringStringEntry.getValue());
+            log.info(stringStringEntry.getKey() + "--->" + stringStringEntry.getValue());
         }
         System.out.println("--------------------------------------------------------- \n");
 //        ResultsGenerator.generateResult(geneClassification, outputdir, processor, taxTree, sequence.getGenes());
     }
 
-    private static String getFilePath(String filename){
+    private static String getFilePath(String filename) {
         String filepath = null;
         try {
             URL url = ORFanGenes.class.getClassLoader().getResource(filename);
@@ -81,7 +83,7 @@ public class ORFanGenes {
             }
             filepath = url.toURI().getPath();
         } catch (URISyntaxException e) {
-                log.error("File not found");
+            log.error("File not found");
         }
         return filepath;
     }

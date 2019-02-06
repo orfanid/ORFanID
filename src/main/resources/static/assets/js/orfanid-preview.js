@@ -37,7 +37,7 @@ console.log("document.location.pathname : "+document.location.pathname);
 				var layout = {
 					yaxis: {
 					title: 'Number of Orphan Genes'
-				}}
+				}};
 				Plotly.newPlot('genesummary', data, layout);
 			}
 		);

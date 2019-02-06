@@ -9,7 +9,7 @@ public class ORFGene {
     private String level;
     private String taxonomy;
 
-    public ORFGene (Gene gene, String level) {
+    public ORFGene(Gene gene, String level) {
         this.id = gene.getGeneID();
         this.description = gene.getDescription();
         this.level = level;

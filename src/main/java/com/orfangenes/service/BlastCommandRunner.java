@@ -1,6 +1,7 @@
 package com.orfangenes.service;
 
 import static com.orfangenes.util.Constants.*;
+
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,8 +11,8 @@ import java.util.List;
 
 
 /**
- *  This class looks for the similar DNA/Protein sequences in the NCBI database
- *  by running the blast command.
+ * This class looks for the similar DNA/Protein sequences in the NCBI database
+ * by running the blast command.
  */
 @Slf4j
 @Builder
@@ -25,7 +26,7 @@ public class BlastCommandRunner extends Thread {
 
     @Override
     public void run() {
-        final String programme = (sequenceType.equals(TYPE_PROTEIN))? "blastp": "blastn";
+        final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
         List<String> command = Arrays.asList(
                 "/usr/local/ncbi/blast/bin/" + programme,
                 "-query", out + "/" + SEQUENCE + this.fileNumber + FASTA_EXT,

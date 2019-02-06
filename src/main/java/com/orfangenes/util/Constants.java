@@ -48,10 +48,6 @@ public class Constants {
     public static final String FILE_OUTPUT_ORFAN_GENES_SUMMARY = "ORFanGenesSummary.json";
     public static final String FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART = "ORFanGenesSummaryChart.json";
 
-    public static final String GENE_TYPE = "geneType";
-    public static final String PREV_RANK = "prevRank";
-    public static final String NEXT_RANK = "nextRank";
-
     public static final String ARG_QUERY = "query";
     public static final String ARG_TYPE = "type";
     public static final String ARG_TAX = "tax";

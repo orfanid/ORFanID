@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class ORFanDB {
 
-    public static Connection connectToDatabase (String database) {
+    public static Connection connectToDatabase(String database) {
         Connection connection = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -20,14 +20,14 @@ public class ORFanDB {
         return connection;
     }
 
-    public static void insertRecordPreparedStatement (Connection connection, String query, Object[] data) {
+    public static void insertRecordPreparedStatement(Connection connection, String query, Object[] data) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             for (int i = 0; i < data.length; i++) {
                 if (data[i] instanceof Integer) {
-                    preparedStatement.setInt(i+1, (int)data[i]);
+                    preparedStatement.setInt(i + 1, (int) data[i]);
                 } else if (data[i] instanceof String) {
-                    preparedStatement.setString(i+1, (String)data[i]);
+                    preparedStatement.setString(i + 1, (String) data[i]);
                 }
             }
             preparedStatement.executeUpdate();
@@ -38,7 +38,7 @@ public class ORFanDB {
         }
     }
 
-    public static boolean recordExists (Connection connection, String tableName, String sequence) {
+    public static boolean recordExists(Connection connection, String tableName, String sequence) {
         String selectQuery = "SELECT sequence FROM " + tableName + " WHERE sequence = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
