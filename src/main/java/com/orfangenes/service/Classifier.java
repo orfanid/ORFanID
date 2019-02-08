@@ -33,6 +33,7 @@ public class Classifier {
     }
 
     public Map<String, String> getGeneClassification(String outputdir) {
+        Set<String> blastResultsCommonIds;
         List<String> classificationLevels =
                 Arrays.asList(STRICT_ORFAN, // 0
                                 ORFAN_GENE, // 1
@@ -55,15 +56,27 @@ public class Classifier {
                 // TaxId(0),Subspecies(1), Species(2), Genus(3), Family(4), Order(5), Class(6), phylum(7), Kingdom(8), Super kingdom(9)
                 // start from Super kingdom and travel towards Subspecies
                 for (int columnNo = 9; columnNo > 0; columnNo--) {
-                    Set<String> blastResultsCommonIds = new HashSet<>();
+                    blastResultsCommonIds = new HashSet<>();
                     // travel though each blast hits
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
-                        // get distinct taxonomy Ids
-                        blastResultsCommonIds.add(rankedLineage.get(columnNo));
+                        // skip any missing values, the do not contribute for the evidence based decision.
+                        if(!rankedLineage.get(columnNo).equals("") || rankedLineage.get(columnNo).equals(NOT_AVAILABLE)){
+                            // get distinct taxonomy Ids
+                            blastResultsCommonIds.add(rankedLineage.get(columnNo));
+                        }
                     }
-                    if (blastResultsCommonIds.size() >= 1 && !inputRankedLineage.get(columnNo).equals(blastResultsCommonIds.iterator().next())) {
-                        classification.put(GeneId, classificationLevels.get(columnNo));
-                    }
+                    // add input organism taxonomy level name
+                    blastResultsCommonIds.add(inputRankedLineage.get(columnNo));
+
+                    // found homologous sibling(s)
+                    if (blastResultsCommonIds.size() > 1 ) {
+                        // found a classification
+                        classification.put(GeneId, classificationLevels.get(columnNo-1));
+                        break;
+                    } else if (columnNo == 2) { // no homologous sibling + reached to the species column
+                        classification.put(GeneId, classificationLevels.get(columnNo - 1));
+                        break;
+                    }// otherwise let loop continue
                 }
             }
         } catch (Exception e) {

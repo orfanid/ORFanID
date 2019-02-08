@@ -93,6 +93,8 @@
                     <input type="range" id="maxevalue"  name="maxEvalue" min="1" max="10" value="3"/>
                     <label for="maxtargets">Maximum target sequences for BLAST:</label>
                     <input type="range" id="maxtargets" name="maxTargetSequence" min="100" max="1000" value="{{Config::get('orfanid.default_maxtargetseq')}}"/>
+                    <label for="maxevalue">Identity:</label>
+                    <input type="range" id="identity"  name="identity" min="60" max="100" value="90"/>
                 </p>
             </div>
         </div>
@@ -113,9 +115,9 @@
                         <div class="col offset-s2 s1">
 
                         </div>
-                        <div  class="col s4">
-                            <img src="assets/images/loading4.gif" alt="Loading">
-                        </div >
+                        <%--<div  class="col s4">--%>
+                            <%--<img src="assets/images/loading4.gif" alt="Loading">--%>
+                        <%--</div >--%>
                     </div>
                 </div>
             </div>
