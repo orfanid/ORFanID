@@ -12,6 +12,7 @@ public class InputSequence {
     private String sequence;
     private String maxEvalue;
     private String maxTargetSequence;
+    private String identity;
 
     // TODO: THIS IMPLEMENTATION IS INCORRECT
     public String getType() {
