@@ -1,107 +1,150 @@
-//package com.orfangenes.service;
-//
-//import com.orfangenes.model.Gene;
-//import com.orfangenes.model.ORFGene;
-//import com.orfangenes.service.TaxTree;
-//import com.orfangenes.util.Constants;
-//import com.orfangenes.util.FileHandler;
-//import lombok.extern.slf4j.Slf4j;
-//import org.json.simple.JSONArray;
-//import org.json.simple.JSONObject;
-//
-//import java.util.Iterator;
-//import java.util.LinkedHashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//import static com.orfangenes.util.Constants.*;
-//
-///**
-// * @author Suresh Hewapathirana
-// */
-//@Slf4j
-//public class ResultsGenerator {
-//
-//  public static void generateResult (Map<Gene, String> geneClassification, String out,
-//                                     BlastResultsProcessor blastResultsProcessor,
-//                                     TaxTree tree, List<Gene> inputGenes) {
-//
-//    Map<String, Integer> orfanGeneCount = generateORFanGenesFrequency(geneClassification, out);
-//    JSONObject chartJSON = generateORFanGenesSummaryData(orfanGeneCount, out);
-//
-//    FileHandler.saveOutputFiles(chartJSON, out + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
-//    // Writing blast results to JSON file
-//    JSONArray blastTrees = blastResultsProcessor.generateBlastResultsTrees(tree, inputGenes);
-//    FileHandler.saveOutputFiles(blastTrees, out + "/" + FILE_OUTPUT_BLAST_RESULTS);
-//    log.info("JSON files generated");
-//  }
-//
-//  private static Map<String, Integer>  generateORFanGenesFrequency(Map<Gene, String> geneClassification, String out){
-//
-//    JSONArray orfanGenes = new JSONArray();
-//
-//    // ORFan and Native Gene count
-//    Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
-//    orfanGeneCount.put(Constants.MULTI_DOMAIN_GENE, 0);
-//    orfanGeneCount.put(Constants.DOMAIN_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.KINGDOM_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.PHYLUM_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.CLASS_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.ORDER_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.FAMILY_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.GENUS_RESTRICTED_GENE, 0);
-//    orfanGeneCount.put(Constants.ORFAN_GENE, 0);
-//    orfanGeneCount.put(Constants.STRICT_ORFAN, 0);
-//
-//    // Iterating through every identified gene
-//    Iterator it = geneClassification.entrySet().iterator();
-//    while (it.hasNext()) {
-//      Map.Entry pair = (Map.Entry)it.next();
-//
-//      ORFGene orfGene = new ORFGene((Gene) pair.getKey(), (String)pair.getValue());
-//      JSONObject orfanJSON = new JSONObject();
-//      orfanJSON.put("geneid", orfGene.getId());
-//      orfanJSON.put("description", orfGene.getDescription());
-//      orfanJSON.put("orfanLevel", orfGene.getLevel());
-//      orfanJSON.put("taxonomyLevel", orfGene.getTaxonomy());
-//      orfanGenes.add(orfanJSON);
-//
-//      int count = orfanGeneCount.get(orfGene.getLevel());
-//      count++;
-//      orfanGeneCount.put(orfGene.getLevel(), count);
-//    }
-//    // Writing orfanGenes data JSON data into file
-//    FileHandler.saveOutputFiles(orfanGenes, out + "/" + FILE_OUTPUT_ORFAN_GENES);
-//
-//    return orfanGeneCount;
-//  }
-//
-//  private static JSONObject generateORFanGenesSummaryData(Map<String, Integer> orfanGeneCount, String out){
-//    // Genetating ORFan genes summary data and data to be displayed in the chart
-//    JSONArray orfanGenesSummary = new JSONArray();
-//
-//    JSONObject chartJSON = new JSONObject();
-//    JSONArray x = new JSONArray();
-//    JSONArray y = new JSONArray();
-//
-//    Iterator it = orfanGeneCount.entrySet().iterator();
-//    while (it.hasNext()) {
-//      Map.Entry pair = (Map.Entry)it.next();
-//
-//      JSONObject summaryObject = new JSONObject();
-//      summaryObject.put("type", pair.getKey());
-//      summaryObject.put("count", pair.getValue());
-//      orfanGenesSummary.add(summaryObject);
-//
-//      x.add(pair.getKey());
-//      y.add(pair.getValue());
-//    }
-//
-//    chartJSON.put("x", x);
-//    chartJSON.put("y", y);
-//
-//    FileHandler.saveOutputFiles(orfanGenesSummary,out + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
-//    return chartJSON;
-//  }
-//
-//}
+package com.orfangenes.service;
+
+import com.orfangenes.model.taxonomy.TaxNode;
+import com.orfangenes.util.Constants;
+import com.orfangenes.util.FileHandler;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.util.*;
+
+import static com.orfangenes.util.Constants.*;
+
+public class ResultsGenerator {
+    private static List<String> ranks =
+            Arrays.asList(SPECIES,
+                    GENUS,
+                    FAMILY,
+                    ORDER,
+                    CLASS,
+                    PHYLUM,
+                    KINGDOM,
+                    SUPERKINGDOM);
+
+    public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir) {
+        Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
+        orfanGeneCount.put(Constants.MULTI_DOMAIN_GENE, 0);
+        orfanGeneCount.put(Constants.DOMAIN_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.KINGDOM_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.PHYLUM_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.CLASS_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.ORDER_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.FAMILY_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.GENUS_RESTRICTED_GENE, 0);
+        orfanGeneCount.put(Constants.ORFAN_GENE, 0);
+        orfanGeneCount.put(Constants.STRICT_ORFAN, 0);
+
+        JSONArray geneData = new JSONArray();
+        for (Map.Entry<String, String> entry : classification.entrySet()) {
+            String classificationLevel = entry.getValue();
+            int count = orfanGeneCount.get(classificationLevel);
+            count++;
+            orfanGeneCount.put(classificationLevel, count);
+
+            // Generating Gene data
+            JSONObject orfanJSON = new JSONObject();
+            orfanJSON.put("geneid", entry.getKey());
+            orfanJSON.put("description", null);
+            orfanJSON.put("orfanLevel", classificationLevel);
+            orfanJSON.put("taxonomyLevel", null);
+            geneData.add(orfanJSON);
+        }
+        FileHandler.saveOutputFiles(geneData, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES);
+
+        // Generating ORFan Genes summary data to be shown in the table
+        JSONArray orfanGenesSummary = new JSONArray();
+        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+            JSONObject summaryObject = new JSONObject();
+            summaryObject.put("type", entry.getKey());
+            summaryObject.put("count", entry.getValue());
+            orfanGenesSummary.add(summaryObject);
+        }
+        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
+
+        // Generating ORFan Genes Summary Chart data
+        JSONObject chartJSON = new JSONObject();
+        JSONArray x = new JSONArray();
+        JSONArray y = new JSONArray();
+        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+            x.add(entry.getKey());
+            y.add(entry.getValue());
+        }
+        chartJSON.put("x", x);
+        chartJSON.put("y", y);
+        FileHandler.saveOutputFiles(chartJSON, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
+    }
+
+    public static void generateBlastTree(Map<String, List<List<String>>> taxonomyTreeForGenes, String outputdir) {
+        JSONArray trees = new JSONArray();
+        for (Map.Entry<String, List<List<String>>> taxTree: taxonomyTreeForGenes.entrySet()) {
+            JSONObject tree = new JSONObject();
+
+            String geneId = taxTree.getKey();
+            tree.put("id", geneId);
+
+            // Removing duplicate lineages
+            List<List<String>> lineages = taxTree.getValue();
+            Set<String> species = new HashSet<>();
+            Set<String> superkingdoms = new HashSet<>();
+            List<List<String>> uniqueLineages = new ArrayList<>();
+            for (List<String> lineage : lineages) {
+                String speciesName = lineage.get(1);
+                if (lineage.size() == 10 && species.add(speciesName)) {
+                    lineage.remove(2); // Removing taxonomy ID
+                    lineage.remove(0); // Removing common name
+                    uniqueLineages.add(lineage);
+
+                    String superkingdomName = lineage.get(7);
+                    superkingdoms.add(superkingdomName);
+                }
+            }
+
+            if (superkingdoms.size() == 1) {
+                TaxNode superkingdom = new TaxNode();
+                superkingdom.setName(superkingdoms.iterator().next());
+                superkingdom.setNRank(ranks.get(7));
+                superkingdom.setChildren(getChildren(uniqueLineages, 7, superkingdom.getName()));
+
+                JSONObject jsonTree = createJsonNode(superkingdom);
+                tree.put("tree", jsonTree);
+                trees.add(tree);
+            } else {
+                // TODO: Discuss approach to developing BLAST Tree
+            }
+        }
+        FileHandler.saveOutputFiles(trees, outputdir + "/" + FILE_OUTPUT_BLAST_RESULTS);
+    }
+
+    private static Set<TaxNode> getChildren (List<List<String>> uniqueLineages, int lineageLevel, String parentName) {
+        Set<TaxNode> children = new HashSet<>();
+        Set<String> childrenNames = new HashSet<>();
+        for (List<String> lineage : uniqueLineages) {
+            String taxNameAtLevel = lineage.get(lineageLevel);
+            if (taxNameAtLevel.equals(parentName) && lineageLevel > 0) {
+                String childName = lineage.get(lineageLevel - 1);
+                if (childrenNames.add(childName)) { // Avoid duplicates
+                    TaxNode child = new TaxNode();
+                    child.setName(childName);
+                    child.setNRank(ranks.get(lineageLevel - 1));
+                    child.setChildren(getChildren(uniqueLineages, lineageLevel - 1, child.getName()));
+                    children.add(child);
+                }
+            }
+        }
+        return children;
+    }
+
+    private static JSONObject createJsonNode (TaxNode node) {
+        JSONObject jsonNode = new JSONObject();
+        jsonNode.put("name", node.getName());
+
+        if (node.getChildren().size() > 0) {
+            JSONArray children = new JSONArray();
+            for (TaxNode child : node.getChildren()) {
+                children.add(createJsonNode(child));
+            }
+            jsonNode.put("children", children);
+        }
+        return jsonNode;
+    }
+}
