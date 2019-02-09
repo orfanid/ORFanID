@@ -20,6 +20,7 @@ public class BlastResult implements Serializable {
     private double bbibtscore;
     private int staxid;
     private String queryid;
+    private int sequenceCount;
 
     public BlastResult(String result) {
         String[] resultData = result.split("\t");
@@ -45,10 +46,12 @@ public class BlastResult implements Serializable {
                 // If many tax IDs are obtained from the last result, get the first one
                 String[] taxIDs = taxID.split(";");
                 taxID = taxIDs[0];
+                this.sequenceCount = taxIDs.length;
             }
             this.staxid = Integer.parseInt(taxID.trim());
         } catch (NumberFormatException e) {
             this.staxid = -1;
+            this.sequenceCount = 0;
         }
     }
 
