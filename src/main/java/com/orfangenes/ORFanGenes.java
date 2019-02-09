@@ -56,7 +56,7 @@ public class ORFanGenes {
 
         // Generating BLAST file
         Sequence sequence = new Sequence(blastType, query, outputdir, organismTaxID);
-//        sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
+        sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
         BlastResultsProcessor processor = new BlastResultsProcessor(outputdir);
         List<BlastResult> blastResults = processor.getBlastResults();
         // Getting unique taxonomy IDs from BLAST result
