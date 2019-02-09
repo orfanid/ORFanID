@@ -27,7 +27,7 @@ public class ORFanGenes {
             CommandLine cmd = ORFanGenes.parseArgs(args);
             run(cmd.getOptionValue(ARG_QUERY),
                     cmd.getOptionValue(ARG_OUT),
-                    Integer.parseInt(cmd.getOptionValue(ARG_QUERY)),
+                    Integer.parseInt(cmd.getOptionValue(ARG_TAX)),
                     cmd.getOptionValue(ARG_TYPE),
                     cmd.getOptionValue(ARG_MAX_TARGET_SEQS),
                     cmd.getOptionValue(ARG_EVALUE));
@@ -56,7 +56,7 @@ public class ORFanGenes {
 
         // Generating BLAST file
         Sequence sequence = new Sequence(blastType, query, outputdir, organismTaxID);
-        sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
+//        sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
         BlastResultsProcessor processor = new BlastResultsProcessor(outputdir);
         List<BlastResult> blastResults = processor.getBlastResults();
         // Getting unique taxonomy IDs from BLAST result
