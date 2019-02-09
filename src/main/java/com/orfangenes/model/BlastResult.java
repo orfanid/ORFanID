@@ -47,6 +47,8 @@ public class BlastResult implements Serializable {
                 String[] taxIDs = taxID.split(";");
                 taxID = taxIDs[0];
                 this.sequenceCount = taxIDs.length;
+            } else {
+                this.sequenceCount = 1;
             }
             this.staxid = Integer.parseInt(taxID.trim());
         } catch (NumberFormatException e) {
