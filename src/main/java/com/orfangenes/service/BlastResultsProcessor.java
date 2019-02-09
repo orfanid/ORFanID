@@ -26,7 +26,9 @@ public class BlastResultsProcessor {
             Scanner scanner = new Scanner(new File(blastResultsFileName));
             while (scanner.hasNextLine()) {
                 BlastResult result = new BlastResult(scanner.nextLine());
-                blastResults.add(result);
+                if (result.getSequenceCount() == 1) {
+                    blastResults.add(result);
+                }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
