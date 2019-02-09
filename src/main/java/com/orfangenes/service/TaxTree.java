@@ -26,8 +26,7 @@ public class TaxTree implements Serializable {
     private Map<Integer, List<String>> rankedLineageWithNames = new HashMap<>();
     private List<String> inputRankedLineage = new ArrayList<>();
     private Map<String, List<List<String>>> taxonomyTreeForGenes = new HashMap<>();
-    public List<String> rankedLineageFileColumnNames =
-            Arrays.asList("tax_id", "subspecies", "species", "genus", "family", "order", "class", "phylum", "kingdom", "superkingdom");
+
 
     public TaxTree(String rankedLineageFilePath, Set<Integer> blastHitsTaxIDs, int organismTaxID) {
 

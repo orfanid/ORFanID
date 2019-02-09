@@ -12,6 +12,7 @@
     <appender name="FILE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/orfanid-logger.%d{yyyyMMdd}.log</file>
+        <append>true</append>
         <encoder
                 class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %C{1.} [%t] %m%n</Pattern>
@@ -25,3 +26,39 @@
     </root>
 
 </configuration>
+
+<!--<configuration>-->
+
+    <!--<property name="DEV_HOME" value="./logs" />-->
+
+    <!--<appender name="FILE-AUDIT"-->
+              <!--class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--<file>${DEV_HOME}/debug_%d{yyyy-MM-dd}.log</file>-->
+        <!--<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+            <!--<Pattern>-->
+                <!--%d{yyyy-MM-dd HH:mm:ss} - %msg%n-->
+            <!--</Pattern>-->
+        <!--</encoder>-->
+
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+            <!--&lt;!&ndash; rollover daily &ndash;&gt;-->
+            <!--<fileNamePattern>${DEV_HOME}/archived/debug.%d{yyyy-MM-dd}.%i.log-->
+            <!--</fileNamePattern>-->
+            <!--<timeBasedFileNamingAndTriggeringPolicy-->
+                    <!--class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+                <!--<maxFileSize>10MB</maxFileSize>-->
+            <!--</timeBasedFileNamingAndTriggeringPolicy>-->
+        <!--</rollingPolicy>-->
+
+    <!--</appender>-->
+
+    <!--<logger name="com.mkyong.web" level="debug"-->
+            <!--additivity="false">-->
+        <!--<appender-ref ref="FILE-AUDIT" />-->
+    <!--</logger>-->
+
+    <!--<root level="error">-->
+        <!--<appender-ref ref="FILE-AUDIT" />-->
+    <!--</root>-->
+<!--a-->
+<!--</configuration>-->
