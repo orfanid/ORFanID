@@ -1,8 +1,15 @@
 package com.orfangenes.service;
 
 import com.orfangenes.model.BlastResult;
+import com.orfangenes.model.Gene;
+import com.orfangenes.model.taxonomy.RankedLineage;
+import com.orfangenes.model.taxonomy.TaxNode;
+import com.orfangenes.util.Constants;
+import com.orfangenes.util.FileHandler;
 import com.orfangenes.util.ResultsPrinter;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.*;
 
@@ -27,7 +34,7 @@ public class Classifier {
         this.inputRankedLineage = tree.getInputRankedLineage();
     }
 
-    public Map<String, String> getGeneClassification(String outputdir) {
+    public Map<String, String> getGeneClassification(String outputdir, Map<String, Gene> genes) {
         Set<String> blastResultsCommonIds;
         List<String> classificationLevels =
                 Arrays.asList(STRICT_ORFAN, // 0
@@ -52,6 +59,7 @@ public class Classifier {
                 // start from Super kingdom(domain) and travel towards species
                 for (int columnNo = 9; columnNo > 0; columnNo--) {
                     if (columnNo == 2) { continue;}// read the scientific species name instead species-level
+                    blastResultsCommonIds = new HashSet<>();
                     blastResultsCommonIds = new HashSet<>();
                     // travel though each blast hits
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
