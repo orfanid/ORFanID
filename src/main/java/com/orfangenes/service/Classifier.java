@@ -87,7 +87,7 @@ public class Classifier {
             log.error(e.getMessage());
         }
         // todo: bad practise, functions should do multiple things. try to modularise
-        ResultsGenerator.generateORFanGeneSummary(classification, outputdir);
+        ResultsGenerator.generateORFanGeneSummary(classification, outputdir, genes);
         ResultsGenerator.generateBlastTree(this.taxonomyTreeForGenes, outputdir);
         return classification;
     }
