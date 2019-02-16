@@ -8,9 +8,9 @@ $(document).ready(function () {
     $('.tooltipped').tooltip();
 
     var organismData = {};
-    $.getJSON('assets/data/organism_list_test.json', function(data) {
+    $.getJSON('assets/data/organism_list.json', function(data) {
         $.each( data, function( key, val ) {
-            organismData[key] = "'" + val + "'";
+            organismData[key] =  val ;
         });
     }).done(function() {
         var organismElement = $('#organismName');
@@ -36,7 +36,6 @@ $(document).ready(function () {
                     $('.modal').close();
                 }
             });
-
         }
         $('.modal').close();
     });
