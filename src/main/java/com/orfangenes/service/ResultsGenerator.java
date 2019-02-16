@@ -1,8 +1,10 @@
 package com.orfangenes.service;
 
+import com.orfangenes.model.Gene;
 import com.orfangenes.model.taxonomy.TaxNode;
 import com.orfangenes.util.Constants;
 import com.orfangenes.util.FileHandler;
+import com.sun.tools.javah.Gen;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -21,7 +23,7 @@ public class ResultsGenerator {
                     KINGDOM,
                     SUPERKINGDOM);
 
-    public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir) {
+    public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir, Map<String, Gene> genes) {
         Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
         orfanGeneCount.put(Constants.MULTI_DOMAIN_GENE, 0);
         orfanGeneCount.put(Constants.DOMAIN_RESTRICTED_GENE, 0);
@@ -44,9 +46,9 @@ public class ResultsGenerator {
             // Generating Gene data
             JSONObject orfanJSON = new JSONObject();
             orfanJSON.put("geneid", entry.getKey());
-            orfanJSON.put("description", null);
             orfanJSON.put("orfanLevel", classificationLevel);
-            orfanJSON.put("taxonomyLevel", null);
+            Gene gene =genes.get(entry.getKey());
+            orfanJSON.put("description", gene.getDescription());
             geneData.add(orfanJSON);
         }
         FileHandler.saveOutputFiles(geneData, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES);
