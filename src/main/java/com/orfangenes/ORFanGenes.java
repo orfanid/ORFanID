@@ -1,12 +1,9 @@
 package com.orfangenes;
 
-import com.orfangenes.service.BlastResultsProcessor;
-import com.orfangenes.service.Classifier;
+import com.orfangenes.service.*;
 //import com.orfangenes.service.ResultsGenerator;
-import com.orfangenes.service.Sequence;
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.Gene;
-import com.orfangenes.service.TaxTree;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 

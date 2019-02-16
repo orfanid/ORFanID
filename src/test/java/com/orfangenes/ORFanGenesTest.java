@@ -2,6 +2,7 @@ package com.orfangenes;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,6 +10,7 @@ import static org.junit.Assert.*;
 /**
  * @author Suresh Hewapathirana
  */
+@Ignore
 public class ORFanGenesTest {
 
   int organismTaxID;
