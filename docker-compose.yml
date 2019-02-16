@@ -1,11 +1,11 @@
-version: '2'
+version: '3'
 services:
   blastservice:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "9097:9097"
+      - "9097:8080"
     volumes:
       - /Users/hewapathirana/workspace/docker/tmp:/tmp
       - /Users/hewapathirana/workspace/docker/query:/query

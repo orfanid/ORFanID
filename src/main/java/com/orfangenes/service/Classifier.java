@@ -6,6 +6,7 @@ import com.orfangenes.model.taxonomy.RankedLineage;
 import com.orfangenes.model.taxonomy.TaxNode;
 import com.orfangenes.util.Constants;
 import com.orfangenes.util.FileHandler;
+import com.orfangenes.util.ResultsPrinter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,19 +45,21 @@ public class Classifier {
                                 CLASS_RESTRICTED_GENE, // 5
                                 PHYLUM_RESTRICTED_GENE, // 6
                                 KINGDOM_RESTRICTED_GENE, // 7
-                                DOMAIN_RESTRICTED_GENE, // 8
-                                MULTI_DOMAIN_GENE); // 9
+                                DOMAIN_RESTRICTED_GENE); // 8
         Map<String, String> classification = new HashMap<>();
-        displayTree();
+        ResultsPrinter.displayTree(organismTaxID, inputRankedLineage, taxonomyTreeForGenes);
         try {
             // travel though each gene
             for (Map.Entry<String, List<List<String>>> entry : taxonomyTreeForGenes.entrySet()) {
                 String GeneId = entry.getKey();
                 List<List<String>> blastResultsRankedLineages = entry.getValue();
                 // travel though each lineage:
-                // TaxId(0),Subspecies(1), Species(2), Genus(3), Family(4), Order(5), Class(6), phylum(7), Kingdom(8), Super kingdom(9)
-                // start from Super kingdom and travel towards Subspecies
+                // TaxId(0), Scientific name of the taxonomy(1), species(2), Genus(3), Family(4), Order(5), Class(6),
+                // phylum(7), Kingdom(8), Super kingdom or Domain(9)
+                // start from Super kingdom(domain) and travel towards species
                 for (int columnNo = 9; columnNo > 0; columnNo--) {
+                    if (columnNo == 2) { continue;}// read the scientific species name instead species-level
+                    blastResultsCommonIds = new HashSet<>();
                     blastResultsCommonIds = new HashSet<>();
                     // travel though each blast hits
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
@@ -74,8 +77,8 @@ public class Classifier {
                         // found a classification
                         classification.put(GeneId, classificationLevels.get(columnNo-1));
                         break;
-                    } else if (columnNo == 2) { // no homologous sibling + reached to the species column
-                        classification.put(GeneId, classificationLevels.get(columnNo - 1));
+                    } else if (columnNo == 1) { // no homologous sibling + reached to the species column
+                        classification.put(GeneId, classificationLevels.get(columnNo));
                         break;
                     }// otherwise let loop continue
                 }
@@ -83,39 +86,9 @@ public class Classifier {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        // todo: bad practise, functions should do multiple things. try to modularise
         ResultsGenerator.generateORFanGeneSummary(classification, outputdir, genes);
         ResultsGenerator.generateBlastTree(this.taxonomyTreeForGenes, outputdir);
         return classification;
-    }
-
-    public void displayTree() {
-
-        System.out.println("\n\nInput Taxonomy: " + organismTaxID + "\n=================\n");
-        for (String taxNode : inputRankedLineage) {
-            System.out.print(formatString(taxNode));
-        }
-        System.out.println("\n");
-
-        // travel though each gene
-        for (Map.Entry<String, List<List<String>>> entry : taxonomyTreeForGenes.entrySet()) {
-            String GeneId = entry.getKey();
-            System.out.println("\nGene Id: " + GeneId + "\n=================\n");
-            for (List<String> rankedLineage : entry.getValue()) {
-                for (String taxNode : rankedLineage) {
-                    System.out.print(formatString(taxNode));
-                }
-                System.out.println();
-            }
-        }
-    }
-
-    public String formatString(String name) {
-        String node;
-        if (name.equals(NOT_AVAILABLE) || name.equals("")) {
-            node = ANSI_RED + NOT_AVAILABLE + "\t" + ANSI_RESET + "|";
-        } else {
-            node = name + "\t|";
-        }
-        return node;
     }
 }
