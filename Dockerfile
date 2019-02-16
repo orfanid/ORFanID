@@ -1,6 +1,6 @@
 ############################################################
 # Dockerfile to build ORFanID web and its API and the Database
-# 4Th February 2019
+# 4th February 2019
 # Version 1.0.0
 # By: Suresh Hewapathirana
 # TODO:
@@ -8,9 +8,7 @@
 ############################################################
 
 # Base docker image with Ubuntu and Java
-FROM mlaccetti/docker-oracle-java8-ubuntu-16.04
-
-ENV DEBIAN_FRONTEND noninteractive
+FROM java:8
 
 ################## BEGIN INSTALLATION ######################
 
@@ -25,10 +23,5 @@ RUN wget -q ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blas
 ##################### INSTALLATION END #####################
 
 VOLUME /tmp
-COPY target/*.jar app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
-#ARG DEPENDENCY=target/dependency
-#COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-#COPY ${DEPENDENCY}/META-INF /app/META-INF
-#COPY ${DEPENDENCY}/BOOT-INF/classes /app
-#ENTRYPOINT ["java","-cp","app:app/lib/*","com.orfangenes.OrfanidApplication"]
+ADD /target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
