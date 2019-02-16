@@ -88,7 +88,6 @@ $(document).ready(function() {
                     },
                     {"data" : "description"},
                     {"data" : "orfanLevel"},
-                    {"data" : "taxonomyLevel"},
                     {"data" : "blastResult"}
                 ],
                 "oLanguage": {

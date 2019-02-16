@@ -8,12 +8,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
 public class Sequence {
-    private List<Gene> genes;
+    private Map<String, Gene> genes;
     private int fileCount;
     private String blastType;
 
@@ -93,15 +95,15 @@ public class Sequence {
         }
     }
 
-    public List<Gene> getGenes() {
+    public Map<String, Gene> getGenes() {
         return genes;
     }
 
-    private ArrayList<Gene> getGeneData(String sequenceFileName, int inputTax) {
+    private Map<String, Gene> getGeneData(String sequenceFileName, int inputTax) {
 
         String inputSequence = getSequenceFromDisk(sequenceFileName);
         String[] sequences = inputSequence.split(SEQUENCE_SEPARATOR);
-        ArrayList<Gene> genes = new ArrayList<>();
+        Map<String, Gene> genes = new HashMap<>();
 
         for (String sequence : sequences) {
             if (sequence.equals(LINE_SEPARATOR)) {
@@ -123,7 +125,7 @@ public class Sequence {
                 sequenceString.append(lines[i]);
             }
             gene.setSequence(sequenceString.toString());
-            genes.add(gene);
+            genes.put(gene.getGeneID(), gene);
         }
         return genes;
     }
