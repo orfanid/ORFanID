@@ -1,12 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en-us">
 <head>
     <title>ORFanGenes</title>
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
-    <%--<link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />--%>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!--<link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.1/fonts.css">-->
     <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css">
@@ -21,7 +20,6 @@
 <body>
 <div th:replace="fragments/header :: nav">&nbsp;</div>
 <main>
-
     <form action="/analyse" th:action="@{/analyse}" th:object="${sequence}" method="post">
         <div class="row">
             <div class="col s5 offset-s1">

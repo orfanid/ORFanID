@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>--%>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>ORFanID</title>
     <!-- CSS  -->
@@ -11,7 +10,12 @@
     <link href="assets/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-<div th:replace="fragments/header :: nav">&nbsp;</div>
+<nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">ORFanGenes</a>
+        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+</nav>
 <div id="index-banner" class="parallax-container">
     <div class="section no-pad-bot">
         <div class="container">
@@ -91,7 +95,21 @@
     </div>
     <div class="parallax"><img src="assets/images/background3.jpg" alt="Unsplashed background img 3"></div>
 </div>
-<div th:replace="fragments/footer :: footer">&nbsp;</div>
+<footer class="page-footer teal">
+    <div class="container">
+        <div class="row">
+            <h5 class="grey-text text-lighten-4">References</h5>
+            <p class="grey-text text-lighten-4">Altschul, S.F., Gish, W., Miller, W., Myers, E.W. & Lipman, D.J. (1990) "Basic local alignment search tool." J. Mol. Biol. 215:403-410</p>
+            <p class="grey-text text-lighten-4"> Ekstrom, A. & Yin, Y. (2016) "ORFanFinder: automated identification of taxonomically restricted orphan genes." Bioinformatics; 32 (13): 2053-2055. doi: 10.1093/bioinformatics/btw122 </p>
+            <p class="grey-text text-lighten-4">Clamp, M., Fry, B., Kamal, M., Xie, X., Cuff, J., Lin, M.F., Kellis, K., Lindblad-Toh, K., and Lander, E. S. (2007) “Distinguishing protein-coding and noncoding genes in the human genome”. PNAS 2007 December, 104 (49) 19428-19433 </p>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container"><a class="brown-text text-lighten-3 center-align" href="#"></a>
+            <p class="center-align">Copyright &nbsp;© 2017-2018</p>
+        </div>
+    </div>
+</footer>
 <!--  Scripts-->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="assets/js/materialize.js"></script>
