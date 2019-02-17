@@ -7,9 +7,7 @@
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <!--<link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.1/fonts.css">-->
     <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css">
-    <link type="text/css" rel="stylesheet" href="assets/css/orfanid-input.css">
     <link type="text/css" rel="stylesheet" href="assets/css/orfan_styles.css">
     <link type="text/css" rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css">
     <!--Let browser know website is optimized for mobile-->
@@ -27,7 +25,7 @@
                         <div class="col s10">
                             <div class="input-field">
                                 <input type="text" id="ncbi_accession_input" class="validate" name="accession">
-                                <label for="ncbi_accession_input">NCBI Accession</label>
+                                <label for="ncbi_accession_input">NCBI\Uniprot Accession(s)</label>
                                 <span class="helper-text" data-error="wrong" style="font-size: small; color: #818181">Eg: NP_415100.1,YP_002791247.1,NP_414542.1</span>
                             </div>
                         </div>
@@ -85,20 +83,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col offset-s1 s4">
-                <a id="load-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="E-coli">
+            <div class="col offset-s1 s8">
+                <p>Examples:</p>
+                <a id="load-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Escherichia coli">
                     <i class="icon medium icon-species icon-ecoli"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a id="load-fly-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Fly">
+                <a id="load-fly-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Drosophila melanogaster">
                     <i class="icon medium icon-species icon-fly"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a id="load-human-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Human">
+                <a id="load-human-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Homo sapiens">
                     <i class="icon medium icon-species icon-human"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a id="load-thaliana-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="A.Thaliana">
+                <a id="load-thaliana-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Arabidopsis thaliana">
                     <i class="icon medium icon-species icon-brassica"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <br>
+            </div>
+            <div class="col s3">
                 <a id="advanceparameterslink" class="waves-effect waves-light">Advanced parameters</a>
             </div>
         </div>

@@ -22,3 +22,7 @@ main {
 select.browser-default {
     height: 30px;
 }
+
+.hidden {
+    display: none;
+}
