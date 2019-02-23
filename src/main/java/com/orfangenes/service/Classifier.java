@@ -1,6 +1,7 @@
 package com.orfangenes.service;
 
 import com.orfangenes.model.BlastResult;
+import com.orfangenes.model.Gene;
 import com.orfangenes.util.ResultsPrinter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +28,7 @@ public class Classifier {
         this.inputRankedLineage = tree.getInputRankedLineage();
     }
 
-    public Map<String, String> getGeneClassification(String outputdir) {
+    public Map<String, String> getGeneClassification(String outputdir, Map<String, Gene> genes) {
         Set<String> blastResultsCommonIds;
         List<String> classificationLevels =
                 Arrays.asList(STRICT_ORFAN, // 0
@@ -78,7 +79,8 @@ public class Classifier {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        ResultsGenerator.generateORFanGeneSummary(classification, outputdir);
+        // todo: bad practise, functions should do multiple things. try to modularise
+        ResultsGenerator.generateORFanGeneSummary(classification, outputdir, genes);
         ResultsGenerator.generateBlastTree(this.taxonomyTreeForGenes, outputdir);
         return classification;
     }

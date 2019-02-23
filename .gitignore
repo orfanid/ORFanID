@@ -26,4 +26,4 @@
 /build/
 
 ### ORFanID ###
-*.dmp
+src/main/resources/*.dmp

@@ -26,7 +26,7 @@ public class BlastResultsProcessor {
             Scanner scanner = new Scanner(new File(blastResultsFileName));
             while (scanner.hasNextLine()) {
                 BlastResult result = new BlastResult(scanner.nextLine());
-                if (result.getSequenceCount() == 1) {
+                if (result.getMultiplesTaxIdCount() == 0) {
                     blastResults.add(result);
                 }
             }

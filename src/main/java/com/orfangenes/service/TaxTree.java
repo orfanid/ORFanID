@@ -1,6 +1,7 @@
 package com.orfangenes.service;
 
 import com.orfangenes.model.BlastResult;
+import com.orfangenes.model.Gene;
 import com.orfangenes.model.taxonomy.TaxNode;
 import com.orfangenes.model.taxonomy.RankedLineage;
 

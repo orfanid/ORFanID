@@ -1,8 +1,10 @@
 package com.orfangenes.service;
 
+import com.orfangenes.model.Gene;
 import com.orfangenes.model.taxonomy.TaxNode;
 import com.orfangenes.util.Constants;
 import com.orfangenes.util.FileHandler;
+import com.sun.tools.javah.Gen;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -21,7 +23,7 @@ public class ResultsGenerator {
                     KINGDOM,
                     SUPERKINGDOM);
 
-    public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir) {
+    public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir, Map<String, Gene> genes) {
         Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
         orfanGeneCount.put(Constants.MULTI_DOMAIN_GENE, 0);
         orfanGeneCount.put(Constants.DOMAIN_RESTRICTED_GENE, 0);
@@ -44,9 +46,9 @@ public class ResultsGenerator {
             // Generating Gene data
             JSONObject orfanJSON = new JSONObject();
             orfanJSON.put("geneid", entry.getKey());
-            orfanJSON.put("description", null);
             orfanJSON.put("orfanLevel", classificationLevel);
-            orfanJSON.put("taxonomyLevel", null);
+            Gene gene =genes.get(entry.getKey());
+            orfanJSON.put("description", gene.getDescription());
             geneData.add(orfanJSON);
         }
         FileHandler.saveOutputFiles(geneData, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES);
@@ -104,6 +106,7 @@ public class ResultsGenerator {
                 superkingdom.setName(superkingdoms.iterator().next());
                 superkingdom.setNRank(ranks.get(7));
                 superkingdom.setChildren(getChildren(uniqueLineages, 7, superkingdom.getName()));
+                superkingdom.setNodeCount(1);
 
                 JSONObject jsonTree = createJsonNode(superkingdom);
                 tree.put("tree", jsonTree);
@@ -118,6 +121,8 @@ public class ResultsGenerator {
     private static Set<TaxNode> getChildren (List<List<String>> uniqueLineages, int lineageLevel, String parentName) {
         Set<TaxNode> children = new HashSet<>();
         Set<String> childrenNames = new HashSet<>();
+        Map<String, Integer> duplicateChildrenCount = new HashMap<>();
+
         for (List<String> lineage : uniqueLineages) {
             String taxNameAtLevel = lineage.get(lineageLevel);
             if (taxNameAtLevel.equals(parentName) && lineageLevel > 0) {
@@ -128,15 +133,24 @@ public class ResultsGenerator {
                     child.setNRank(ranks.get(lineageLevel - 1));
                     child.setChildren(getChildren(uniqueLineages, lineageLevel - 1, child.getName()));
                     children.add(child);
+
+                    duplicateChildrenCount.put(childName, 1);
+                } else {
+                    duplicateChildrenCount.put(childName, (duplicateChildrenCount.get(childName) + 1));
                 }
             }
+        }
+
+        // Setting node count for children
+        for (TaxNode node : children) {
+            node.setNodeCount(duplicateChildrenCount.get(node.getName()));
         }
         return children;
     }
 
     private static JSONObject createJsonNode (TaxNode node) {
         JSONObject jsonNode = new JSONObject();
-        jsonNode.put("name", node.getName());
+        jsonNode.put("name", String.format("%s(%d)", node.getName(), node.getNodeCount()));
 
         if (node.getChildren().size() > 0) {
             JSONArray children = new JSONArray();

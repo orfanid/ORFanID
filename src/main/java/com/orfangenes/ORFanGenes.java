@@ -1,12 +1,9 @@
 package com.orfangenes;
 
-import com.orfangenes.service.BlastResultsProcessor;
-import com.orfangenes.service.Classifier;
+import com.orfangenes.service.*;
 //import com.orfangenes.service.ResultsGenerator;
-import com.orfangenes.service.Sequence;
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.Gene;
-import com.orfangenes.service.TaxTree;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 
@@ -66,7 +63,7 @@ public class ORFanGenes {
 
         TaxTree taxTree = new TaxTree(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
         Classifier classifier = new Classifier(taxTree, organismTaxID, blastResults);
-        Map<String, String> geneClassification = classifier.getGeneClassification(outputdir);
+        Map<String, String> geneClassification = classifier.getGeneClassification(outputdir, sequence.getGenes());
         for (Map.Entry<String, String> stringStringEntry : geneClassification.entrySet()) {
             log.info(stringStringEntry.getKey() + "--->" + stringStringEntry.getValue());
         }

@@ -1,62 +1,46 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en-us">
 <head>
     <title>ORFanGenes</title>
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />
-    <link type="text/css" rel="stylesheet" href="assets/css/orfanid-input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css">
     <link type="text/css" rel="stylesheet" href="assets/css/orfan_styles.css">
     <link type="text/css" rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css">
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="assets/js/materialize.min.js"></script>
-    <script type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
-    <script type="text/javascript" src="assets/js/orfanid-input.js"></script>
 </head>
 <body>
-<nav>
-    <div class="nav-wrapper teal">
-        <a href="/" class="brand-logo">ORFanID</a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="/input">Home</a></li>
-            <li><a href="/results">Results</a></li>
-            <li><a href="instructions">Instructions</a></li>
-        </ul>
-    </div>
-</nav>
+<div th:replace="fragments/header :: nav">&nbsp;</div>
 <main>
-
-    <form:form method="post" modelAttribute="sequence" action="/analyse" >
+    <form action="/analyse" th:action="@{/analyse}" th:object="${sequence}" method="post">
         <div class="row">
-            <div class="col s6">
-                <div class="col offset-s2 s10">
+            <div class="col s5 offset-s1">
                     <div class="row">
                         <div class="col s10">
                             <div class="input-field">
                                 <input type="text" id="ncbi_accession_input" class="validate" name="accession">
-                                <label for="ncbi_accession_input">NCBI Accession</label>
+                                <label for="ncbi_accession_input">NCBI\Uniprot Accession(s)</label>
                                 <span class="helper-text" data-error="wrong" style="font-size: small; color: #818181">Eg: NP_415100.1,YP_002791247.1,NP_414542.1</span>
                             </div>
                         </div>
-                        <div class="col s2 bottom">
-                            <a class="waves-effect waves-light btn btn-large modal-trigger" href="#input_progressbar" type="button" id="findsequence" name="findsequence"><i class="large material-icons">search</i></a>
+                        <div class="col s2 valign-wrapper">
+                            <button class="waves-effect waves-light btn modal-trigger" style="height: 50px; width: 50px;" href="#input_progressbar" type="submit" id="findsequence" name="findsequence">
+                                <i class="material-icons">search</i>
+                            </button>
                         </div>
                     </div>
-                </div>
             </div>
             <div class="col s5">
                     <div class="file-field input-field">
                         <div class="btn">
                             <input id="fastafile" type="file" accept=".fasta" onchange="setFileContent(this.value);">
-                            <i class="large material-icons">cloud_upload</i>
+                            <i class="large material-icons" style="height: 50px; width: 50px;">cloud_upload</i>
                         </div>
                         <div class="file-path-wrapper">
                             <input class="file-path validate"  id="fastaFileName" type="text" placeholder="Upload file">
@@ -78,7 +62,7 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <input type="text" id="organismName" name="organismName" class="autocomplete">
-                        <label for="organismName">Species</label>
+                        <label for="organismName">Organism</label>
                     </div>
                 </div>
             </div>
@@ -99,8 +83,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col offset-s1 s4">
-                <a id="load-example-data" class="waves-effect waves-light">Example</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+            <div class="col offset-s1 s8">
+                <p>Examples:</p>
+                <a id="load-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Escherichia coli">
+                    <i class="icon medium icon-species icon-ecoli"></i>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="load-fly-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Drosophila melanogaster">
+                    <i class="icon medium icon-species icon-fly"></i>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="load-human-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Homo sapiens">
+                    <i class="icon medium icon-species icon-human"></i>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="load-thaliana-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Arabidopsis thaliana">
+                    <i class="icon medium icon-species icon-brassica"></i>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <br>
+            </div>
+            <div class="col s3">
                 <a id="advanceparameterslink" class="waves-effect waves-light">Advanced parameters</a>
             </div>
         </div>
@@ -113,11 +112,7 @@
                 <div class="row">
                     <div class="col s12">
                         <div class="col offset-s2 s1">
-
                         </div>
-                        <%--<div  class="col s4">--%>
-                            <%--<img src="assets/images/loading4.gif" alt="Loading">--%>
-                        <%--</div >--%>
                     </div>
                 </div>
             </div>
@@ -133,29 +128,13 @@
                 </button>
             </div>
         </div>
-    </form:form>
+    </form>
 </main>
-<footer class="page-footer teal lighten-1">
-    <div class="container">
-        <div class="row">
-            <div class="col s12">
-                <h5 class="white-text">ORFanID</h5>
-                <span valign-wrapper>
-        <p class="grey-text text-lighten-4">ORFanID is an open-source web application
-          that is capable of predicting orphan genes from a given list of gene sequences of a specified species.
-          Each candidate gene is searched against the BLAST non-redundant database
-          to find any detectable homologous sequences using BLASP programme.
-          </p>
-      </span>
-            </div>
-        </div>
-    </div>
-    <div class="footer-copyright">
-        <div class="container">
-            © Copyright 2017-2018
-            <a class="grey-text text-lighten-4 right" href="mailto:sureshhewabi@gmail.com?cc=vinodh@thegunasekeras.org,richgun01@gmail.com&Subject=ORFanID%20Online%20Issues">Contact Us</a>
-        </div>
-    </div>
-</footer>
+<div th:replace="fragments/footer :: footer">&nbsp;</div>
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
+<script type="text/javascript" src="assets/js/orfanid-input.js"></script>
 </body>
 </html>

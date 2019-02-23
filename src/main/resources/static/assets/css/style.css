@@ -15,7 +15,7 @@ p {
   line-height: 2rem;
 }
 
-.button-collapse {
+.sidenav-trigger {
   color: #26a69a;
 }
 
@@ -55,10 +55,3 @@ p {
 footer.page-footer {
   margin: 0;
 }
-
-/*.doc {*/
-  /*width: auto;*/
-  /*height: auto;*/
-  /*max-width: 100%;*/
-  /*max-height: 100%;*/
-/*}*/

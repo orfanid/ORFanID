@@ -21,6 +21,7 @@ public class TaxNode implements Serializable {
     private String nRank;
     private TaxNode parent;
     private Set<TaxNode> children;
+    private int nodeCount;
 
     @Override
     public String toString() {
