@@ -25,8 +25,10 @@ $(document).ready(function () {
         if (!ncbi_accession_input){
             $('#ncbi_accession_input').removeClass("validate");
         }else{
+            var accessionType = $('input[name=accession_type]:checked').val();
+            console.log(accessionType);
             $.ajax({
-                url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id='+ncbi_accession_input+'&rettype=fasta&retmode=text',
+                url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=' + accessionType + '&id=' + ncbi_accession_input + '&rettype=fasta&retmode=text',
                 async: false,
                 dataType: 'json',
                 success: function (response) {

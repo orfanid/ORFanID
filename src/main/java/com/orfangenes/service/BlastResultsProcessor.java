@@ -28,6 +28,8 @@ public class BlastResultsProcessor {
                 BlastResult result = new BlastResult(scanner.nextLine());
                 if (result.getMultiplesTaxIdCount() == 0) {
                     blastResults.add(result);
+                } else {
+                    log.warn("Multi-species Gene identified in BLAST. Ignoring Gene ID " + result.getSseqid());
                 }
             }
             scanner.close();
