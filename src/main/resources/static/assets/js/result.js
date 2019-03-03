@@ -88,7 +88,7 @@ $(document).ready(function() {
                     },
                     {"data" : "description"},
                     {"data" : "orfanLevel"},
-                    {"data" : "blastResult"}
+                    {"data" : "homologyEvidence"}
                 ],
                 "oLanguage": {
                     "sStripClasses": "",
@@ -110,11 +110,11 @@ $(document).ready(function() {
                 "columnDefs": [ {
                     "targets": -1,
                     "data": null,
-                    "defaultContent": "<button class=\"btn modal-trigger btn-small\" data-target=\"blastResultModal\"><i class=\"large material-icons\">insert_chart</i></button>"
+                    "defaultContent": "<a class=\"waves-effect waves-light btn modal-trigger\" href=\"#blastResultModal\"><i class=\"large material-icons\">insert_chart</i></a>"
                 } ]
             });
 
-            $('#orfanGenes tbody').on( 'click', 'button', function () {
+            $('#orfanGenes tbody').on( 'click', 'a', function () {
                 var data = table.row( $(this).parents('tr') ).data();
                 console.log(data["geneid"]);
                 //Getting BLAST Results
@@ -185,7 +185,7 @@ $(document).ready(function() {
                         });
 
                         $('#blastDescription').html(blastResult["description"]);
-                        $('#blastResultModal').modal();
+                        // $('#blastResultModal').modal();
                     },
                     error: function (error) {
                         console.log("error occurred in fetching blast results  for " + data["geneid"] + " : " + error.toString());
