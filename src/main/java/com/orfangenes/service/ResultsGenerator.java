@@ -4,7 +4,6 @@ import com.orfangenes.model.Gene;
 import com.orfangenes.model.taxonomy.TaxNode;
 import com.orfangenes.util.Constants;
 import com.orfangenes.util.FileHandler;
-import com.sun.tools.javah.Gen;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
