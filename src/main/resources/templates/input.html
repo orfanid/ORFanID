@@ -20,46 +20,52 @@
 <main>
     <form action="/analyse" th:action="@{/analyse}" th:object="${sequence}" method="post">
         <div class="row">
-            <div class="col s5 offset-s1">
-                    <div class="row">
-                        <div class="col s10">
-                            <div>
-                                <p>
-                                    <label>
-                                        <input class="with-gap" name="accession_type" type="radio" value="protein" checked />
-                                        <span>Protein</span>
-                                    </label>
-                                </p>
-                                <p>
-                                    <label>
-                                        <input class="with-gap" name="accession_type" type="radio" value="nucleotide" />
-                                        <span>Nucleotide</span>
-                                    </label>
-                                </p>
-                            </div>
-                            <div class="input-field">
-                                <input type="text" id="ncbi_accession_input" class="validate" name="accession">
-                                <label for="ncbi_accession_input">NCBI\Uniprot Accession(s)</label>
-                                <span class="helper-text" data-error="wrong" style="font-size: small; color: #818181">Eg: NP_415100.1,YP_002791247.1,NP_414542.1</span>
-                            </div>
-                        </div>
-                        <div class="col s2 valign-wrapper">
-                            <button class="waves-effect waves-light btn modal-trigger" style="height: 50px; width: 50px;" href="#input_progressbar" type="submit" id="findsequence" name="findsequence">
-                                <i class="material-icons">search</i>
-                            </button>
+            <div class="col s4 offset-s1">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <input id="fastafile" type="file" accept=".fasta" onchange="setFileContent(this.value);">
+                        <i class="large material-icons" style="height: 50px; width: 50px;">cloud_upload</i>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate"  id="fastaFileName" type="text" placeholder="Upload file">
+                    </div>
+                </div>
+            </div>
+            <div class="col s1" >
+                <div class="row">
+                    <div class="col s10">
+                        <div>
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="accession_type" type="radio" value="protein" checked />
+                                    <span>Protein</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="accession_type" type="radio" value="gene" />
+                                    <span>Gene</span>
+                                </label>
+                            </p>
                         </div>
                     </div>
+                </div>
             </div>
             <div class="col s5">
-                    <div class="file-field input-field">
-                        <div class="btn">
-                            <input id="fastafile" type="file" accept=".fasta" onchange="setFileContent(this.value);">
-                            <i class="large material-icons" style="height: 50px; width: 50px;">cloud_upload</i>
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate"  id="fastaFileName" type="text" placeholder="Upload file">
+                <div class="row">
+                    <div class="col s10">
+                        <div class="input-field">
+                            <input type="text" id="ncbi_accession_input" class="validate" name="accession">
+                            <label for="ncbi_accession_input">NCBI or Uniprot Accession(s)</label>
+                            <!--<span class="helper-text" data-error="wrong" style="font-size: small; color: #818181">Eg: NP_415100.1,YP_002791247.1,NP_414542.1</span>-->
                         </div>
                     </div>
+                    <div class="col s2 valign-wrapper">
+                        <button class="waves-effect waves-light btn modal-trigger" style="height: 50px; width: 100px;" href="#input_progressbar" type="submit" id="findsequence" name="findsequence">
+                            <i class="material-icons">search</i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -99,7 +105,7 @@
         <div class="row">
             <div class="col offset-s1 s8">
                 <p>Examples:</p>
-                <a id="load-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Escherichia coli">
+                <a id="load-ecoli-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Escherichia coli">
                     <i class="icon medium icon-species icon-ecoli"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a id="load-fly-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Drosophila melanogaster">

@@ -47,8 +47,8 @@ public class Classifier {
                                 KINGDOM_RESTRICTED_GENE, // 7
                                 DOMAIN_RESTRICTED_GENE); // 8
         Map<String, String> classification = new HashMap<>();
-        ResultsPrinter.displayTree(organismTaxID, inputRankedLineage, taxonomyTreeForGenes);
         try {
+            ResultsPrinter.displayTree(organismTaxID, inputRankedLineage, taxonomyTreeForGenes);
             // travel though each gene
             for (Map.Entry<String, List<List<String>>> entry : taxonomyTreeForGenes.entrySet()) {
                 String GeneId = entry.getKey();

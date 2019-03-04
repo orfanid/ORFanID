@@ -42,45 +42,32 @@ $(document).ready(function () {
         $('.modal').close();
     });
 
-    $('#load-example-data').click(function () {
-        $('#genesequence').load('assets/data/Ecoli_511145.fasta');
+    $('#load-ecoli-example-data').click(function () {
+        $('#genesequence').load('assets/data/ecoli-example-data.fasta');
         $('#genesequence').addClass('active');
         $('#organismName').val('Escherichia coli(562)');
-        $.ajax({
-            url: 'assets/data/TaxData.json',
-            async: false,
-            dataType: 'json',
-            success: function (response) {
-                var selectedOrganism = $('#organismName').val();
-                var regularExpr = /\((.*)\)/;
-
-                var selectedOrganismTaxID = selectedOrganism.match(regularExpr)[1];
-                $.each(response, function (key, val) {
-                    var options = "";
-                    if (val.NCBITaxID == selectedOrganismTaxID) {
-                        $('select').empty().html(' ');
-                        $.each(val.Taxonomy, function (key, val) {
-                            var value = val.substr(9, val.length);
-                            $('select').append($("<option></option>").attr("value", value).text(value));
-                        });
-                        // re-initialize (update)
-                        // $('select').material_select();
-                        // $('select').formSelect();
-                    }
-                });
-            },
-            error: function (error) {
-                alert(error);
-            }
-        });
-        $(function () {
-            Materialize.updateTextFields();
-        });
+        return true;
+    });
+    $('#load-fly-example-data').click(function () {
+        $('#genesequence').load('assets/data/fly-example-data.fasta');
+        $('#genesequence').addClass('active');
+        $('#organismName').val('Drosophila melanogaster(7227)');
+        return true;
+    });
+    $('#load-human-example-data').click(function () {
+        $('#genesequence').load('assets/data/human-example-data.fasta');
+        $('#genesequence').addClass('active');
+        $('#organismName').val('Homo sapiens(9606)');
+        return true;
+    });
+    $('#load-thaliana-example-data').click(function () {
+        $('#genesequence').load('assets/data/thaliana-example-data.fasta');
+        $('#genesequence').addClass('active');
+        $('#organismName').val('Arabidopsis thaliana(3702)');
         return true;
     });
 
     $("#fastafile").on('change', function () {
-
         //    $('#genesequence').trigger('autoresize');
         //     resizeTextArea($('#genesequence'));
         $('#genesequence').css('overflow-y', 'auto');
