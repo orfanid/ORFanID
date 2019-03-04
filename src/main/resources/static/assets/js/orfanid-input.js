@@ -4,7 +4,7 @@ $(document).ready(function () {
         $("#advanceparameterssection").toggle(1000);
     });
     $('#genesequence').trigger('autoresize');
-    $('.modal').modal();
+    $('#input_progressbar').modal();
     $('.tooltipped').tooltip();
 
     var organismData = {};
@@ -14,19 +14,18 @@ $(document).ready(function () {
         });
     }).done(function() {
         var organismElement = $('#organismName');
-        console.log(organismData);
         organismElement.autocomplete({
             data: organismData
         });
     });
 
     $('#findsequence').click(function () {
+        $('#input_progressbar').modal('open');
         var ncbi_accession_input = $('#ncbi_accession_input').val(); // 16128551,226524729,16127995
         if (!ncbi_accession_input){
             $('#ncbi_accession_input').removeClass("validate");
         }else{
             var accessionType = $('input[name=accession_type]:checked').val();
-            console.log(accessionType);
             $.ajax({
                 url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=' + accessionType + '&id=' + ncbi_accession_input + '&rettype=fasta&retmode=text',
                 async: false,
@@ -35,17 +34,18 @@ $(document).ready(function () {
                     $('#genesequence').val(response);
                 }, error: function (error) {
                     $('#genesequence').val(error.responseText);
-                    $('.modal').close();
+
                 }
             });
         }
-        $('.modal').close();
+        setTimeout(function() {$('#input_progressbar').modal('close')},1000);
     });
 
     $('#load-ecoli-example-data').click(function () {
         $('#genesequence').load('assets/data/ecoli-example-data.fasta');
         $('#genesequence').addClass('active');
         $('#organismName').val('Escherichia coli(562)');
+        // M.textareaAutoResize($('#genesequence'));
         return true;
     });
     $('#load-fly-example-data').click(function () {
@@ -68,8 +68,8 @@ $(document).ready(function () {
     });
 
     $("#fastafile").on('change', function () {
-        //    $('#genesequence').trigger('autoresize');
-        //     resizeTextArea($('#genesequence'));
+           $('#genesequence').trigger('autoresize');
+            resizeTextArea($('#genesequence'));
         $('#genesequence').css('overflow-y', 'auto');
     });
 });
@@ -80,7 +80,6 @@ $('body').on('change focus', '#genesequence', function () {
     resizeTextArea($(this));
 });
 
-//Optional but keep for future
 function setFileContent(val) {
     var file = document.getElementById("fastafile").files[0];
     var reader = new FileReader();
@@ -89,6 +88,7 @@ function setFileContent(val) {
         textArea.value = e.target.result;
     };
     reader.readAsText(file);
+    M.textareaAutoResize($('#genesequence'));
 
 }
 

@@ -5,6 +5,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
     <!--Import materialize.css-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css">
@@ -61,7 +63,7 @@
                         </div>
                     </div>
                     <div class="col s2 valign-wrapper">
-                        <button class="waves-effect waves-light btn modal-trigger" style="height: 50px; width: 100px;" href="#input_progressbar" type="submit" id="findsequence" name="findsequence">
+                        <button class="waves-effect waves-light btn validate" style="height: 50px; width: 100px;" href="#input_progressbar" type="submit" id="findsequence" name="findsequence">
                             <i class="material-icons">search</i>
                         </button>
                     </div>
@@ -71,8 +73,7 @@
         <div class="row">
             <div class="col offset-s1 s10">
                 <div class="input-field">
-                    <textarea id="genesequence" hight="100px;overflow-y: auto;" name="sequence" class="materialize-textarea" raw="3">
-                        </textarea>
+                    <textarea id="genesequence" hight="100px;overflow-y: auto;" name="sequence" class="materialize-textarea validate" raw="3" required="required"></textarea>
                     <label for="genesequence">Gene Sequence</label>
                 </div>
             </div>
@@ -81,7 +82,7 @@
             <div class="col s10 offset-s1">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input type="text" id="organismName" name="organismName" class="autocomplete">
+                        <input type="text" id="organismName" name="organismName" class="autocomplete validate" required="required">
                         <label for="organismName">Organism</label>
                     </div>
                 </div>
@@ -152,8 +153,6 @@
 </main>
 <div th:replace="fragments/footer :: footer">&nbsp;</div>
 <!--Import jQuery before materialize.js-->
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
 <script type="text/javascript" src="assets/js/orfanid-input.js"></script>
 </body>
