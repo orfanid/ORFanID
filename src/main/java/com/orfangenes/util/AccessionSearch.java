@@ -1,5 +1,7 @@
 package com.orfangenes.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /** @author Suresh Hewapathirana */
+@Slf4j
 public class AccessionSearch {
 
   private static final String DEFAULT_BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
@@ -24,6 +27,7 @@ public class AccessionSearch {
                   + "?db=" + sequenceType + "&id="
                   + sequenceIds
                   + "&rettype=fasta&retmode=text");
+      log.info(url.getPath());
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
       conn.setRequestProperty("Accept", "application/json");
@@ -47,7 +51,6 @@ public class AccessionSearch {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    System.out.println(sequence.toString());
     return sequence.toString();
   }
 }
