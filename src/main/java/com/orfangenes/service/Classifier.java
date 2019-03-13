@@ -60,7 +60,6 @@ public class Classifier {
                 for (int columnNo = 9; columnNo > 0; columnNo--) {
                     if (columnNo == 2) { continue;}// read the scientific species name instead species-level
                     blastResultsCommonIds = new HashSet<>();
-                    blastResultsCommonIds = new HashSet<>();
                     // travel though each blast hits
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
                         // skip any missing values, the do not contribute for the evidence based decision.

@@ -2,6 +2,7 @@ package com.orfangenes.controllers;
 
 import com.orfangenes.ORFanGenes;
 import com.orfangenes.model.entities.InputSequence;
+import com.orfangenes.util.AccessionSearch;
 import com.orfangenes.util.FileHandler;
 import com.sun.net.httpserver.Authenticator;
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +93,17 @@ public class InternalController {
         final String id = (String) payload.get("id");
         String output = outputdir + sessionID;
         return FileHandler.blastToJSON(output + "/" + FILE_OUTPUT_BLAST_RESULTS, id);
+    }
+
+    @PostMapping("/search/sequence")
+    @ResponseBody
+    public String getSequenceById(@RequestBody Map<String, Object> payload) {
+        final String sequenceType = (String) payload.get("sequencetype");
+        final String sequenceIds = (String) payload.get("sequenceids");
+        log.info("sequenceType : " + sequenceType);
+        log.info("sequenceIds : " + sequenceIds);
+        final String sequence = AccessionSearch.fetchSequenceByAccession(sequenceType, sequenceIds);
+        return sequence;
     }
 
     @PostMapping("/save")
