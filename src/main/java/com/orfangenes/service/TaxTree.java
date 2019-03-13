@@ -88,6 +88,9 @@ public class TaxTree implements Serializable {
     }
 
     private List<String> filterRankedLineagesByTaxonomyId(int taxonomyId) {
+        if(rankedLineageWithNames.get(taxonomyId) == null){
+            System.err.println("Tax ID: " + taxonomyId + " does not have a lineage");
+        }
         return rankedLineageWithNames.get(taxonomyId);
     }
 

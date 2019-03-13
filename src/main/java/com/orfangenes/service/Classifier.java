@@ -47,8 +47,8 @@ public class Classifier {
                                 KINGDOM_RESTRICTED_GENE, // 7
                                 DOMAIN_RESTRICTED_GENE); // 8
         Map<String, String> classification = new HashMap<>();
-        ResultsPrinter.displayTree(organismTaxID, inputRankedLineage, taxonomyTreeForGenes);
         try {
+            ResultsPrinter.displayTree(organismTaxID, inputRankedLineage, taxonomyTreeForGenes);
             // travel though each gene
             for (Map.Entry<String, List<List<String>>> entry : taxonomyTreeForGenes.entrySet()) {
                 String GeneId = entry.getKey();
@@ -59,7 +59,6 @@ public class Classifier {
                 // start from Super kingdom(domain) and travel towards species
                 for (int columnNo = 9; columnNo > 0; columnNo--) {
                     if (columnNo == 2) { continue;}// read the scientific species name instead species-level
-                    blastResultsCommonIds = new HashSet<>();
                     blastResultsCommonIds = new HashSet<>();
                     // travel though each blast hits
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
