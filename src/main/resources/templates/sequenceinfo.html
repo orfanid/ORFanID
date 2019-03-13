@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="sequence_info">
+    <h1 th:text=${sequenceinfo}>sequence_infomation  bla bla</h1>
+    <div class="row">
+        <div class="col s10 offset-s1 center-align">
+            <div class="input-field col s4 offset-s8">
+                <select id="genelist">
+                    <option value="" disabled selected>Choose your option</option>
+                </select>
+                <label>Select Gene</label>
+            </div>
+            <fieldset style="color: #b9772e; text-align:left; border: 1px dotted #b9772e;">
+                <legend>Sequence Info</legend>
+                <table class="left responsive-table" style="border-color: #818181;">
+                    <tr>
+                        <td width="20%" scope="row">Protein Name</td>
+                        <td width="80%" >NP_415100.1</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">Description</td>
+                        <td>bacteriophage N4 receptor, outer membrane protein</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">Gene Name</td>
+                        <td>P53<i class="icon icon-common icon-reviewed-data" style="color: #c39b00; font-size: 162.5%"></i></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

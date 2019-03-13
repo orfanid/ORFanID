@@ -4,6 +4,7 @@ import com.orfangenes.ORFanGenes;
 import com.orfangenes.model.entities.InputSequence;
 import com.orfangenes.util.AccessionSearch;
 import com.orfangenes.util.FileHandler;
+import com.orfangenes.util.UniprotSequenceSearch;
 import com.sun.net.httpserver.Authenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,14 +17,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import uk.ac.ebi.kraken.interfaces.uniprot.UniProtEntry;
+import uk.ac.ebi.uniprot.dataservice.client.QueryResult;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.orfangenes.util.Constants.*;
 
@@ -104,6 +108,21 @@ public class InternalController {
         log.info("sequenceIds : " + sequenceIds);
         final String sequence = AccessionSearch.fetchSequenceByAccession(sequenceType, sequenceIds);
         return sequence;
+    }
+
+
+//    @PostMapping("/sequence_info")
+    @RequestMapping("/sequenceinfo")
+    public String getUniprotEntryById(Model model) {
+//        String accession = (String) payload.get("accession");
+//        log.info("accession : " + accession);
+//        accession = "P12345";
+//        Set<String> accessions = new HashSet<>(Arrays.asList(accession));
+//        QueryResult<UniProtEntry> results = UniprotSequenceSearch.SearchSequence(accessions);
+//        return results.getFirstResult();
+//        return new ModelAndView("sequence_info", "sequence_info", results.getFirstResult());
+        model.addAttribute("sequenceinfo", "Suresh");
+        return "sequenceinfo";
     }
 
     @PostMapping("/save")

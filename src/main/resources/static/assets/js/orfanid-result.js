@@ -1,5 +1,7 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $('.modal').modal();
+    $('.scrollspy').scrollSpy();
+    $('select').formSelect();
     var urlParams = new URLSearchParams(window.location.search);
     var sessionid = urlParams.get("sessionid");
 
@@ -16,10 +18,10 @@ $(document).ready(function() {
         success: function (result) {
             var orfanGenesSummary = JSON.parse(result);
             $('#orfanGenesSummary').DataTable({
-                "data":orfanGenesSummary,
+                "data": orfanGenesSummary,
                 "columns": [
-                    {"data" : "type"},
-                    {"data" : "count"}
+                    {"data": "type"},
+                    {"data": "count"}
                 ],
                 "oLanguage": {
                     "sStripClasses": "",
@@ -31,7 +33,7 @@ $(document).ready(function() {
             });
         },
         error: function (error) {
-            console.log("error: "+ error);
+            console.log("error: " + error);
         }
     });
 
@@ -48,21 +50,22 @@ $(document).ready(function() {
             numberOfOrphanGenes = orfanGenesSummaryChart.y;
 
             var data = [{
-                x : orfanLevels,
-                y : numberOfOrphanGenes,
-                type : 'bar',
-                marker : {
-                    color : '#ef6c00'
+                x: orfanLevels,
+                y: numberOfOrphanGenes,
+                type: 'bar',
+                marker: {
+                    color: '#ef6c00'
                 }
             }];
             var layout = {
                 yaxis: {
                     title: 'Number of Orphan Genes'
-                }};
+                }
+            };
             Plotly.newPlot('genesummary', data, layout);
         },
         error: function (error) {
-            console.log("Error occured in ORFanGenes Summary Chart: "+ error);
+            console.log("Error occured in ORFanGenes Summary Chart: " + error);
         }
     });
 
@@ -75,27 +78,38 @@ $(document).ready(function() {
         data: '{"sessionid":"' + sessionid + '"}',
         success: function (result) {
             var orfanGenes = JSON.parse(result);
+            // update gene list select dropdown
+            for (var i = 0; i < orfanGenes.length; i++) {
+                var gene = orfanGenes[i]["geneid"];
+                console.log(gene);
+                var $newOpt = $("<option>").attr("value",gene).text(gene);
+                $("#genelist").append($newOpt);
+            }
+            // re-initialize
+            $('select').formSelect();
+
             var table = $('#orfanGenes').DataTable({
-                "data":orfanGenes,
+                "data": orfanGenes,
                 "columns": [
-                    {"data" : "geneid",
-                        "render": function(data, type, row, meta){
-                            if(type === 'display'){
+                    {
+                        "data": "geneid",
+                        "render": function (data, type, row, meta) {
+                            if (type === 'display') {
                                 data = '<a href=https://www.ncbi.nlm.nih.gov/search/all/?term="' + data + '">' + data + '</a>';
                             }
                             return data;
                         }
                     },
-                    {"data" : "description"},
-                    {"data" : "orfanLevel"},
-                    {"data" : "homologyEvidence"}
+                    {"data": "description"},
+                    {"data": "orfanLevel"},
+                    {"data": "homologyEvidence"}
                 ],
                 "oLanguage": {
                     "sStripClasses": "",
                     "sSearch": "",
                     "sSearchPlaceholder": "Enter Search Term Here",
                     "sInfo": "Showing _START_ -_END_ of _TOTAL_ genes",
-                    "sLengthMenu": '<span>Rows per page:</span>'+
+                    "sLengthMenu": '<span>Rows per page:</span>' +
                     '<select class="browser-default">' +
                     '<option value="5">5</option>' +
                     '<option value="10">10</option>' +
@@ -107,15 +121,32 @@ $(document).ready(function() {
                 },
                 dom: 'frt',
                 "aaSorting": [],
-                "columnDefs": [ {
+                "columnDefs": [{
                     "targets": -1,
                     "data": null,
                     "defaultContent": "<a class=\"waves-effect waves-light btn modal-trigger\" href=\"#blastResultModal\"><i class=\"large material-icons\">insert_chart</i></a>"
-                } ]
+                }]
             });
 
-            $('#orfanGenes tbody').on( 'click', 'a', function () {
-                var data = table.row( $(this).parents('tr') ).data();
+            $('#genelist').change(function(){
+                var accession = $(this).val();
+                $.ajax({
+                    type: "GET",
+                    contentType: 'application/json',
+                    dataType: "json",
+                    url: "/sequenceinfo",
+                    // data: '{"accession":"' + accession + '"}',
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (error) {
+                        console.log("error occurred : " + error);
+                    }
+                });
+            });
+
+            $('#orfanGenes tbody').on('click', 'a', function () {
+                var data = table.row($(this).parents('tr')).data();
                 console.log(data["geneid"]);
                 //Getting BLAST Results
                 $.ajax({
@@ -129,7 +160,7 @@ $(document).ready(function() {
                         try {
                             blastResult = JSON.parse(result);
                         }
-                        catch(err) {
+                        catch (err) {
                             console.error("blastResult passing error")
                         }
                         console.log(blastResult);
@@ -197,14 +228,13 @@ $(document).ready(function() {
 });
 
 
-
 function saveResult() {
     var urlParams = new URLSearchParams(window.location.search);
     var sessionid = (urlParams.get('sessionid'));
     var email = document.getElementById("email").value;
     var data = {
-        "sessionid" : sessionid,
-        "email" : email
+        "sessionid": sessionid,
+        "email": email
     };
 
     $.ajax({

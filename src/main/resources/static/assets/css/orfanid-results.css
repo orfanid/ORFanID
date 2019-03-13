@@ -8,6 +8,11 @@ main {
   flex: 1 0 auto;
 }
 
+h1,h2,h4{
+  color: #b9772e; !important;
+}
+
+
 
 /*Result save popup */
 

@@ -24,7 +24,6 @@ public class ResultsGenerator {
 
     public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir, Map<String, Gene> genes) {
         Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
-        orfanGeneCount.put(Constants.MULTI_DOMAIN_GENE, 0);
         orfanGeneCount.put(Constants.DOMAIN_RESTRICTED_GENE, 0);
         orfanGeneCount.put(Constants.KINGDOM_RESTRICTED_GENE, 0);
         orfanGeneCount.put(Constants.PHYLUM_RESTRICTED_GENE, 0);
@@ -33,7 +32,6 @@ public class ResultsGenerator {
         orfanGeneCount.put(Constants.FAMILY_RESTRICTED_GENE, 0);
         orfanGeneCount.put(Constants.GENUS_RESTRICTED_GENE, 0);
         orfanGeneCount.put(Constants.ORFAN_GENE, 0);
-        orfanGeneCount.put(Constants.STRICT_ORFAN, 0);
 
         JSONArray geneData = new JSONArray();
         for (Map.Entry<String, String> entry : classification.entrySet()) {
