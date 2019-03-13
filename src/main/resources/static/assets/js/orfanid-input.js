@@ -26,37 +26,37 @@ $(document).ready(function () {
             $('#ncbi_accession_input').removeClass("validate");
         }else{
             var accessionType = $('input[name=accession_type]:checked').val();
-            // var data = {
-            //     "sequencetype" : accessionType,
-            //     "sequenceids" : ncbi_accession_input
-            // };
-            //
-            // $.ajax({
-            //     type: "POST",
-            //     contentType: 'application/json',
-            //     async: false,
-            //     dataType: "text",
-            //     url: "/search/sequence",
-            //     data: JSON.stringify(data),
-            //     success: function (result) {
-            //         console.log(result);
-            //         $('#genesequence').val(result.toString())
-            //     },
-            //     error: function (error) {
-            //         $('#genesequence').val(error)
-            //     }
-            // });
-            $.ajax({
-                url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=' + accessionType + '&id=' + ncbi_accession_input + '&rettype=fasta&retmode=text',
-                async: false,
-                dataType: 'json',
-                success: function (response) {
-                    $('#genesequence').val(response);
-                }, error: function (error) {
-                    $('#genesequence').val(error.responseText);
+            var data = {
+                "sequencetype" : accessionType,
+                "sequenceids" : ncbi_accession_input
+            };
 
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                async: false,
+                dataType: "text",
+                url: "/search/sequence",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    console.log(result);
+                    $('#genesequence').val(result.toString())
+                },
+                error: function (error) {
+                    $('#genesequence').val(error)
                 }
             });
+            // $.ajax({
+            //     url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=' + accessionType + '&id=' + ncbi_accession_input + '&rettype=fasta&retmode=text',
+            //     async: false,
+            //     dataType: 'json',
+            //     success: function (response) {
+            //         $('#genesequence').val(response);
+            //     }, error: function (error) {
+            //         $('#genesequence').val(error.responseText);
+            //
+            //     }
+            // });
         }
         setTimeout(function() {$('#input_progressbar').modal('close')},1000);
     });
