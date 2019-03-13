@@ -100,6 +100,13 @@ public class ResultsGenerator {
                 }
             }
 
+            // All life
+            TaxNode luca = new TaxNode();
+            luca.setName("LUCA");
+            luca.setNRank("root");
+            luca.setNodeCount(1);
+
+            Set<TaxNode> superkingdomNodes = new HashSet<>();
             if (superkingdoms.size() == 1) {
                 TaxNode superkingdom = new TaxNode();
                 superkingdom.setName(superkingdoms.iterator().next());
@@ -107,12 +114,21 @@ public class ResultsGenerator {
                 superkingdom.setChildren(getChildren(uniqueLineages, 7, superkingdom.getName()));
                 superkingdom.setNodeCount(1);
 
-                JSONObject jsonTree = createJsonNode(superkingdom);
-                tree.put("tree", jsonTree);
-                trees.add(tree);
+                superkingdomNodes.add(superkingdom);
             } else {
-                // TODO: Discuss approach to developing BLAST Tree
+                for (String superkingdomName : superkingdoms) {
+                    TaxNode superkingdom = new TaxNode();
+                    superkingdom.setName(superkingdomName);
+                    superkingdom.setChildren(getChildren(uniqueLineages, 7, superkingdom.getName()));
+                    superkingdom.setNRank(ranks.get(7));
+                    superkingdom.setNodeCount(1);
+                    superkingdomNodes.add(superkingdom);
+                }
             }
+            luca.setChildren(superkingdomNodes);
+            JSONObject jsonTree = createJsonNode(luca);
+            tree.put("tree", jsonTree);
+            trees.add(tree);
         }
         FileHandler.saveOutputFiles(trees, outputdir + "/" + FILE_OUTPUT_BLAST_RESULTS);
     }
