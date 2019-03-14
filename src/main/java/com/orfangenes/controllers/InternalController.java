@@ -98,11 +98,16 @@ public class InternalController {
     @PostMapping("/search/sequence")
     @ResponseBody
     public String getSequenceById(@RequestBody Map<String, Object> payload) {
+        String sequence = "";
         final String sequenceType = (String) payload.get("sequencetype");
         final String sequenceIds = (String) payload.get("sequenceids");
         log.info("sequenceType : " + sequenceType);
         log.info("sequenceIds : " + sequenceIds);
-        final String sequence = AccessionSearch.fetchSequenceByAccession(sequenceType, sequenceIds);
+        try {
+            sequence = AccessionSearch.fetchSequenceByAccession(sequenceType, sequenceIds);
+        } catch (Exception e) {
+            sequence = "Not Found!";
+        }
         return sequence;
     }
 
