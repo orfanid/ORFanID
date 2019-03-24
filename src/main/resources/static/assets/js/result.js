@@ -221,3 +221,16 @@ function saveResult() {
         }
     });
 }
+
+function downloadBlast() {
+    let urlParams = new URLSearchParams(window.location.search);
+    let sessionid = (urlParams.get('sessionid'));
+
+    $.ajax({
+        type: "GET",
+        url: "/download/blast/" + sessionid,
+        success: function () {
+            window.location = "/download/blast/" + sessionid;
+        }
+    });
+}
