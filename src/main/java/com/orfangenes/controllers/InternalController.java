@@ -11,18 +11,22 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import static com.orfangenes.util.Constants.*;
@@ -153,5 +157,23 @@ public class InternalController {
             }
         }
         return results.toString();
+    }
+
+    @GetMapping("/download/blast/{sessionid}")
+    public ResponseEntity<Resource> downloadBlast(@PathVariable String sessionid) {
+        String blastResultsFilePath = outputdir + sessionid + "/" + BLAST_RESULTS_File;
+        File blastResultsFile = new File(blastResultsFilePath);
+        Path path = Paths.get(blastResultsFile.getAbsolutePath());
+        ByteArrayResource resource = null;
+        try {
+            resource = new ByteArrayResource(Files.readAllBytes(path));
+        } catch (IOException e) {
+            log.error("Error while downloading Blast Results from session: " + sessionid, e);
+        }
+
+        return ResponseEntity.ok()
+                .contentLength(blastResultsFile.length())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
     }
 }

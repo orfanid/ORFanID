@@ -40,6 +40,7 @@ public class Constants {
     public static final String BLAST_EXT = ".bl";
     public static final String FILE_RESULT_METADATA = "metadata.json";
     public static final String FILE_RESULTS = "results.json";
+    public static final String BLAST_RESULTS_File = "blastResults.bl";
 
     public static final String BLAST_RESULTS_FILE = "blastResults.bl";
     public static final String INPUT_FASTA = "input.fasta";
