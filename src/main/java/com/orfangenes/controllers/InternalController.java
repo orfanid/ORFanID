@@ -55,7 +55,8 @@ public class InternalController {
                     organismTax,
                     sequence.getType(),
                     sequence.getMaxTargetSequence(),
-                    sequence.getMaxEvalue());
+                    sequence.getMaxEvalue(),
+                    sequence.getIdentity());
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
         }

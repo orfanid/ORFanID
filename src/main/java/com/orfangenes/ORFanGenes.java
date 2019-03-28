@@ -27,7 +27,8 @@ public class ORFanGenes {
                     Integer.parseInt(cmd.getOptionValue(ARG_TAX)),
                     cmd.getOptionValue(ARG_TYPE),
                     cmd.getOptionValue(ARG_MAX_TARGET_SEQS),
-                    cmd.getOptionValue(ARG_EVALUE));
+                    cmd.getOptionValue(ARG_EVALUE),
+                    cmd.getOptionValue(ARG_IDENTITY));
             log.info("Analysis Completed!");
         } catch (ParseException e) {
             log.error("Error : ", e);
@@ -42,12 +43,14 @@ public class ORFanGenes {
         options.addOption(ARG_TAX, true, "NCBI taxonomy ID of the species");
         options.addOption(ARG_MAX_TARGET_SEQS, true, "Number of target sequences");
         options.addOption(ARG_EVALUE, true, "BLAST E-Value Threshold");
+        options.addOption(ARG_IDENTITY, true, "Protein identification percentage");
         options.addOption(ARG_OUT, true, "Output directory");
         CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
 
-    public static void run(String query, String outputdir, int organismTaxID, String blastType, String max_target_seqs, String evalue) {
+    public static void run(String query, String outputdir, int organismTaxID,
+                           String blastType, String max_target_seqs, String evalue, String identity) {
 
         final String rankedLineageFilepath = getFilePath("rankedlineage.dmp");
 
@@ -56,8 +59,12 @@ public class ORFanGenes {
         sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
         BlastResultsProcessor processor = new BlastResultsProcessor(outputdir);
         List<BlastResult> blastResults = processor.getBlastResults();
+        blastResults = blastResults.stream().filter(blastResult -> blastResult.getPident() >= Double.parseDouble(identity)).collect(Collectors.toList());
+
         // Getting unique taxonomy IDs from BLAST result
-        List<Integer> staxids = blastResults.stream().map(BlastResult::getStaxid).collect(Collectors.toList());
+        List<Integer> staxids = blastResults.stream()
+                .map(BlastResult::getStaxid)
+                .collect(Collectors.toList());
         Set<Integer> blastHitsTaxIDs = new HashSet<>(staxids);
         blastHitsTaxIDs.add(organismTaxID);
 
