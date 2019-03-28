@@ -54,6 +54,7 @@ public class Constants {
     public static final String ARG_TAX = "tax";
     public static final String ARG_MAX_TARGET_SEQS = "max_target_seqs";
     public static final String ARG_EVALUE = "evalue";
+    public static final String ARG_IDENTITY = "identity";
     public static final String ARG_OUT = "out";
 
     // colours

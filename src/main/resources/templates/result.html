@@ -85,20 +85,20 @@
 
     <div id="saveResultModal" class="modal">
         <div class="row">
-            <form class="col s12">
+            <form class="col s12" onsubmit="saveResult()">
                 <div class="modal-content">
                     <h5>Save your results!</h5>
                     <div class="row">
                         <div class="input-field col s10">
                             <br><br>
                             <i class="material-icons prefix">email</i>
-                            <input type="email" class="form-control validate" id="email" placeholder="Email">
+                            <input id="email" type="email" class="form-control validate" placeholder="Email" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#!" class="modal-close waves-effect waves-red btn-flat">Close</a>
-                    <a class="modal-close waves-effect waves-green btn-flat" onclick="saveResult()">Save</a>
+                    <button id="submit" type="submit" class="btn waves-effect waves-light modal-close">Save </button>
                 </div>
             </form>
         </div>
