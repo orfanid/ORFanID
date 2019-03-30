@@ -63,9 +63,11 @@ public class Classifier {
                     // travel though each blast hits
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
                         // skip any missing values, the do not contribute for the evidence based decision.
-                        if(!rankedLineage.get(columnNo).equals("") || rankedLineage.get(columnNo).equals(NOT_AVAILABLE)){
-                            // get distinct taxonomy Ids
-                            blastResultsCommonIds.add(rankedLineage.get(columnNo));
+                        if (rankedLineage != null) {
+                            if(!rankedLineage.get(columnNo).equals("") || rankedLineage.get(columnNo).equals(NOT_AVAILABLE)){
+                                // get distinct taxonomy Ids
+                                blastResultsCommonIds.add(rankedLineage.get(columnNo));
+                            }
                         }
                     }
                     // add input organism taxonomy level name
