@@ -39,51 +39,54 @@ $(document).ready(function () {
                 url: "/search/sequence",
                 data: JSON.stringify(data),
                 success: function (result) {
-                    console.log(result);
                     $('#genesequence').val(result.toString())
+                    M.textareaAutoResize($('#genesequence'));
+                    M.updateTextFields();
                 },
                 error: function (error) {
-                    $('#genesequence').val(error)
+                    $('#genesequence').val(error);
+                    M.textareaAutoResize($('#genesequence'));
+                    M.updateTextFields();
                 }
             });
-            // $.ajax({
-            //     url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=' + accessionType + '&id=' + ncbi_accession_input + '&rettype=fasta&retmode=text',
-            //     async: false,
-            //     dataType: 'json',
-            //     success: function (response) {
-            //         $('#genesequence').val(response);
-            //     }, error: function (error) {
-            //         $('#genesequence').val(error.responseText);
-            //
-            //     }
-            // });
         }
         setTimeout(function() {$('#input_progressbar').modal('close')},1000);
     });
 
     $('#load-ecoli-example-data').click(function () {
-        $('#genesequence').load('assets/data/ecoli-example-data.fasta');
-        $('#genesequence').addClass('active');
-        $('#organismName').val('Escherichia coli(562)');
-        // M.textareaAutoResize($('#genesequence'));
+        $.get('assets/data/ecoli-example-data.fasta', function(data) {
+            $('#genesequence').val(data);
+            M.textareaAutoResize($('#genesequence'));
+            M.updateTextFields();
+            $('#organismName').val('Escherichia coli(562)');
+        }, 'text');
         return true;
     });
     $('#load-fly-example-data').click(function () {
-        $('#genesequence').load('assets/data/fly-example-data.fasta');
-        $('#genesequence').addClass('active');
-        $('#organismName').val('Drosophila melanogaster(7227)');
+        $.get('assets/data/fly-example-data.fasta', function(data) {
+            $('#genesequence').val(data);
+            M.textareaAutoResize($('#genesequence'));
+            M.updateTextFields();
+            $('#organismName').val('Drosophila melanogaster(7227)');
+        }, 'text');
         return true;
     });
     $('#load-human-example-data').click(function () {
-        $('#genesequence').load('assets/data/human-example-data.fasta');
-        $('#genesequence').addClass('active');
-        $('#organismName').val('Homo sapiens(9606)');
+        $.get('assets/data/human-example-data.fasta', function(data) {
+            $('#genesequence').val(data);
+            M.textareaAutoResize($('#genesequence'));
+            M.updateTextFields();
+            $('#organismName').val('Homo sapiens(9606)');
+        }, 'text');
         return true;
     });
     $('#load-thaliana-example-data').click(function () {
-        $('#genesequence').load('assets/data/thaliana-example-data.fasta');
-        $('#genesequence').addClass('active');
-        $('#organismName').val('Arabidopsis thaliana(3702)');
+        $.get('assets/data/thaliana-example-data.fasta', function(data) {
+            $('#genesequence').val(data);
+            M.textareaAutoResize($('#genesequence'));
+            M.updateTextFields();
+            $('#organismName').val('Arabidopsis thaliana(3702)');
+        }, 'text');
         return true;
     });
 
@@ -94,63 +97,70 @@ $(document).ready(function () {
     });
 });
 
-$('body').on('change focus', '#genesequence', function () {
-    $('#genesequence').css('overflow-y', 'auto');
-    $('#genesequence').trigger('autoresize');
-    resizeTextArea($(this));
-});
+// $('#genesequence').on('input',function(e){
+//     resizeTextArea($(this));
+// });
 
-function setFileContent(val) {
-    var file = document.getElementById("fastafile").files[0];
-    var reader = new FileReader();
-    reader.onload = function (e) {
-        var textArea = document.getElementById("genesequence");
-        textArea.value = e.target.result;
-    };
-    reader.readAsText(file);
-    M.textareaAutoResize($('#genesequence'));
+// $('body').on('change', '#genesequence', function () {
+//     console.log("changed");
+//     // M.textareaAutoResize(document.querySelector('#genesequence'))
+//     // $('#genesequence').css('overflow-y', 'auto');
+//     // $('#genesequence').trigger('autoresize');
+//     // resizeTextArea($(this));
+//     // setTimeout(function(){ $('.input-field label').addClass('active'); }, 1);
+// });
 
-}
-
-function resizeTextArea($textarea) {
-
-    var hiddenDiv = $('.hiddendiv').first();
-    if (!hiddenDiv.length) {
-        hiddenDiv = $('<div class="hiddendiv common"></div>');
-        $('body').append(hiddenDiv);
-    }
-
-    var fontFamily = $textarea.css('font-family');
-    var fontSize = $textarea.css('font-size');
-
-    if (fontSize) {
-        hiddenDiv.css('font-size', fontSize);
-    }
-    if (fontFamily) {
-        hiddenDiv.css('font-family', fontFamily);
-    }
-
-    if ($textarea.attr('wrap') === "off") {
-        hiddenDiv.css('overflow-wrap', "normal")
-            .css('white-space', "pre");
-    }
-
-    hiddenDiv.text($textarea.val() + '\n');
-    var content = hiddenDiv.html().replace(/\n/g, '<br>');
-    hiddenDiv.html(content);
-    console.log($textarea.val());
-
-    // When textarea is hidden, width goes crazy.
-    // Approximate with half of window size
-
-    if ($textarea.is(':visible')) {
-        hiddenDiv.css('width', $textarea.width());
-    }
-    else {
-        hiddenDiv.css('width', $(window).width() / 2);
-    }
-
-    $textarea.css('height', hiddenDiv.height());
-    console.log(hiddenDiv.height());
-}
+// function setFileContent(val) {
+//     var file = document.getElementById("fastafile").files[0];
+//     var reader = new FileReader();
+//     reader.onload = function (e) {
+//         var textArea = document.getElementById("genesequence");
+//         textArea.value = e.target.result;
+//     };
+//     reader.readAsText(file);
+//     M.textareaAutoResize($('#genesequence'));
+//
+// }
+//
+// function resizeTextArea($textarea) {
+//
+//     var hiddenDiv = $('.hiddendiv').first();
+//     if (!hiddenDiv.length) {
+//         hiddenDiv = $('<div class="hiddendiv common"></div>');
+//         $('body').append(hiddenDiv);
+//     }
+//
+//     var fontFamily = $textarea.css('font-family');
+//     var fontSize = $textarea.css('font-size');
+//
+//     if (fontSize) {
+//         hiddenDiv.css('font-size', fontSize);
+//     }
+//     if (fontFamily) {
+//         hiddenDiv.css('font-family', fontFamily);
+//     }
+//
+//     if ($textarea.attr('wrap') === "off") {
+//         hiddenDiv.css('overflow-wrap', "normal")
+//             .css('white-space', "pre");
+//     }
+//
+//     hiddenDiv.text($textarea.val() + '\n');
+//     var content = hiddenDiv.html().replace(/\n/g, '<br>');
+//     hiddenDiv.html(content);
+//     console.log($textarea.val());
+//
+//     // When textarea is hidden, width goes crazy.
+//     // Approximate with half of window size
+//
+//     if ($textarea.is(':visible')) {
+//         hiddenDiv.css('width', $textarea.width());
+//     }
+//     else {
+//         hiddenDiv.css('width', $(window).width() / 2);
+//     }
+//
+//     $textarea.css('height', hiddenDiv.height());
+//     console.log(hiddenDiv.height());
+// }
 
