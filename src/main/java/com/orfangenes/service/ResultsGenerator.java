@@ -89,14 +89,16 @@ public class ResultsGenerator {
             Set<String> superkingdoms = new HashSet<>();
             List<List<String>> uniqueLineages = new ArrayList<>();
             for (List<String> lineage : lineages) {
-                String speciesName = lineage.get(1);
-                if (lineage.size() == 10 && species.add(speciesName)) {
-                    lineage.remove(2); // Removing taxonomy ID
-                    lineage.remove(0); // Removing common name
-                    uniqueLineages.add(lineage);
+                if (lineage != null) {
+                    String speciesName = lineage.get(1);
+                    if (lineage.size() == 10 && species.add(speciesName)) {
+                        lineage.remove(2); // Removing taxonomy ID
+                        lineage.remove(0); // Removing common name
+                        uniqueLineages.add(lineage);
 
-                    String superkingdomName = lineage.get(7);
-                    superkingdoms.add(superkingdomName);
+                        String superkingdomName = lineage.get(7);
+                        superkingdoms.add(superkingdomName);
+                    }
                 }
             }
 

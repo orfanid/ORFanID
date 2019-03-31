@@ -38,10 +38,12 @@ public class ResultsPrinter {
     private static void formatLineage(List<List<String>> lineageList) {
         // travel though each lineage
         for (List<String> rankedLineage : lineageList) {
-            for (String taxNode : rankedLineage) {
-                System.out.format("%15s", formatString(taxNode));
+            if (rankedLineage != null) {
+                for (String taxNode : rankedLineage) {
+                    System.out.format("%15s", formatString(taxNode));
+                }
+                System.out.println();
             }
-            System.out.println();
         }
     }
 
