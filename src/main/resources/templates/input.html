@@ -48,13 +48,13 @@
                         <div>
                             <p>
                                 <label>
-                                    <input class="with-gap" name="accession_type" type="radio" value="protein" checked />
+                                    <input class="with-gap" name="accessionType" type="radio" value="protein" checked />
                                     <span>Protein</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input class="with-gap" name="accession_type" type="radio" value="nucleotide" />
+                                    <input class="with-gap" name="accessionType" type="radio" value="nucleotide" />
                                     <span>Gene</span>
                                 </label>
                             </p>
@@ -71,18 +71,13 @@
                             <!--<span class="helper-text" data-error="wrong" style="font-size: small; color: #818181">Eg: NP_415100.1,YP_002791247.1,NP_414542.1</span>-->
                         </div>
                     </div>
-                    <div class="col s2 valign-wrapper">
-                        <button class="waves-effect waves-light btn validate" style="height: 50px; width: 100px;" href="#input_progressbar" type="submit" id="findsequence" name="findsequence">
-                            <i class="material-icons">search</i>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col offset-s1 s10">
                 <div class="input-field">
-                    <textarea id="genesequence" name="sequence" class="materialize-textarea validate" raw="5" required="required" style="overflow-y:scroll;"></textarea>
+                    <textarea id="genesequence" name="sequence" class="materialize-textarea validate" raw="5" style="overflow-y:scroll;"></textarea>
                     <label for="genesequence">Gene Sequence</label>
                 </div>
             </div>

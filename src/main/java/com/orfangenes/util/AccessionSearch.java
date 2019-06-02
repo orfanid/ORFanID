@@ -30,7 +30,7 @@ public class AccessionSearch {
       log.info(url.getPath());
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
-      conn.setRequestProperty("Accept", "application/json");
+      conn.setRequestProperty("Accept", "text/plain");
 
       if (conn.getResponseCode() != 200) {
         throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
@@ -41,7 +41,7 @@ public class AccessionSearch {
       System.out.println("Output from Server .... \n");
       String line;
       while ((line = br.readLine()) != null) {
-          sequence.append(line);
+          sequence.append(line + "\n");
       }
 
       conn.disconnect();
