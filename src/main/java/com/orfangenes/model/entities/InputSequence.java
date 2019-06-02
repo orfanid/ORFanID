@@ -9,6 +9,8 @@ import lombok.Setter;
 public class InputSequence {
 
     private String organismName;
+    private String accession;
+    private String accessionType;
     private String sequence;
     private String maxEvalue;
     private String maxTargetSequence;

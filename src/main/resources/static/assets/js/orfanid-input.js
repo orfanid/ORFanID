@@ -19,38 +19,22 @@ $(document).ready(function () {
         });
     });
 
-    $('#findsequence').click(function () {
-        $('#input_progressbar').modal('open');
-        var ncbi_accession_input = $('#ncbi_accession_input').val(); // 16128551,226524729,16127995
-        if (!ncbi_accession_input){
-            $('#ncbi_accession_input').removeClass("validate");
-        }else{
-            var accessionType = $('input[name=accession_type]:checked').val();
-            var data = {
-                "sequencetype" : accessionType,
-                "sequenceids" : ncbi_accession_input
-            };
-
-            $.ajax({
-                type: "POST",
-                contentType: 'application/json',
-                async: false,
-                dataType: "text",
-                url: "/search/sequence",
-                data: JSON.stringify(data),
-                success: function (result) {
-                    $('#genesequence').val(result.toString())
-                    M.textareaAutoResize($('#genesequence'));
-                    M.updateTextFields();
-                },
-                error: function (error) {
-                    $('#genesequence').val(error);
-                    M.textareaAutoResize($('#genesequence'));
-                    M.updateTextFields();
-                }
-            });
+    // Disable the ability to input a gene sequence if accessions are provided and vice versa
+    $("#genesequence").keyup(function () {
+        var genesequence = $(this).val();
+        if (genesequence !== "") {
+            $("#ncbi_accession_input").prop('disabled', true);
+        } else {
+            $("#ncbi_accession_input").prop('disabled', false);
         }
-        setTimeout(function() {$('#input_progressbar').modal('close')},1000);
+    });
+    $("#ncbi_accession_input").keyup(function () {
+        var accessions = $(this).val();
+        if (accessions !== "") {
+            $("#genesequence").prop('disabled', true);
+        } else {
+            $("#genesequence").prop('disabled', false);
+        }
     });
 
     $('#load-ecoli-example-data').click(function () {

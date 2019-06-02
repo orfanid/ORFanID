@@ -30,11 +30,23 @@ public class FileHandler {
     }
 
     public static void saveInputSequence(String outputPath, InputSequence sequence) {
-        Assert.assertFalse("Sequence cannot be empty", sequence == null | sequence.getSequence().length() <= 0);
+        String genesequence = sequence.getSequence();
+
+        if (genesequence == null || genesequence.equals("")) {
+            String accession = sequence.getAccession(); // 16128551,226524729,16127995
+            String accessionType = sequence.getAccessionType();
+            try {
+                genesequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
+                sequence.setSequence(genesequence);
+            } catch (Exception e) {
+                log.error("Gene sequence not found from provided accession", e.getMessage());
+            }
+        }
+
         try {
             String inputFilePath = outputPath + "/" + INPUT_FASTA;
             FileOutputStream fileOutputStream = new FileOutputStream(inputFilePath);
-            fileOutputStream.write(sequence.getSequence().getBytes());
+            fileOutputStream.write(genesequence.getBytes());
             fileOutputStream.close();
         } catch (FileNotFoundException e) {
             log.error("File not found: " + e.getMessage());
