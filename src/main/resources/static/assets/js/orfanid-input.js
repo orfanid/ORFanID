@@ -19,6 +19,10 @@ $(document).ready(function () {
         });
     });
 
+    $('#submit').click(function () {
+        $('#input_progressbar').modal('open');
+    });
+
     // Disable the ability to input a gene sequence if accessions are provided and vice versa
     $("#genesequence").keyup(function () {
         var genesequence = $(this).val();
