@@ -1,6 +1,6 @@
 package com.orfangenes.controllers;
 
-import com.orfangenes.model.entities.InputSequence;
+import com.orfangenes.model.InputSequence;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +26,16 @@ public class WebPageController {
     @RequestMapping("/results")
     public String results() {
         return "results";
+    }
+
+    @RequestMapping("/clamp")
+    public String clamp() {
+        return "clamp";
+    }
+
+    @RequestMapping("/clampresults")
+    public String clampresults() {
+        return "clampresults";
     }
 
     @RequestMapping("/instructions")

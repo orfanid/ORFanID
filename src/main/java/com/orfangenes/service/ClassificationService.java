@@ -2,29 +2,23 @@ package com.orfangenes.service;
 
 import com.orfangenes.model.BlastResult;
 import com.orfangenes.model.Gene;
-import com.orfangenes.model.taxonomy.RankedLineage;
-import com.orfangenes.model.taxonomy.TaxNode;
-import com.orfangenes.util.Constants;
-import com.orfangenes.util.FileHandler;
 import com.orfangenes.util.ResultsPrinter;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.*;
 
 import static com.orfangenes.util.Constants.*;
 
 @Slf4j
-public class Classifier {
+public class ClassificationService {
 
-    private TaxTree tree;
+    private TaxTreeService tree;
     private int organismTaxID;
 
     Map<String, List<List<String>>> taxonomyTreeForGenes;
     List<String> inputRankedLineage;
 
-    public Classifier(TaxTree tree, int organismTaxID, List<BlastResult> blastResults) {
+    public ClassificationService(TaxTreeService tree, int organismTaxID, List<BlastResult> blastResults) {
         this.tree = tree;
         this.organismTaxID = organismTaxID;
 
@@ -88,8 +82,8 @@ public class Classifier {
             log.error(e.getMessage());
         }
         // todo: bad practise, functions should do multiple things. try to modularise
-        ResultsGenerator.generateORFanGeneSummary(classification, outputdir, genes);
-        ResultsGenerator.generateBlastTree(this.taxonomyTreeForGenes, outputdir);
+        ResultsProcessingService.generateORFanGeneSummary(classification, outputdir, genes);
+        ResultsProcessingService.generateBlastTree(this.taxonomyTreeForGenes, outputdir);
         return classification;
     }
 }

@@ -1,8 +1,7 @@
 package com.orfangenes.controllers;
 
 import com.orfangenes.ORFanGenes;
-import com.orfangenes.model.entities.InputSequence;
-import com.orfangenes.util.AccessionSearch;
+import com.orfangenes.model.InputSequence;
 import com.orfangenes.util.FileHandler;
 import com.sun.net.httpserver.Authenticator;
 import lombok.extern.slf4j.Slf4j;
@@ -36,26 +35,26 @@ import static com.orfangenes.util.Constants.*;
 public class InternalController {
 
     @Value("${data.outputdir}")
-    private String outputdir;
+    private String OUTPUT_DIR;
 
     @PostMapping("/analyse")
     public String analyse(@Valid @ModelAttribute("sequence") InputSequence sequence, BindingResult result, Model model) {
 
         Assert.assertFalse("Error", result.hasErrors());
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
-        String outputPath = outputdir + sessionID;
-        String inputFilePath = outputPath + "/" + INPUT_FASTA;
+        String analysisDir = OUTPUT_DIR + sessionID;
+        String inputFastaFile = analysisDir + File.separator + INPUT_FASTA;
 
         String organismTaxID = sequence.getOrganismName().split("\\(")[1];
         organismTaxID = organismTaxID.substring(0, organismTaxID.length() - 1);
         int organismTax = Integer.parseInt(organismTaxID);
         try {
-            FileHandler.createResultsOutputDir(outputPath);
-            FileHandler.saveInputSequence(outputPath, sequence);
-            FileHandler.saveResultMetadata(outputPath, sequence, sessionID);
+            FileHandler.createResultsOutputDir(analysisDir);
+            FileHandler.saveInputSequence(analysisDir, sequence);
+            FileHandler.saveResultMetadata(analysisDir, sequence, sessionID);
             ORFanGenes.run(
-                    inputFilePath,
-                    outputPath,
+                    inputFastaFile,
+                    analysisDir,
                     organismTax,
                     sequence.getType(),
                     sequence.getMaxTargetSequence(),
@@ -71,24 +70,24 @@ public class InternalController {
     @ResponseBody
     public String getSummary(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
-        String output = outputdir + sessionID;
-        return FileHandler.readJSONAsString(output + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
+        String output = OUTPUT_DIR + sessionID;
+        return FileHandler.readJSONAsString(output + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
     }
 
     @PostMapping("/data/summary/chart")
     @ResponseBody
     public String getSummaryChart(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
-        String output = outputdir + sessionID;
-        return FileHandler.readJSONAsString(output + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
+        String output = OUTPUT_DIR + sessionID;
+        return FileHandler.readJSONAsString(output + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
     }
 
     @PostMapping("/data/genes")
     @ResponseBody
     public String getOrfanGenes(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
-        String output = outputdir + sessionID;
-        return FileHandler.readJSONAsString(output + "/" + FILE_OUTPUT_ORFAN_GENES);
+        String output = OUTPUT_DIR + sessionID;
+        return FileHandler.readJSONAsString(output + File.separator + FILE_OUTPUT_ORFAN_GENES);
     }
 
     @PostMapping("/data/blast")
@@ -96,8 +95,8 @@ public class InternalController {
     public String getBlast(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
         final String id = (String) payload.get("id");
-        String output = outputdir + sessionID;
-        return FileHandler.blastToJSON(output + "/" + FILE_OUTPUT_BLAST_RESULTS, id);
+        String output = OUTPUT_DIR + sessionID;
+        return FileHandler.blastToJSON(output + File.separator + FILE_OUTPUT_BLAST_RESULTS, id);
     }
 
     @PostMapping("/save")
@@ -106,7 +105,7 @@ public class InternalController {
         final String sessionID = (String) payload.get("sessionid");
         final String email = (String) payload.get("email");
 
-        String metadataFilePath = outputdir + sessionID + "/" + FILE_RESULT_METADATA;
+        String metadataFilePath = OUTPUT_DIR + sessionID + File.separator + FILE_RESULT_METADATA;
         JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
         // Adding email to result metadata
         metadata.put("email", email);
@@ -115,7 +114,7 @@ public class InternalController {
         FileHandler.saveOutputFiles(metadata, metadataFilePath);
 
         // Adding saved data to results file
-        String resultsFilePath = outputdir + FILE_RESULTS;
+        String resultsFilePath = OUTPUT_DIR + FILE_RESULTS;
         JSONArray results;
         try {
             results = FileHandler.getArrayFromFile(resultsFilePath);
@@ -135,10 +134,10 @@ public class InternalController {
     public String getResults() {
         JSONArray results = new JSONArray();
 
-        File[] sessions = new File(outputdir).listFiles(File::isDirectory);
+        File[] sessions = new File(OUTPUT_DIR).listFiles(File::isDirectory);
         for (File session : sessions) {
             String sessionPath = session.getPath();
-            String metadataFilePath = sessionPath + "/" + FILE_RESULT_METADATA;
+            String metadataFilePath = sessionPath + File.separator + FILE_RESULT_METADATA;
             JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
             // Fetch result if it is marked as saved
             if (metadata != null && (boolean) metadata.get("saved")) {
@@ -151,7 +150,7 @@ public class InternalController {
 
     @GetMapping("/download/blast/{sessionid}")
     public ResponseEntity<Resource> downloadBlast(@PathVariable String sessionid) {
-        String blastResultsFilePath = outputdir + sessionid + "/" + BLAST_RESULTS_File;
+        String blastResultsFilePath = OUTPUT_DIR + sessionid + File.separator + BLAST_RESULTS_FILE;
         File blastResultsFile = new File(blastResultsFilePath);
         Path path = Paths.get(blastResultsFile.getAbsolutePath());
         ByteArrayResource resource = null;
@@ -165,5 +164,17 @@ public class InternalController {
                 .contentLength(blastResultsFile.length())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
+    }
+    @PostMapping("/clamp")
+    public String clampAnalyse(@Valid @ModelAttribute("chromosome") String chromosome) {
+
+        String outputFile = "/Users/hewapathirana/projects/ORFanID/src/main/resources/static/assets/summary.json";
+
+        try {
+
+        } catch (Exception e) {
+            log.error("Analysis Failed: " + e.getMessage());
+        }
+        return "redirect:/clampresults?chromosome=" + chromosome;
     }
 }

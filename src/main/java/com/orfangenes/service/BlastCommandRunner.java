@@ -2,9 +2,10 @@ package com.orfangenes.service;
 
 import static com.orfangenes.util.Constants.*;
 
-import lombok.Builder;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -15,26 +16,32 @@ import java.util.List;
  * by running the blast command.
  */
 @Slf4j
-@Builder
+@Setter
 public class BlastCommandRunner extends Thread {
 
     private String fileNumber;
     private String sequenceType;
     private String out;
-    private String max_target_seqs;
+    private String maxTargetSeqs;
     private String evalue;
+
+    String BLAST_LOCATION; // TODO
+
+    public BlastCommandRunner(String blastLocation){
+        this.BLAST_LOCATION = blastLocation;
+    }
 
     @Override
     public void run() {
         final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
         List<String> command = Arrays.asList(
-                "/usr/local/ncbi/blast/bin/" + programme,
-                "-query", out + "/" + SEQUENCE + this.fileNumber + FASTA_EXT,
+                BLAST_LOCATION + programme,
+                "-query", out + File.separator + SEQUENCE + this.fileNumber + FASTA_EXT,
                 "-db", "nr",
                 "-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
-                "-max_target_seqs", this.max_target_seqs,
+                "-max_target_seqs", this.maxTargetSeqs,
                 "-evalue", this.evalue,
-                "-out", this.out + "/" + BLAST_RESULTS + this.fileNumber + BLAST_EXT,
+                "-out", this.out + File.separator + BLAST_RESULTS + this.fileNumber + BLAST_EXT,
                 "-remote");
         try {
             log.info("Executing Blast Command:{}", command.toString());

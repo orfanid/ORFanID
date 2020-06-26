@@ -49,12 +49,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Tomcat JSP template engine/ view resolver -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.tomcat.embed</groupId>-->
-            <!--<artifactId>tomcat-embed-jasper</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
 
         <!--Dependencies that are required to review-->
         <dependency>

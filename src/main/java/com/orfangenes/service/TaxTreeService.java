@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
-public class TaxTree implements Serializable {
+public class TaxTreeService implements Serializable {
 
     private int organismTaxID;
     private Set<Integer> blastHitsTaxIDs;
@@ -29,7 +29,7 @@ public class TaxTree implements Serializable {
     private Map<String, List<List<String>>> taxonomyTreeForGenes = new HashMap<>();
 
 
-    public TaxTree(String rankedLineageFilePath, Set<Integer> blastHitsTaxIDs, int organismTaxID) {
+    public TaxTreeService(String rankedLineageFilePath, Set<Integer> blastHitsTaxIDs, int organismTaxID) {
 
         this.blastHitsTaxIDs = blastHitsTaxIDs;
         this.organismTaxID = organismTaxID;

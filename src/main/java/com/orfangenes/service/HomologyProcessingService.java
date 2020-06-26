@@ -15,12 +15,12 @@ import static com.orfangenes.util.Constants.BLAST_RESULTS_FILE;
  */
 @Slf4j
 @Getter
-public class BlastResultsProcessor {
+public class HomologyProcessingService {
 
     private List<BlastResult> blastResults;
 
-    public BlastResultsProcessor(String outputDir) {
-        String blastResultsFileName = outputDir + "/" + BLAST_RESULTS_FILE;
+    public HomologyProcessingService(String outputDir) {
+        String blastResultsFileName = outputDir + File.separator + BLAST_RESULTS_FILE;
         List<BlastResult> blastResults = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(new File(blastResultsFileName));

@@ -1,15 +1,16 @@
 package com.orfangenes.util;
 
-import com.orfangenes.model.entities.InputSequence;
+import com.orfangenes.ORFanGenes;
+import com.orfangenes.model.InputSequence;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -20,9 +21,6 @@ import static com.orfangenes.util.Constants.*;
  */
 @Slf4j
 public class FileHandler {
-
-    @Value("${data.outputdir}")
-    private static String outputdir;
 
     public static void createResultsOutputDir(String outputPath) {
         File file = new File(outputPath);
@@ -44,7 +42,7 @@ public class FileHandler {
         }
 
         try {
-            String inputFilePath = outputPath + "/" + INPUT_FASTA;
+            String inputFilePath = outputPath + File.separator + INPUT_FASTA;
             FileOutputStream fileOutputStream = new FileOutputStream(inputFilePath);
             fileOutputStream.write(genesequence.getBytes());
             fileOutputStream.close();
@@ -67,7 +65,7 @@ public class FileHandler {
         resultData.put("organism", organismName);
         resultData.put("saved", false);
 
-        String resultFileName = outputdir + "/" + FILE_RESULT_METADATA;
+        String resultFileName = outputdir + File.separator + FILE_RESULT_METADATA;
         saveOutputFiles(resultData, resultFileName);
     }
 
@@ -159,5 +157,19 @@ public class FileHandler {
         } catch (IOException e) {
             log.error("JSON file saving error: " + e.getMessage());
         }
+    }
+
+    public static String getFilePath(String filename) {
+        String filepath = null;
+        try {
+            URL url = ORFanGenes.class.getClassLoader().getResource(filename);
+            if (url == null) {
+                throw new IllegalStateException(filename + " file not found!");
+            }
+            filepath = url.toURI().getPath();
+        } catch (URISyntaxException e) {
+            log.error("File not found");
+        }
+        return filepath;
     }
 }

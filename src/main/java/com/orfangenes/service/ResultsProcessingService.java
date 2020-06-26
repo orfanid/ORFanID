@@ -7,11 +7,12 @@ import com.orfangenes.util.FileHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.util.*;
 
 import static com.orfangenes.util.Constants.*;
 
-public class ResultsGenerator {
+public class ResultsProcessingService {
     private static List<String> ranks =
             Arrays.asList(SPECIES,
                     GENUS,
@@ -50,7 +51,7 @@ public class ResultsGenerator {
             orfanJSON.put("description", gene.getDescription());
             geneData.add(orfanJSON);
         }
-        FileHandler.saveOutputFiles(geneData, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES);
+        FileHandler.saveOutputFiles(geneData, outputdir + File.separator + FILE_OUTPUT_ORFAN_GENES);
 
         // Generating ORFan Genes summary data to be shown in the table
         JSONArray orfanGenesSummary = new JSONArray();
@@ -60,7 +61,7 @@ public class ResultsGenerator {
             summaryObject.put("count", entry.getValue());
             orfanGenesSummary.add(summaryObject);
         }
-        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
+        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
 
         // Generating ORFan Genes Summary Chart data
         JSONObject chartJSON = new JSONObject();
@@ -72,7 +73,7 @@ public class ResultsGenerator {
         }
         chartJSON.put("x", x);
         chartJSON.put("y", y);
-        FileHandler.saveOutputFiles(chartJSON, outputdir + "/" + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
+        FileHandler.saveOutputFiles(chartJSON, outputdir + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
     }
 
     public static void generateBlastTree(Map<String, List<List<String>>> taxonomyTreeForGenes, String outputdir) {
@@ -132,7 +133,7 @@ public class ResultsGenerator {
             tree.put("tree", jsonTree);
             trees.add(tree);
         }
-        FileHandler.saveOutputFiles(trees, outputdir + "/" + FILE_OUTPUT_BLAST_RESULTS);
+        FileHandler.saveOutputFiles(trees, outputdir +File.separator + FILE_OUTPUT_BLAST_RESULTS);
     }
 
     private static Set<TaxNode> getChildren (List<List<String>> uniqueLineages, int lineageLevel, String parentName) {

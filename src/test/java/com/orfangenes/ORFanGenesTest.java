@@ -36,6 +36,6 @@ public class ORFanGenesTest {
 
   @Test
   public void run() {
-//    ORFanGenes.run(query, outputdir, organismTaxID, blastType, max_target_seqs, evalue);
+//    ORFanGenes.run(query, outputdir, organismTaxID, blastType, maxTargetSeqs, evalue);
   }
 }

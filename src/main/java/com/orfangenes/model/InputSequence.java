@@ -1,4 +1,4 @@
-package com.orfangenes.model.entities;
+package com.orfangenes.model;
 
 import com.orfangenes.util.Constants;
 import lombok.Getter;
@@ -20,7 +20,8 @@ public class InputSequence {
     public String getType() {
         String[] sequences = this.sequence.split("\n\n");
 
-        // Getting first sequence. All sequences do not need to be processed since the input sequence should only have one type of gene.
+        // Getting first sequence. All sequences do not need to be processed
+        // since the input sequence should only have one type of gene.
         String sequence = sequences[0];
         String[] lines = sequence.split("\n");
         StringBuilder sequenceString = new StringBuilder();

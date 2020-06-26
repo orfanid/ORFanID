@@ -1,5 +1,7 @@
 package com.orfangenes.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import static com.orfangenes.util.Constants.NOT_AVAILABLE;
 /**
  * @author Suresh Hewapathirana
  */
+@Slf4j
 public class ResultsPrinter {
 
     private static final String LINE_SEPERATOR = "----------------------------------------------------------------------------------------------------------------------------------------";
@@ -49,7 +52,8 @@ public class ResultsPrinter {
 
     private static void formatHeader() {
         List<String> rankedLineageFileColumnNames =
-                Arrays.asList("tax_id", "subspecies", "species", "genus", "family", "order", "class", "phylum", "kingdom", "superkingdom");
+                Arrays.asList("tax_id", "subspecies", "species", "genus", "family",
+                        "order", "class", "phylum", "kingdom", "superkingdom");
 
         System.out.println();
         for (String columnName : rankedLineageFileColumnNames) {
@@ -71,5 +75,12 @@ public class ResultsPrinter {
             node = name + "|";
         }
         return node;
+    }
+
+    public static void displayFinding(Map<String, String> geneClassification){
+        for (Map.Entry<String, String> stringStringEntry : geneClassification.entrySet()) {
+            System.out.println(stringStringEntry.getKey() + "--->" + stringStringEntry.getValue());
+        }
+        System.out.println("--------------------------------------------------------- \n");
     }
 }

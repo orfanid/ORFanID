@@ -1,14 +1,15 @@
 package com.orfangenes;
 
 import com.orfangenes.service.*;
-//import com.orfangenes.service.ResultsGenerator;
 import com.orfangenes.model.BlastResult;
-import com.orfangenes.model.Gene;
+import com.orfangenes.util.FileHandler;
+import com.orfangenes.util.ResultsPrinter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,17 +50,20 @@ public class ORFanGenes {
         return parser.parse(options, args);
     }
 
-    public static void run(String query, String outputdir, int organismTaxID,
-                           String blastType, String max_target_seqs, String evalue, String identity) {
+    public static void run(String query, String outputDir, int organismTaxID,
+                           String blastType, String max_target_seqs, String eValue, String identity) {
 
-        final String rankedLineageFilepath = getFilePath("rankedlineage.dmp");
+        final String rankedLineageFilepath = FileHandler.getFilePath(FILE_RANK_LINEAGE);
+        Assert.assertTrue("Failure to open the sequence file!", new File(query).exists());
 
         // Generating BLAST file
-        Sequence sequence = new Sequence(blastType, query, outputdir, organismTaxID);
-        sequence.generateBlastFile(outputdir, max_target_seqs, evalue);
-        BlastResultsProcessor processor = new BlastResultsProcessor(outputdir);
+        SequenceService sequenceService = new SequenceService(blastType, query, outputDir);
+        sequenceService.findHomology(outputDir, max_target_seqs, eValue);
+        HomologyProcessingService processor = new HomologyProcessingService(outputDir);
         List<BlastResult> blastResults = processor.getBlastResults();
-        blastResults = blastResults.stream().filter(blastResult -> blastResult.getPident() >= Double.parseDouble(identity)).collect(Collectors.toList());
+        blastResults = blastResults.stream()
+                .filter(blastResult -> blastResult.getPident() >= Double.parseDouble(identity))
+                .collect(Collectors.toList());
 
         // Getting unique taxonomy IDs from BLAST result
         List<Integer> staxids = blastResults.stream()
@@ -68,27 +72,11 @@ public class ORFanGenes {
         Set<Integer> blastHitsTaxIDs = new HashSet<>(staxids);
         blastHitsTaxIDs.add(organismTaxID);
 
-        TaxTree taxTree = new TaxTree(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
-        Classifier classifier = new Classifier(taxTree, organismTaxID, blastResults);
-        Map<String, String> geneClassification = classifier.getGeneClassification(outputdir, sequence.getGenes());
-        for (Map.Entry<String, String> stringStringEntry : geneClassification.entrySet()) {
-            log.info(stringStringEntry.getKey() + "--->" + stringStringEntry.getValue());
-        }
-        System.out.println("--------------------------------------------------------- \n");
-//        ResultsGenerator.generateResult(geneClassification, outputdir, processor, taxTree, sequence.getGenes());
-    }
+        // classification
+        TaxTreeService taxTreeService = new TaxTreeService(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
+        ClassificationService classificationService = new ClassificationService(taxTreeService, organismTaxID, blastResults);
+        Map<String, String> geneClassification = classificationService.getGeneClassification(outputDir, sequenceService.getGenes(organismTaxID));
+        ResultsPrinter.displayFinding(geneClassification);
 
-    private static String getFilePath(String filename) {
-        String filepath = null;
-        try {
-            URL url = ORFanGenes.class.getClassLoader().getResource(filename);
-            if (url == null) {
-                throw new IllegalStateException(filename + " file not found!");
-            }
-            filepath = url.toURI().getPath();
-        } catch (URISyntaxException e) {
-            log.error("File not found");
-        }
-        return filepath;
     }
 }

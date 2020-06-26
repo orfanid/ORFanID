@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org" lang="en-us">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139406062-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-139406062-1');
+    </script>
+
+    <title>ORFanGenes</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="assets/css/jquery.dataTables.min.css" media="screen,projection" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/materialize.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
+    <!--<script type="text/javascript" src="js/jquery-1.12.4.js"></script>-->
+    <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/export/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="assets/js/export/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="assets/js/export/vfs_fonts.js"></script>
+    <script type="text/javascript" src="assets/js/export/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="assets/js/export/buttons.print.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/orfanid-clamp-results.js"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: nav">&nbsp;</div>
+<main>
+    <div class="container">
+        <div class="row">
+            <h4>Clamp Results</h4>
+        </div>
+        <div class="row">
+            <div class="col s11">
+                <table id="clampresults" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>Chromosome</th>
+                        <th>HumanGenes</th>
+                        <th>Retrotranspon</th>
+                        <th>Mouse Ortholog</th>
+                        <th>Dog Ortholog</th>
+                        <th>HumanParalog</th>
+                        <th>Protein Family</th>
+                        <th>Candidate orphan genes</th>
+                        <th>Protein coding orphan Genes</th>
+                        <th>Orphan Genes Download</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="fragments/footer :: footer">&nbsp;</div>
+</body>
+</html>
