@@ -4,7 +4,6 @@ spring:
     active: "unix"
   thymeleaf:
         cache: false
-#-Dspring.profiles.active=unix
 
 server:
   error:
@@ -14,7 +13,7 @@ server:
 
 logging:
   level:
-    org.springframework: DEBUG
+    org.springframework: INFO
 
 ---
 
@@ -24,16 +23,7 @@ spring:
 server:
   port: 8085
 
-data.outputdir: /Users/hewapathirana/projects/ORFanFinder/unix/out/
+data.outputdir: /dataoutputdir/
 ncbi.blast.programme.location: /usr/local/ncbi/blast/bin/
+app.dir.root: /app/
 
----
-
-spring:
-  profiles: windows
-
-server:
-  port: 8086
-
-data.outputdir: C:\\Users\\vinod\\OneDrive\\Documents\\Discovery Institute\\2020\\ORFanID-master\\output\\
-ncbi.blast.programme.location: C:\\Program Files\\NCBI\\blast-2.6.0+\\bin\\

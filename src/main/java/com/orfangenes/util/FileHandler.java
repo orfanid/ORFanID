@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -157,19 +158,5 @@ public class FileHandler {
         } catch (IOException e) {
             log.error("JSON file saving error: " + e.getMessage());
         }
-    }
-
-    public static String getFilePath(String filename) {
-        String filepath = null;
-        try {
-            URL url = ORFanGenes.class.getClassLoader().getResource(filename);
-            if (url == null) {
-                throw new IllegalStateException(filename + " file not found!");
-            }
-            filepath = url.toURI().getPath();
-        } catch (URISyntaxException e) {
-            log.error("File not found");
-        }
-        return filepath;
     }
 }

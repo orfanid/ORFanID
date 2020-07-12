@@ -39,6 +39,7 @@ public class Constants {
     public static final String ARG_EVALUE = "evalue";
     public static final String ARG_IDENTITY = "identity";
     public static final String ARG_OUT = "out";
+    public static final String ARG_RANK_LINEAGE_FILE_DIR = "rankLineageFileDir";
 
     // input files
     public static final String INPUT_FASTA = "input.fasta";
@@ -52,6 +53,7 @@ public class Constants {
     public static final String FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART = "ORFanGenesSummaryChart.json";
     public static final String FILE_RESULT_METADATA = "metadata.json";
     public static final String FILE_RESULTS = "results.json";
+    public static final String FILE_OUTPUT_CLAMP = "clamp_summary.json";
 
     // file names
     public static final String SEQUENCE = "sequence";

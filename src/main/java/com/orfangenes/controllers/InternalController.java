@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static com.orfangenes.util.Constants.*;
@@ -37,12 +39,17 @@ public class InternalController {
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
 
+    @Value("${app.dir.root}")
+    private String APP_DIR;
+
     @PostMapping("/analyse")
     public String analyse(@Valid @ModelAttribute("sequence") InputSequence sequence, BindingResult result, Model model) {
 
         Assert.assertFalse("Error", result.hasErrors());
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
+        OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String analysisDir = OUTPUT_DIR + sessionID;
+        log.info("########### analysis  Dir: " + analysisDir);
         String inputFastaFile = analysisDir + File.separator + INPUT_FASTA;
 
         String organismTaxID = sequence.getOrganismName().split("\\(")[1];
@@ -52,6 +59,7 @@ public class InternalController {
             FileHandler.createResultsOutputDir(analysisDir);
             FileHandler.saveInputSequence(analysisDir, sequence);
             FileHandler.saveResultMetadata(analysisDir, sequence, sessionID);
+
             ORFanGenes.run(
                     inputFastaFile,
                     analysisDir,
@@ -59,7 +67,8 @@ public class InternalController {
                     sequence.getType(),
                     sequence.getMaxTargetSequence(),
                     "1e-" + sequence.getMaxEvalue(),
-                    sequence.getIdentity());
+                    sequence.getIdentity(),
+                    APP_DIR);
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
         }
@@ -165,15 +174,31 @@ public class InternalController {
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
     }
+
     @PostMapping("/clamp")
     public String clampAnalyse(@Valid @ModelAttribute("chromosome") String chromosome) {
 
-        String outputFile = "/Users/hewapathirana/projects/ORFanID/src/main/resources/static/assets/summary.json";
+        String outputFile = OUTPUT_DIR + FILE_OUTPUT_CLAMP;
 
         try {
 
+            log.info("Selected chromosome : " + chromosome);
+            // TODO: Change the script location
+            List<String> command = Arrays.asList("Rscript", "script/clamp.R", "--chromosome", chromosome, "--output", outputFile);
+
+            log.info("Executing Blast Command:{}", command.toString());
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            Process process = processBuilder.start();
+
+            // wait until the command get executed
+            if (process.waitFor() != 0) {
+                throw new RuntimeException("Clamp script error occurred");
+            } else {
+                log.info("Clamp Analysis completed!!");
+            }
+
         } catch (Exception e) {
-            log.error("Analysis Failed: " + e.getMessage());
+            log.error("Clamp Analysis Failed: " + e.getMessage());
         }
         return "redirect:/clampresults?chromosome=" + chromosome;
     }

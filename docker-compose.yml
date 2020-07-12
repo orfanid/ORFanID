@@ -5,10 +5,18 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "9097:8080"
+      - "8080:8085"
     volumes:
-      - /Users/hewapathirana/workspace/docker/tmp:/tmp
-      - /Users/hewapathirana/workspace/docker/query:/query
-      - /Users/hewapathirana/workspace/docker/db:/db
-      - /Users/hewapathirana/workspace/docker/outtmp:/outtmp
-      - /Users/hewapathirana/projects/ORFanFinder/out/:/dataoutputdir
+      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
+
+  nginx:
+     container_name: nginx_container
+     image: nginx:1.13
+     restart: always
+     ports:
+     - 80:80
+     - 443:443
+     volumes:
+     - ./nginx/conf.d:/etc/nginx/conf.d
+     depends_on:
+     - blastservice

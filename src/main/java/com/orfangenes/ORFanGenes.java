@@ -2,12 +2,10 @@ package com.orfangenes;
 
 import com.orfangenes.service.*;
 import com.orfangenes.model.BlastResult;
-import com.orfangenes.util.FileHandler;
 import com.orfangenes.util.ResultsPrinter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.*;
@@ -29,7 +27,8 @@ public class ORFanGenes {
                     cmd.getOptionValue(ARG_TYPE),
                     cmd.getOptionValue(ARG_MAX_TARGET_SEQS),
                     cmd.getOptionValue(ARG_EVALUE),
-                    cmd.getOptionValue(ARG_IDENTITY));
+                    cmd.getOptionValue(ARG_IDENTITY),
+                    cmd.getOptionValue(ARG_RANK_LINEAGE_FILE_DIR));
             log.info("Analysis Completed!");
         } catch (ParseException e) {
             log.error("Error : ", e);
@@ -46,37 +45,51 @@ public class ORFanGenes {
         options.addOption(ARG_EVALUE, true, "BLAST E-Value Threshold");
         options.addOption(ARG_IDENTITY, true, "Protein identification percentage");
         options.addOption(ARG_OUT, true, "Output directory");
+        options.addOption(ARG_RANK_LINEAGE_FILE_DIR, true, "RankLineageFile directory");
         CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
 
     public static void run(String query, String outputDir, int organismTaxID,
-                           String blastType, String max_target_seqs, String eValue, String identity) {
+                           String blastType, String max_target_seqs, String eValue, String identity, String  APP_DIR) {
 
-        final String rankedLineageFilepath = FileHandler.getFilePath(FILE_RANK_LINEAGE);
         Assert.assertTrue("Failure to open the sequence file!", new File(query).exists());
 
+        final String rankedLineageFilepath = APP_DIR + FILE_RANK_LINEAGE;
+        System.out.println("Ranked Lineage File Path : " + rankedLineageFilepath);
+
         // Generating BLAST file
-        SequenceService sequenceService = new SequenceService(blastType, query, outputDir);
-        sequenceService.findHomology(outputDir, max_target_seqs, eValue);
-        HomologyProcessingService processor = new HomologyProcessingService(outputDir);
-        List<BlastResult> blastResults = processor.getBlastResults();
-        blastResults = blastResults.stream()
-                .filter(blastResult -> blastResult.getPident() >= Double.parseDouble(identity))
-                .collect(Collectors.toList());
+        SequenceService sequenceService = null;
+        List<BlastResult> blastResults = null;
+        try {
+            sequenceService = new SequenceService(blastType, query, outputDir);
+            sequenceService.findHomology(outputDir, max_target_seqs, eValue);
+            HomologyProcessingService processor = new HomologyProcessingService(outputDir);
+            blastResults = processor.getBlastResults();
+            blastResults = blastResults.stream()
+                    .filter(blastResult -> blastResult.getPident() >= Double.parseDouble(identity))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Blast file generation issue: " + e.getMessage());
+            e.printStackTrace();
+        }
+            Set<Integer> blastHitsTaxIDs = null;
+            // Getting unique taxonomy IDs from BLAST result
+            List<Integer> staxids = blastResults.stream()
+                    .map(BlastResult::getStaxid)
+                    .collect(Collectors.toList());
+            blastHitsTaxIDs = new HashSet<>(staxids);
+            blastHitsTaxIDs.add(organismTaxID);
 
-        // Getting unique taxonomy IDs from BLAST result
-        List<Integer> staxids = blastResults.stream()
-                .map(BlastResult::getStaxid)
-                .collect(Collectors.toList());
-        Set<Integer> blastHitsTaxIDs = new HashSet<>(staxids);
-        blastHitsTaxIDs.add(organismTaxID);
-
-        // classification
-        TaxTreeService taxTreeService = new TaxTreeService(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
-        ClassificationService classificationService = new ClassificationService(taxTreeService, organismTaxID, blastResults);
-        Map<String, String> geneClassification = classificationService.getGeneClassification(outputDir, sequenceService.getGenes(organismTaxID));
-        ResultsPrinter.displayFinding(geneClassification);
-
+        try {
+            // classification
+            TaxTreeService taxTreeService = new TaxTreeService(rankedLineageFilepath, blastHitsTaxIDs, organismTaxID);
+            ClassificationService classificationService = new ClassificationService(taxTreeService, organismTaxID, blastResults);
+            Map<String, String> geneClassification = classificationService.getGeneClassification(outputDir, sequenceService.getGenes(organismTaxID));
+            ResultsPrinter.displayFinding(geneClassification);
+        } catch (Exception e) {
+            log.error("Results classification issue: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

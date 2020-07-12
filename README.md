@@ -20,6 +20,7 @@ is an **ORFan Gene**. The Blast Results table shows the taxonomies (and their pa
 from the BLAST search.
 
 ## 2. Using ORFanGenes
+
 1. Visit the ORFanGenes [website](http://orfangenes.com) and click on "Input" from the Navigation bar, or "Get Started" 
 at the bottom of the page.
 ![GetStarted](https://github.com/Savidude/ORFanGenes/blob/master/src/main/resources/static/assets/images/documentation/GetStarted.png)
@@ -33,3 +34,10 @@ the dropdown menu.
 ![Advanced](https://github.com/Savidude/ORFanGenes/blob/master/src/main/resources/static/assets/images/documentation/advanced.png)
 1. Click “Submit” and wait for results to load. The time taken for the results to be obtained is dependent on the number 
 of input sequences, selected e-value, and number of target sequences.
+
+## 3. Deploy the ORFanID
+
+1. Make sure you have installed the [Docker](https://docs.docker.com/get-docker/) in your VM.
+2. Download this repository to your working directory of the machine
+3. Check the docker-compose.yml and  replace the volume mounts to map the location to your local storage. Run the ```docker-compose up --build``` command to build and run the container.
+4. If you want to terminate the instance and remoce the container, you can use ```docker-compose down```
