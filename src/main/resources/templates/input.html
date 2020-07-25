@@ -17,6 +17,7 @@
 
     <!--Import materialize.css-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css">
     <link type="text/css" rel="stylesheet" href="assets/css/orfan_styles.css">
     <link type="text/css" rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css">
@@ -29,7 +30,7 @@
 <body>
 <div th:replace="fragments/header :: nav">&nbsp;</div>
 <main>
-    <form action="/analyse" th:action="@{/analyse}" th:object="${sequence}" method="post">
+    <form id="input_form" action="/analyse" th:action="@{/analyse}" th:object="${sequence}" method="post">
         <div class="row">
             <div class="col s4 offset-s1">
                 <div class="file-field input-field">
@@ -66,9 +67,9 @@
                 <div class="row">
                     <div class="col s10">
                         <div class="input-field">
-                            <input type="text" id="ncbi_accession_input" class="validate" name="accession">
-                            <label for="ncbi_accession_input">NCBI or Uniprot Accession(s)</label>
-                            <!--<span class="helper-text" data-error="wrong" style="font-size: small; color: #818181">Eg: NP_415100.1,YP_002791247.1,NP_414542.1</span>-->
+                            <input id="ncbi_accession_input" class="validate" name="accession" type="text" data-length="100">
+                            <label for="ncbi_accession_input">NCBI or Uniprot Accession(s) seperated by comma</label>
+                            <span id="ncbi_accession_input_helper" class="helper-text" style="font-size: small; color: #818181"></span>
                         </div>
                     </div>
                 </div>
@@ -77,7 +78,7 @@
         <div class="row">
             <div class="col offset-s1 s10">
                 <div class="input-field">
-                    <textarea id="genesequence" name="sequence" class="materialize-textarea validate" raw="5" style="overflow-y:scroll;"></textarea>
+                    <textarea id="genesequence" name="sequence" class="materialize-textarea validate" raw="5" data-length="10000" style="overflow-y:scroll;"></textarea>
                     <label for="genesequence">Gene Sequence</label>
                 </div>
             </div>
@@ -98,7 +99,7 @@
             <div class="col offset-s1 s10">
                 <h6>Advanced parameters:</h6><br>
                 <p class="range-field">
-                    <label for="maxevalue">Maximum E-value for BLAST(e-10):</label>
+                    <label for="maxevalue" >Maximum <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ">E-value</a> for BLAST(e-10):</label>
                     <input type="range" id="maxevalue"  name="maxEvalue" min="1" max="10" value="3"/>
                     <label for="maxtargets">Maximum target sequences for BLAST:</label>
                     <input type="range" id="maxtargets" name="maxTargetSequence" min="100" max="1000" value="{{Config::get('orfanid.default_maxtargetseq')}}"/>
@@ -109,23 +110,32 @@
         </div>
         <div class="row">
             <div class="col offset-s1 s8">
-                <p>Examples:</p>
-                <a id="load-ecoli-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Escherichia coli">
+
+                <div class="switch">
+                    <p>Try out by:</p>
+                    <label>
+                        sequence
+                        <input id="example_method" type="checkbox">
+                        <span class="lever"></span>
+                        accessions
+                    </label>
+                </div>
+                <a id="load-ecoli-example-data" class="waves-effect waves-light tooltipped load-example-data" name="Escherichia coli(562)" data-position="bottom" data-tooltip="Escherichia coli">
                     <i class="icon medium icon-species icon-ecoli"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a id="load-fly-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Drosophila melanogaster">
+                <a id="load-fly-example-data" class="waves-effect waves-light tooltipped load-example-data" name="Drosophila melanogaster(7227)" data-position="bottom" data-tooltip="Drosophila melanogaster">
                     <i class="icon medium icon-species icon-fly"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a id="load-human-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Homo sapiens">
+                <a id="load-human-example-data" class="waves-effect waves-light tooltipped load-example-data" name="Homo sapiens(9606)" data-position="bottom" data-tooltip="Homo sapiens">
                     <i class="icon medium icon-species icon-human"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a id="load-thaliana-example-data" class="waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Arabidopsis thaliana">
+                <a id="load-thaliana-example-data" class="waves-effect waves-light tooltipped load-example-data" name="Arabidopsis thaliana(3702)" data-position="bottom" data-tooltip="Arabidopsis thaliana">
                     <i class="icon medium icon-species icon-brassica"></i>
                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <br>
             </div>
             <div class="col s3">
-                <a id="advanceparameterslink" class="waves-effect waves-light">Advanced parameters</a>
+                <a id="advanceparameterslink" class="waves-effect waves-light"><i class="small material-icons">add</i>Advanced parameters</a>
             </div>
         </div>
         <div id="input_progressbar" class="modal" style="background-color: #f6f7f9" >
@@ -142,9 +152,6 @@
                     </div>
                 </div>
             </div>
-            <!--<div class="modal-footer">-->
-                <!--&lt;!&ndash;<a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>&ndash;&gt;-->
-            <!--</div>-->
         </div>
 
         <div class="row">

@@ -38,14 +38,11 @@ public class AccessionSearch {
 
       BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
-      System.out.println("Output from Server .... \n");
       String line;
       while ((line = br.readLine()) != null) {
           sequence.append(line + "\n");
       }
-
       conn.disconnect();
-
     } catch (MalformedURLException e) {
       e.printStackTrace();
     } catch (IOException e) {

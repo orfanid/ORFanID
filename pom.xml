@@ -50,7 +50,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!--Dependencies that are required to review-->
         <dependency>
             <groupId>org.springframework.restdocs</groupId>

@@ -45,6 +45,7 @@ public class InternalController {
     @PostMapping("/analyse")
     public String analyse(@Valid @ModelAttribute("sequence") InputSequence sequence, BindingResult result, Model model) {
 
+        log.info("Analysis started....");
         Assert.assertFalse("Error", result.hasErrors());
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
         OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
