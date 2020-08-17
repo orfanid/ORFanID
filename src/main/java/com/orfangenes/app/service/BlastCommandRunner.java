@@ -1,7 +1,6 @@
-package com.orfangenes.service;
+package com.orfangenes.app.service;
 
-import static com.orfangenes.util.Constants.*;
-
+import com.orfangenes.app.util.Constants;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,15 +32,15 @@ public class BlastCommandRunner extends Thread {
 
     @Override
     public void run() {
-        final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
+        final String programme = (sequenceType.equals(Constants.TYPE_PROTEIN)) ? "blastp" : "blastn";
         List<String> command = Arrays.asList(
                 BLAST_LOCATION + programme,
-                "-query", out + File.separator + SEQUENCE + this.fileNumber + FASTA_EXT,
+                "-query", out + File.separator + Constants.SEQUENCE + this.fileNumber + Constants.FASTA_EXT,
                 "-db", "nr",
                 "-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
                 "-max_target_seqs", this.maxTargetSeqs,
                 "-evalue", this.evalue,
-                "-out", this.out + File.separator + BLAST_RESULTS + this.fileNumber + BLAST_EXT,
+                "-out", this.out + File.separator + Constants.BLAST_RESULTS + this.fileNumber + Constants.BLAST_EXT,
                 "-remote");
         try {
             log.info("Executing Blast Command:{}", command.toString());

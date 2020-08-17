@@ -1,4 +1,4 @@
-package com.orfangenes.util;
+package com.orfangenes.app.util;
 
 /**
  * This class contains all the Constants

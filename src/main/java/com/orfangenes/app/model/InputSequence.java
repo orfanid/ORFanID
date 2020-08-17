@@ -1,6 +1,6 @@
-package com.orfangenes.model;
+package com.orfangenes.app.model;
 
-import com.orfangenes.util.Constants;
+import com.orfangenes.app.util.Constants;
 import lombok.Getter;
 import lombok.Setter;
 

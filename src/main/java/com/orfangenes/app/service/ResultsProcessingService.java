@@ -1,27 +1,26 @@
-package com.orfangenes.service;
+package com.orfangenes.app.service;
 
-import com.orfangenes.model.Gene;
-import com.orfangenes.model.taxonomy.TaxNode;
-import com.orfangenes.util.Constants;
-import com.orfangenes.util.FileHandler;
+import com.orfangenes.app.util.Constants;
+import com.orfangenes.app.util.FileHandler;
+import com.orfangenes.app.model.Gene;
+import com.orfangenes.app.model.taxonomy.TaxNode;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.io.File;
 import java.util.*;
 
-import static com.orfangenes.util.Constants.*;
-
 public class ResultsProcessingService {
     private static List<String> ranks =
-            Arrays.asList(SPECIES,
-                    GENUS,
-                    FAMILY,
-                    ORDER,
-                    CLASS,
-                    PHYLUM,
-                    KINGDOM,
-                    SUPERKINGDOM);
+            Arrays.asList(Constants.SPECIES,
+                    Constants.GENUS,
+                    Constants.FAMILY,
+                    Constants.ORDER,
+                    Constants.CLASS,
+                    Constants.PHYLUM,
+                    Constants.KINGDOM,
+                    Constants.SUPERKINGDOM);
 
     public static void generateORFanGeneSummary(Map<String, String> classification, String outputdir, Map<String, Gene> genes) {
         Map<String, Integer> orfanGeneCount = new LinkedHashMap<>();
@@ -37,6 +36,8 @@ public class ResultsProcessingService {
         orfanGeneCount.put(Constants.STRICT_ORFAN, 0);
 
         JSONArray geneData = new JSONArray();
+        List<com.orfangenes.common.models.Gene> geneList = new ArrayList<>();
+
         for (Map.Entry<String, String> entry : classification.entrySet()) {
             String classificationLevel = entry.getValue();
             int count = orfanGeneCount.get(classificationLevel);
@@ -44,36 +45,45 @@ public class ResultsProcessingService {
             orfanGeneCount.put(classificationLevel, count);
 
             // Generating Gene data
-            JSONObject orfanJSON = new JSONObject();
-            orfanJSON.put("geneid", entry.getKey());
-            orfanJSON.put("orfanLevel", classificationLevel);
+            com.orfangenes.common.models.Gene geneNew = new com.orfangenes.common.models.Gene();
+            geneNew.setGeneId(entry.getKey());
             Gene gene =genes.get(entry.getKey());
-            orfanJSON.put("description", gene.getDescription());
-            geneData.add(orfanJSON);
-        }
-        FileHandler.saveOutputFiles(geneData, outputdir + File.separator + FILE_OUTPUT_ORFAN_GENES);
+            geneNew.setDescription(gene.getDescription());
+            geneNew.setOrfanLevel(classificationLevel);
+            geneList.add(geneNew);
 
-        // Generating ORFan Genes summary data to be shown in the table
-        JSONArray orfanGenesSummary = new JSONArray();
-        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
-            JSONObject summaryObject = new JSONObject();
-            summaryObject.put("type", entry.getKey());
-            summaryObject.put("count", entry.getValue());
-            orfanGenesSummary.add(summaryObject);
-        }
-        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
 
-        // Generating ORFan Genes Summary Chart data
-        JSONObject chartJSON = new JSONObject();
-        JSONArray x = new JSONArray();
-        JSONArray y = new JSONArray();
-        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
-            x.add(entry.getKey());
-            y.add(entry.getValue());
+//            // Generating Gene data
+//            JSONObject orfanJSON = new JSONObject();
+//            orfanJSON.put("geneid", entry.getKey());
+//            orfanJSON.put("orfanLevel", classificationLevel);
+//
+//            orfanJSON.put("description", gene.getDescription());
+//            geneData.add(orfanJSON);
         }
-        chartJSON.put("x", x);
-        chartJSON.put("y", y);
-        FileHandler.saveOutputFiles(chartJSON, outputdir + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
+        FileHandler.saveOutputFiles(geneData, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES);
+
+//        // Generating ORFan Genes summary data to be shown in the table
+//        JSONArray orfanGenesSummary = new JSONArray();
+//        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+//            JSONObject summaryObject = new JSONObject();
+//            summaryObject.put("type", entry.getKey());
+//            summaryObject.put("count", entry.getValue());
+//            orfanGenesSummary.add(summaryObject);
+//        }
+//        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY);
+
+//        // Generating ORFan Genes Summary Chart data
+//        JSONObject chartJSON = new JSONObject();
+//        JSONArray x = new JSONArray();
+//        JSONArray y = new JSONArray();
+//        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+//            x.add(entry.getKey());
+//            y.add(entry.getValue());
+//        }
+//        chartJSON.put("x", x);
+//        chartJSON.put("y", y);
+//        FileHandler.saveOutputFiles(chartJSON, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
     }
 
     public static void generateBlastTree(Map<String, List<List<String>>> taxonomyTreeForGenes, String outputdir) {
@@ -133,7 +143,7 @@ public class ResultsProcessingService {
             tree.put("tree", jsonTree);
             trees.add(tree);
         }
-        FileHandler.saveOutputFiles(trees, outputdir +File.separator + FILE_OUTPUT_BLAST_RESULTS);
+        FileHandler.saveOutputFiles(trees, outputdir +File.separator + Constants.FILE_OUTPUT_BLAST_RESULTS);
     }
 
     private static Set<TaxNode> getChildren (List<List<String>> uniqueLineages, int lineageLevel, String parentName) {

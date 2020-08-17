@@ -1,4 +1,4 @@
-package com.orfangenes.util;
+package com.orfangenes.app.util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.orfangenes.util.Constants.ANSI_RED;
-import static com.orfangenes.util.Constants.ANSI_RESET;
-import static com.orfangenes.util.Constants.NOT_AVAILABLE;
+import static com.orfangenes.app.util.Constants.ANSI_RED;
+import static com.orfangenes.app.util.Constants.ANSI_RESET;
+import static com.orfangenes.app.util.Constants.NOT_AVAILABLE;
 
 /**
  * @author Suresh Hewapathirana

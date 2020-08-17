@@ -1,4 +1,4 @@
-package com.orfangenes;
+package com.orfangenes.app;
 
 import org.junit.Ignore;
 import org.junit.Test;

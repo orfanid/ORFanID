@@ -1,4 +1,4 @@
-package com.orfangenes.model.taxonomy;
+package com.orfangenes.app.model.taxonomy;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

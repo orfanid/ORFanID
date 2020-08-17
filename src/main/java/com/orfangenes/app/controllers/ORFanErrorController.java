@@ -1,4 +1,4 @@
-package com.orfangenes.controllers;
+package com.orfangenes.app.controllers;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

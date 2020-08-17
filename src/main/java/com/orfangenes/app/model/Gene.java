@@ -1,4 +1,4 @@
-package com.orfangenes.model;
+package com.orfangenes.app.model;
 
 import lombok.Getter;
 import lombok.Setter;

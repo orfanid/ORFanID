@@ -1,13 +1,10 @@
-package com.orfangenes.service;
+package com.orfangenes.app.service;
 
-import com.orfangenes.model.Gene;
-import static com.orfangenes.util.Constants.*;
+import com.orfangenes.app.util.Constants;
+import com.orfangenes.app.model.Gene;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -82,11 +79,11 @@ public class SequenceService {
     private void combineBlastResults(int fileCount) {
         // Combining all BLAST results to one file
         try {
-            PrintWriter writer = new PrintWriter(outputDir + File.separator + BLAST_RESULTS + BLAST_EXT);
+            PrintWriter writer = new PrintWriter(outputDir + File.separator + Constants.BLAST_RESULTS + Constants.BLAST_EXT);
             for (int i = 0; i < fileCount; i++) {
                 BufferedReader reader =
                         new BufferedReader(
-                                new FileReader(outputDir + File.separator + BLAST_RESULTS + (i+1) + BLAST_EXT));
+                                new FileReader(outputDir + File.separator + Constants.BLAST_RESULTS + (i+1) + Constants.BLAST_EXT));
                 String blastResult = reader.readLine();
                 while (blastResult != null) {
                     writer.println(blastResult);
@@ -104,7 +101,7 @@ public class SequenceService {
     private String getSequenceFromFile(String sequenceFileName) {
         StringBuilder stringBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(sequenceFileName), StandardCharsets.UTF_8)) {
-            stream.forEach(s -> stringBuilder.append(s).append(LINE_SEPARATOR));
+            stream.forEach(s -> stringBuilder.append(s).append(Constants.LINE_SEPARATOR));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -116,12 +113,12 @@ public class SequenceService {
         final int SEQUENCE_BATCH_SIZE = 3;
         List<String> sequenceBatches = new ArrayList<>();
 
-        String[] sequences = inputSequence.split(SEQUENCE_SEPARATOR);
+        String[] sequences = inputSequence.split(Constants.SEQUENCE_SEPARATOR);
         StringBuilder currentSequence = new StringBuilder();
 
         for (int i = 1; i <= sequences.length; i++) {
             currentSequence.append(sequences[i - 1]);
-            currentSequence.append(SEQUENCE_SEPARATOR);
+            currentSequence.append(Constants.SEQUENCE_SEPARATOR);
 
             if (i % SEQUENCE_BATCH_SIZE == 0 || i == sequences.length) {
                 sequenceBatches.add(currentSequence.toString().trim());
@@ -133,7 +130,7 @@ public class SequenceService {
     private void createSequenceFile(String out, String sequence, int fileNo) {
         try {
             PrintWriter writer =
-                    new PrintWriter(out + File.separator + SEQUENCE + fileNo + FASTA_EXT, StandardCharsets.UTF_8.toString());
+                    new PrintWriter(out + File.separator + Constants.SEQUENCE + fileNo + Constants.FASTA_EXT, StandardCharsets.UTF_8.toString());
             writer.println(sequence);
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -146,14 +143,14 @@ public class SequenceService {
         Map<String, Gene> genes = new HashMap<>();
 
         String inputSequence = getSequenceFromFile(this.sequenceFile);
-        String[] sequences = inputSequence.split(SEQUENCE_SEPARATOR);
+        String[] sequences = inputSequence.split(Constants.SEQUENCE_SEPARATOR);
 
         for (String sequence : sequences) {
-            if (sequence.equals(LINE_SEPARATOR)) {
+            if (sequence.equals(Constants.LINE_SEPARATOR)) {
                 continue;
             }
             Gene gene = new Gene();
-            String[] lines = sequence.split(LINE_SEPARATOR);
+            String[] lines = sequence.split(Constants.LINE_SEPARATOR);
 
             // 1) process comment line
             String commentLine = lines[0];

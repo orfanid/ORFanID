@@ -1,14 +1,13 @@
-package com.orfangenes.service;
+package com.orfangenes.app.service;
 
-import com.orfangenes.model.BlastResult;
+import com.orfangenes.app.util.Constants;
+import com.orfangenes.app.model.BlastResult;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
-import static com.orfangenes.util.Constants.BLAST_RESULTS_FILE;
 
 /**
  * This class process the blast results to identify Orphan Genes
@@ -20,7 +19,7 @@ public class HomologyProcessingService {
     private List<BlastResult> blastResults;
 
     public HomologyProcessingService(String outputDir) {
-        String blastResultsFileName = outputDir + File.separator + BLAST_RESULTS_FILE;
+        String blastResultsFileName = outputDir + File.separator + Constants.BLAST_RESULTS_FILE;
         List<BlastResult> blastResults = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(new File(blastResultsFileName));

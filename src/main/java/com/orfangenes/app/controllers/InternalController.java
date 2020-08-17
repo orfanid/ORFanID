@@ -1,8 +1,9 @@
-package com.orfangenes.controllers;
+package com.orfangenes.app.controllers;
 
-import com.orfangenes.ORFanGenes;
-import com.orfangenes.model.InputSequence;
-import com.orfangenes.util.FileHandler;
+import com.orfangenes.app.ORFanGenes;
+import com.orfangenes.app.util.Constants;
+import com.orfangenes.app.util.FileHandler;
+import com.orfangenes.app.model.InputSequence;
 import com.sun.net.httpserver.Authenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -30,8 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.orfangenes.util.Constants.*;
-
 @Slf4j
 @Controller
 public class InternalController {
@@ -51,7 +50,7 @@ public class InternalController {
         OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String analysisDir = OUTPUT_DIR + sessionID;
         log.info("########### analysis  Dir: " + analysisDir);
-        String inputFastaFile = analysisDir + File.separator + INPUT_FASTA;
+        String inputFastaFile = analysisDir + File.separator + Constants.INPUT_FASTA;
 
         String organismTaxID = sequence.getOrganismName().split("\\(")[1];
         organismTaxID = organismTaxID.substring(0, organismTaxID.length() - 1);
@@ -81,7 +80,7 @@ public class InternalController {
     public String getSummary(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
         String output = OUTPUT_DIR + sessionID;
-        return FileHandler.readJSONAsString(output + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY);
+        return FileHandler.readJSONAsString(output + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY);
     }
 
     @PostMapping("/data/summary/chart")
@@ -89,7 +88,7 @@ public class InternalController {
     public String getSummaryChart(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
         String output = OUTPUT_DIR + sessionID;
-        return FileHandler.readJSONAsString(output + File.separator + FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
+        return FileHandler.readJSONAsString(output + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
     }
 
     @PostMapping("/data/genes")
@@ -97,7 +96,7 @@ public class InternalController {
     public String getOrfanGenes(@RequestBody Map<String, Object> payload) {
         final String sessionID = (String) payload.get("sessionid");
         String output = OUTPUT_DIR + sessionID;
-        return FileHandler.readJSONAsString(output + File.separator + FILE_OUTPUT_ORFAN_GENES);
+        return FileHandler.readJSONAsString(output + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES);
     }
 
     @PostMapping("/data/blast")
@@ -106,7 +105,7 @@ public class InternalController {
         final String sessionID = (String) payload.get("sessionid");
         final String id = (String) payload.get("id");
         String output = OUTPUT_DIR + sessionID;
-        return FileHandler.blastToJSON(output + File.separator + FILE_OUTPUT_BLAST_RESULTS, id);
+        return FileHandler.blastToJSON(output + File.separator + Constants.FILE_OUTPUT_BLAST_RESULTS, id);
     }
 
     @PostMapping("/save")
@@ -115,7 +114,7 @@ public class InternalController {
         final String sessionID = (String) payload.get("sessionid");
         final String email = (String) payload.get("email");
 
-        String metadataFilePath = OUTPUT_DIR + sessionID + File.separator + FILE_RESULT_METADATA;
+        String metadataFilePath = OUTPUT_DIR + sessionID + File.separator + Constants.FILE_RESULT_METADATA;
         JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
         // Adding email to result metadata
         metadata.put("email", email);
@@ -124,7 +123,7 @@ public class InternalController {
         FileHandler.saveOutputFiles(metadata, metadataFilePath);
 
         // Adding saved data to results file
-        String resultsFilePath = OUTPUT_DIR + FILE_RESULTS;
+        String resultsFilePath = OUTPUT_DIR + Constants.FILE_RESULTS;
         JSONArray results;
         try {
             results = FileHandler.getArrayFromFile(resultsFilePath);
@@ -147,7 +146,7 @@ public class InternalController {
         File[] sessions = new File(OUTPUT_DIR).listFiles(File::isDirectory);
         for (File session : sessions) {
             String sessionPath = session.getPath();
-            String metadataFilePath = sessionPath + File.separator + FILE_RESULT_METADATA;
+            String metadataFilePath = sessionPath + File.separator + Constants.FILE_RESULT_METADATA;
             JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
             // Fetch result if it is marked as saved
             if (metadata != null && (boolean) metadata.get("saved")) {
@@ -160,7 +159,7 @@ public class InternalController {
 
     @GetMapping("/download/blast/{sessionid}")
     public ResponseEntity<Resource> downloadBlast(@PathVariable String sessionid) {
-        String blastResultsFilePath = OUTPUT_DIR + sessionid + File.separator + BLAST_RESULTS_FILE;
+        String blastResultsFilePath = OUTPUT_DIR + sessionid + File.separator + Constants.BLAST_RESULTS_FILE;
         File blastResultsFile = new File(blastResultsFilePath);
         Path path = Paths.get(blastResultsFile.getAbsolutePath());
         ByteArrayResource resource = null;
@@ -179,7 +178,7 @@ public class InternalController {
     @PostMapping("/clamp")
     public String clampAnalyse(@Valid @ModelAttribute("chromosome") String chromosome) {
 
-        String outputFile = OUTPUT_DIR + FILE_OUTPUT_CLAMP;
+        String outputFile = OUTPUT_DIR + Constants.FILE_OUTPUT_CLAMP;
 
         try {
 

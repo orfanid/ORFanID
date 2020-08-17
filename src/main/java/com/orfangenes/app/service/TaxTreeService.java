@@ -1,11 +1,6 @@
-package com.orfangenes.service;
+package com.orfangenes.app.service;
 
-import com.orfangenes.model.BlastResult;
-import com.orfangenes.model.Gene;
-import com.orfangenes.model.taxonomy.TaxNode;
-import com.orfangenes.model.taxonomy.RankedLineage;
-
-import static com.orfangenes.util.Constants.*;
+import com.orfangenes.app.model.BlastResult;
 
 import lombok.extern.slf4j.Slf4j;
 

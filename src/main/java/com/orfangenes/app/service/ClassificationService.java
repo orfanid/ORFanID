@@ -1,13 +1,12 @@
-package com.orfangenes.service;
+package com.orfangenes.app.service;
 
-import com.orfangenes.model.BlastResult;
-import com.orfangenes.model.Gene;
-import com.orfangenes.util.ResultsPrinter;
+import com.orfangenes.app.util.Constants;
+import com.orfangenes.app.util.ResultsPrinter;
+import com.orfangenes.app.model.BlastResult;
+import com.orfangenes.app.model.Gene;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
-
-import static com.orfangenes.util.Constants.*;
 
 @Slf4j
 public class ClassificationService {
@@ -31,15 +30,15 @@ public class ClassificationService {
     public Map<String, String> getGeneClassification(String outputdir, Map<String, Gene> genes) {
         Set<String> blastResultsCommonIds;
         List<String> classificationLevels =
-                Arrays.asList(STRICT_ORFAN, // 0
-                                ORFAN_GENE, // 1
-                                GENUS_RESTRICTED_GENE, // 2
-                                FAMILY_RESTRICTED_GENE, // 3
-                                ORDER_RESTRICTED_GENE, // 4
-                                CLASS_RESTRICTED_GENE, // 5
-                                PHYLUM_RESTRICTED_GENE, // 6
-                                KINGDOM_RESTRICTED_GENE, // 7
-                                DOMAIN_RESTRICTED_GENE); // 8
+                Arrays.asList(Constants.STRICT_ORFAN, // 0
+                                Constants.ORFAN_GENE, // 1
+                                Constants.GENUS_RESTRICTED_GENE, // 2
+                                Constants.FAMILY_RESTRICTED_GENE, // 3
+                                Constants.ORDER_RESTRICTED_GENE, // 4
+                                Constants.CLASS_RESTRICTED_GENE, // 5
+                                Constants.PHYLUM_RESTRICTED_GENE, // 6
+                                Constants.KINGDOM_RESTRICTED_GENE, // 7
+                                Constants.DOMAIN_RESTRICTED_GENE); // 8
         Map<String, String> classification = new HashMap<>();
         try {
             ResultsPrinter.displayTree(organismTaxID, inputRankedLineage, taxonomyTreeForGenes);
@@ -58,7 +57,7 @@ public class ClassificationService {
                     for (List<String> rankedLineage : blastResultsRankedLineages) {
                         // skip any missing values, the do not contribute for the evidence based decision.
                         if (rankedLineage != null) {
-                            if(!rankedLineage.get(columnNo).equals("") || rankedLineage.get(columnNo).equals(NOT_AVAILABLE)){
+                            if(!rankedLineage.get(columnNo).equals("") || rankedLineage.get(columnNo).equals(Constants.NOT_AVAILABLE)){
                                 // get distinct taxonomy Ids
                                 blastResultsCommonIds.add(rankedLineage.get(columnNo));
                             }

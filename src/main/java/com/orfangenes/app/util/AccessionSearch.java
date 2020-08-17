@@ -1,4 +1,4 @@
-package com.orfangenes.util;
+package com.orfangenes.app.util;
 
 import lombok.extern.slf4j.Slf4j;
 

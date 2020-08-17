@@ -1,21 +1,15 @@
-package com.orfangenes.util;
+package com.orfangenes.app.util;
 
-import com.orfangenes.ORFanGenes;
-import com.orfangenes.model.InputSequence;
+import com.orfangenes.app.model.InputSequence;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import static com.orfangenes.util.Constants.*;
 
 /**
  * @author Suresh Hewapathirana
@@ -43,7 +37,7 @@ public class FileHandler {
         }
 
         try {
-            String inputFilePath = outputPath + File.separator + INPUT_FASTA;
+            String inputFilePath = outputPath + File.separator + Constants.INPUT_FASTA;
             FileOutputStream fileOutputStream = new FileOutputStream(inputFilePath);
             fileOutputStream.write(genesequence.getBytes());
             fileOutputStream.close();
@@ -66,7 +60,7 @@ public class FileHandler {
         resultData.put("organism", organismName);
         resultData.put("saved", false);
 
-        String resultFileName = outputdir + File.separator + FILE_RESULT_METADATA;
+        String resultFileName = outputdir + File.separator + Constants.FILE_RESULT_METADATA;
         saveOutputFiles(resultData, resultFileName);
     }
 

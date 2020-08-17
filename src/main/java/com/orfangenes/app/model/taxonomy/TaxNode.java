@@ -1,7 +1,6 @@
-package com.orfangenes.model.taxonomy;
+package com.orfangenes.app.model.taxonomy;
 
-import static com.orfangenes.util.Constants.*;
-
+import com.orfangenes.app.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +25,8 @@ public class TaxNode implements Serializable {
     @Override
     public String toString() {
         String node;
-        if (name.equals(NOT_AVAILABLE)) {
-            node = ANSI_RED + "N/A" + "\t" + ANSI_RESET + "|";
+        if (name.equals(Constants.NOT_AVAILABLE)) {
+            node = Constants.ANSI_RED + "N/A" + "\t" + Constants.ANSI_RESET + "|";
         } else {
             node = name + "\t|";
         }
