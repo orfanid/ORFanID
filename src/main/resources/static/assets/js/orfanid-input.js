@@ -31,36 +31,41 @@ $(document).ready(function () {
 
     var validated = false;
     $('#input_form').submit(function(event) {
-            if(!validated){
+        let ncbi_accession_input = $("#ncbi_accession_input").val();
+        if(ncbi_accession_input !== "") {
+            if (!validated) {
                 var accessionType = $("input[name=accessionType]:checked").val();
-                var ncbi_accession_input = $("#ncbi_accession_input").val();
 
                 // ajax call to controller to validate the values
                 $.ajax({
-                    url  : "/validate/accessions",
-                    type : "GET",
+                    url: "/validate/accessions",
+                    type: "GET",
                     async: false,
-                    data :{"accessions":ncbi_accession_input, "accessionType":accessionType},
-                    success : function(response) {
+                    data: {"accessions": ncbi_accession_input, "accessionType": accessionType},
+                    success: function (response) {
                         if (response === "Valid") {
                             $('#input_progressbar').modal('open');
                             validated = true;
                             $('form').submit();
-                        }else if(response === "Invalid"){
+                        } else if (response === "Invalid") {
                             $("#ncbi_accession_input_helper").text("No accession");
-                        }else{
+                        } else {
                             $("#ncbi_accession_input").focus();
                             $("#ncbi_accession_input").addClass('invalid').removeClass('valid');
-                            $("#ncbi_accession_input_helper").text(response + " not found in "+ accessionType + " database");
+                            $("#ncbi_accession_input_helper").text(response + " not found in " + accessionType + " database");
                             $("#ncbi_accession_input_helper").addClass('invalid').removeClass('valid');
                         }
                     },
-                    error : function(error) {
+                    error: function (error) {
                         alert("Error occurred: " + error);
                     }
                 });
             }
-            return validated;
+        }else{
+            validated = true;
+            $('#input_progressbar').modal('open');
+        }
+        return validated;
     });
 
     // Disable the ability to input a gene sequence if accessions are provided and vice versa
