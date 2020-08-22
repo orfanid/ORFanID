@@ -7,8 +7,8 @@ services:
     ports:
       - "8080:8085"
     volumes:
-      - /home/vinodh/out:/dataoutputdir
-#      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
+#      - /home/vinodh/out:/dataoutputdir
+      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
 
   nginx:
      container_name: nginx_container

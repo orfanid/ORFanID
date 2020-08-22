@@ -1,21 +1,28 @@
 package com.orfangenes.app.controllers;
 
 import com.orfangenes.app.ORFanGenes;
+//import com.orfangenes.app.config.DatabaseApiConfig;
+//import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.model.InputSequence;
+//import com.orfangenes.app.util.RestCall;
 import com.sun.net.httpserver.Authenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +41,10 @@ import java.util.Map;
 @Slf4j
 @Controller
 public class InternalController {
+
+//
+//    @Autowired
+//    DatabaseService databaseService;
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
@@ -141,20 +152,21 @@ public class InternalController {
     @PostMapping("/results")
     @ResponseBody
     public String getResults() {
-        JSONArray results = new JSONArray();
-
-        File[] sessions = new File(OUTPUT_DIR).listFiles(File::isDirectory);
-        for (File session : sessions) {
-            String sessionPath = session.getPath();
-            String metadataFilePath = sessionPath + File.separator + Constants.FILE_RESULT_METADATA;
-            JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
-            // Fetch result if it is marked as saved
-            if (metadata != null && (boolean) metadata.get("saved")) {
-                metadata.remove("saved");
-                results.add(metadata);
-            }
-        }
-        return results.toString();
+        return ""; //databaseService.getResults();
+//        JSONArray results = new JSONArray();
+//
+//        File[] sessions = new File(OUTPUT_DIR).listFiles(File::isDirectory);
+//        for (File session : sessions) {
+//            String sessionPath = session.getPath();
+//            String metadataFilePath = sessionPath + File.separator + Constants.FILE_RESULT_METADATA;
+//            JSONObject metadata = FileHandler.getObjectFromFile(metadataFilePath);
+//            // Fetch result if it is marked as saved
+//            if (metadata != null && (boolean) metadata.get("saved")) {
+//                metadata.remove("saved");
+//                results.add(metadata);
+//            }
+//        }
+//        return results;
     }
 
     @GetMapping("/download/blast/{sessionid}")

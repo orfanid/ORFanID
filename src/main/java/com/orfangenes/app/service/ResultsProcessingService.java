@@ -36,54 +36,54 @@ public class ResultsProcessingService {
         orfanGeneCount.put(Constants.STRICT_ORFAN, 0);
 
         JSONArray geneData = new JSONArray();
-        List<com.orfangenes.common.models.Gene> geneList = new ArrayList<>();
-
-        for (Map.Entry<String, String> entry : classification.entrySet()) {
-            String classificationLevel = entry.getValue();
-            int count = orfanGeneCount.get(classificationLevel);
-            count++;
-            orfanGeneCount.put(classificationLevel, count);
-
-            // Generating Gene data
-            com.orfangenes.common.models.Gene geneNew = new com.orfangenes.common.models.Gene();
-            geneNew.setGeneId(entry.getKey());
-            Gene gene =genes.get(entry.getKey());
-            geneNew.setDescription(gene.getDescription());
-            geneNew.setOrfanLevel(classificationLevel);
-            geneList.add(geneNew);
-
-
-//            // Generating Gene data
-//            JSONObject orfanJSON = new JSONObject();
-//            orfanJSON.put("geneid", entry.getKey());
-//            orfanJSON.put("orfanLevel", classificationLevel);
+//        List<com.orfangenes.common.models.Gene> geneList = new ArrayList<>();
 //
-//            orfanJSON.put("description", gene.getDescription());
-//            geneData.add(orfanJSON);
+//        for (Map.Entry<String, String> entry : classification.entrySet()) {
+//            String classificationLevel = entry.getValue();
+//            int count = orfanGeneCount.get(classificationLevel);
+//            count++;
+//            orfanGeneCount.put(classificationLevel, count);
+//
+//            // Generating Gene data
+//            com.orfangenes.common.models.Gene geneNew = new com.orfangenes.common.models.Gene();
+//            geneNew.setGeneId(entry.getKey());
+//            Gene gene =genes.get(entry.getKey());
+//            geneNew.setDescription(gene.getDescription());
+//            geneNew.setOrfanLevel(classificationLevel);
+//            geneList.add(geneNew);
+//
+//
+////            // Generating Gene data
+////            JSONObject orfanJSON = new JSONObject();
+////            orfanJSON.put("geneid", entry.getKey());
+////            orfanJSON.put("orfanLevel", classificationLevel);
+////
+////            orfanJSON.put("description", gene.getDescription());
+////            geneData.add(orfanJSON);
+//        }
+//        FileHandler.saveOutputFiles(geneData, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES);
+
+        // Generating ORFan Genes summary data to be shown in the table
+        JSONArray orfanGenesSummary = new JSONArray();
+        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+            JSONObject summaryObject = new JSONObject();
+            summaryObject.put("type", entry.getKey());
+            summaryObject.put("count", entry.getValue());
+            orfanGenesSummary.add(summaryObject);
         }
-        FileHandler.saveOutputFiles(geneData, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES);
+        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY);
 
-//        // Generating ORFan Genes summary data to be shown in the table
-//        JSONArray orfanGenesSummary = new JSONArray();
-//        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
-//            JSONObject summaryObject = new JSONObject();
-//            summaryObject.put("type", entry.getKey());
-//            summaryObject.put("count", entry.getValue());
-//            orfanGenesSummary.add(summaryObject);
-//        }
-//        FileHandler.saveOutputFiles(orfanGenesSummary, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY);
-
-//        // Generating ORFan Genes Summary Chart data
-//        JSONObject chartJSON = new JSONObject();
-//        JSONArray x = new JSONArray();
-//        JSONArray y = new JSONArray();
-//        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
-//            x.add(entry.getKey());
-//            y.add(entry.getValue());
-//        }
-//        chartJSON.put("x", x);
-//        chartJSON.put("y", y);
-//        FileHandler.saveOutputFiles(chartJSON, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
+        // Generating ORFan Genes Summary Chart data
+        JSONObject chartJSON = new JSONObject();
+        JSONArray x = new JSONArray();
+        JSONArray y = new JSONArray();
+        for (Map.Entry<String, Integer> entry : orfanGeneCount.entrySet()) {
+            x.add(entry.getKey());
+            y.add(entry.getValue());
+        }
+        chartJSON.put("x", x);
+        chartJSON.put("y", y);
+        FileHandler.saveOutputFiles(chartJSON, outputdir + File.separator + Constants.FILE_OUTPUT_ORFAN_GENES_SUMMARY_CHART);
     }
 
     public static void generateBlastTree(Map<String, List<List<String>>> taxonomyTreeForGenes, String outputdir) {

@@ -1,3 +1,5 @@
+spring.application.name: ORFanID
+
 # PROFILES
 spring:
   profiles:
@@ -23,7 +25,12 @@ spring:
 server:
   port: 8085
 
-data.outputdir: /dataoutputdir/
+data.outputdir: /Users/hewapathirana/projects/ORFanFinder/out
 ncbi.blast.programme.location: /usr/local/ncbi/blast/bin/
 app.dir.root: /app/
+
+db.api:
+  baseUrl: http://localhost:8081
+  keyName: x-api-key
+  keyValue: Janaya
 

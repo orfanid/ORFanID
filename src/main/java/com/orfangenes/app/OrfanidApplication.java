@@ -4,7 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages = "com.orfangenes.common.models")
+@SpringBootApplication
+//@SpringBootApplication(scanBasePackages = "com.orfangenes.repo.entity")
 public class OrfanidApplication {
 
     public static void main(String[] args) {
