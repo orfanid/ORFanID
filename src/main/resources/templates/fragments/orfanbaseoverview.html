@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OrfanBaseOverview</title>
+</head>
+
+<body>
+    <div th:fragment="overview">
+        <h3 style="text-align:center">Database Overview</h3>
+
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />
+
+
+        <!-- BioCircos.js, Jquery.js and D3.js import -->
+        <script type="text/javascript" src="assets/js/jquery-1.12.4.js"></script>
+        <!--<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>-->
+        <script type="text/javascript" src="assets/js/d3.js"></script>
+        <script type="text/javascript" src="assets/js/biocircos-1.1.0.js"></script>
+        <script type="text/javascript" src="assets/js/echarts.min.js"></script>
+
+
+        <!-- Prepare a <div> tag with "biocircos" id to set the picture position your will draw in html -->
+        <div class="row">
+            <div class="col s12 m6">
+                <div class="card-panel">
+                    <h6>OrfanGenes Orverview</h6>
+                    <div id="main" style="border: 1px solid #818181; height: 650px;margin-top: 20px; padding-top: 20px;"></div>
+                </div>
+            </div>
+            <div class="col s12 m6">
+                <div class="card-panel">
+                    <h6>Human Genes</h6>
+                    <div id="biocircos" style="border: 1px solid #818181;height: 650px; margin-top: 20px; text-align: center; padding-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Data configuration -->
+        <script src="assets/data/gallery04_SCATTER01.js"></script>
+        <script src="assets/data/gallery04_SCATTER02.js"></script>
+        <script src="assets/data/gallery04_SCATTER03.js"></script>
+        <!-- Genome configuration -->
+        <script>
+            var BioCircosGenome = [
+                ["1" , 249250621],
+                ["2" , 243199373],
+                ["3" , 198022430],
+                ["4" , 191154276],
+                ["5" , 180915260],
+                ["6" , 171115067],
+                ["7" , 159138663],
+                ["8" , 146364022],
+                ["9" , 141213431],
+                ["10" , 135534747],
+                ["11" , 135006516],
+                ["12" , 133851895],
+                ["13" , 115169878],
+                ["14" , 107349540],
+                ["15" , 102531392],
+                ["16" , 90354753],
+                ["17" , 81195210],
+                ["18" , 78077248],
+                ["19" , 59128983],
+                ["20" , 63025520],
+                ["21" , 48129895],
+                ["22" , 51304566],
+                ["X" , 155270560],
+                ["Y" , 59373566]
+            ];
+            BioCircos01 = new BioCircos(SCATTER01,SCATTER02,SCATTER03,BioCircosGenome,{
+                target : "biocircos",
+                svgWidth : 600,
+                svgHeight : 600,
+                chrPad : 0.04,
+                innerRadius: 246,
+                outerRadius: 270,
+                zoom : true,
+                genomeFillColor: ["#FFFFCC", "#CCFFFF", "#FFCCCC", "#CCCC99","#0099CC", "#996699", "#336699", "#FFCC33","#66CC00"],
+                SCATTERMouseOverDisplay : true,
+                SCATTERMouseOverTooltipsHtml01 : "chr : ",
+                SCATTERMouseOverTooltipsHtml02 : "<br>start : ",
+                SCATTERMouseOverTooltipsHtml03 : "<br>end : ",
+                SCATTERMouseOverTooltipsHtml04 : "<br>name : ",
+                SCATTERMouseOverTooltipsHtml05 : "<br>cancer : ",
+                SCATTERMouseOverTooltipsHtml06 : "",
+                SCATTERMouseOverTooltipsPosition : "absolute",
+                SCATTERMouseOverTooltipsBackgroundColor : "#D1EEEE",
+                SCATTERMouseOverTooltipsBorderStyle : "solid",
+                SCATTERMouseOverTooltipsBorderWidth : 0,
+                SCATTERMouseOverTooltipsPadding : "3px",
+                SCATTERMouseOverTooltipsBorderRadius : "5px",
+                SCATTERMouseOverTooltipsOpacity : 0.7,
+                SCATTERMouseOutDisplay : true,
+                SCATTERMouseOutAnimationTime : 800,
+                SCATTERMouseOutColor : "none",
+                SCATTERMouseOutCircleSize : "none",
+                SCATTERMouseOutCircleStrokeWidth : 0,
+            });
+            BioCircos01.draw_genome(BioCircos01.genomeLength);
+        </script>
+        <script type="text/javascript">
+            // based on prepared DOM, initialize echarts instance
+            var myChart = echarts.init(document.getElementById('main'));
+
+            setTimeout(function () {
+
+                // public static final String STRICT_ORFAN = "Strict ORFan";
+                // public static final String MULTI_DOMAIN_GENE = "multi-domain gene";
+                // public static final String DOMAIN_RESTRICTED_GENE = "domain restricted gene";
+                // public static final String KINGDOM_RESTRICTED_GENE = "kingdom restricted gene";
+                // public static final String PHYLUM_RESTRICTED_GENE = "phylum restricted gene";
+                // public static final String CLASS_RESTRICTED_GENE = "class restricted gene";
+                // public static final String ORDER_RESTRICTED_GENE = "order restricted gene";
+                // public static final String FAMILY_RESTRICTED_GENE = "family restricted gene";
+                // public static final String GENUS_RESTRICTED_GENE = "genus restricted gene";
+
+                option = {
+                    legend: {},
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: false
+                    },
+                    dataset: {
+                        source: [
+                            ['product', '2020-04', '2020-05', '2020-06', '2020-07', '2020-08', '2020-09'],
+                            ['Strict ORFan', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+                            ['domain restricted gene', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+                            ['kingdom restricted gene', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+                            ['phylum restricted gene', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+                        ]
+                    },
+                    xAxis: {type: 'category'},
+                    yAxis: {gridIndex: 0},
+                    grid: {top: '55%'},
+                    series: [
+                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                        {
+                            type: 'pie',
+                            id: 'pie',
+                            radius: '30%',
+                            center: ['50%', '25%'],
+                            label: {
+                                formatter: '{b}: {@2012} ({d}%)'
+                            },
+                            encode: {
+                                itemName: 'product',
+                                value: '2012',
+                                tooltip: '2012'
+                            }
+                        }
+                    ]
+                };
+
+                myChart.on('updateAxisPointer', function (event) {
+                    var xAxisInfo = event.axesInfo[0];
+                    if (xAxisInfo) {
+                        var dimension = xAxisInfo.value + 1;
+                        myChart.setOption({
+                            series: {
+                                id: 'pie',
+                                label: {
+                                    formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                                },
+                                encode: {
+                                    value: dimension,
+                                    tooltip: dimension
+                                }
+                            }
+                        });
+                    }
+                });
+
+                myChart.setOption(option);
+
+            });
+        </script>
+    </div>
+</body>
+</html>

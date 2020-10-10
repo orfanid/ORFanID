@@ -1,29 +1,34 @@
 $(document).ready(function() {
+    function unixTimestampToDate(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var time = date + ' ' + month + ' ' + year;
+        return time;
+    }
+
     $.ajax({
         type: "POST",
         contentType: 'application/json',
         dataType: "text",
-        url: "/results",
+        url: "/all-analysis",
         success: function (results) {
             var savedResults = JSON.parse(results);
             savedResults.forEach(function (result) {
                 // Converting UNIX timestamp to date
-                var timestamp = result.date;
-                var savedDate = new Date(timestamp * 1000);
-                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                var year = savedDate.getFullYear();
-                var month = months[savedDate.getMonth()];
-                var date = savedDate.getDate();
-                var time = date + ' ' + month + ' ' + year;
-                result.date = time;
+                var timestamp = result.analysisDate;
+                result.date = unixTimestampToDate(timestamp/1000);
             });
             var table = $('#ResultViewTable').DataTable({
                 "data":savedResults,
                 "columns": [
                     {"data" : "date"},
-                    {"data" : "sessionid"},
+                    {"data" : "analysisId"},
                     {"data" : "email"},
                     {"data" : "organism"},
+                    {"data" : "numberOfGenes"},
                     {"data" : "view"}
                 ],
                 "oLanguage": {
@@ -51,7 +56,7 @@ $(document).ready(function() {
 
             $('#ResultViewTable tbody').on( 'click', 'button', function () {
                 var data = table.row( $(this).parents('tr') ).data();
-                var sessionid = data.sessionid;
+                var sessionid = data.analysisId;
                 window.location.href = "/result?sessionid=" + sessionid;
             });
         },

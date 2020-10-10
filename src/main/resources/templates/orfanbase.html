@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139406062-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-139406062-1');
+    </script>
+
+    <title>ORFanGenes</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="assets/css/orfan_styles.css">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+<div th:replace="fragments/header :: nav">&nbsp;</div>
+<main>
+    <!-- Prepare a <div> tag with "biocircos" id to set the picture position your will draw in html -->
+    <div class="row">
+        <div class="col s12 m6">
+            <div class="card-panel">
+                <h6>OrfanGenes Orverview</h6>
+                <div id="main" style="border: 1px solid #818181; height: 650px;margin-top: 20px; padding-top: 20px;"></div>
+            </div>
+        </div>
+        <div class="col s12 m6">
+            <div class="card-panel">
+                <h6>Human Genes</h6>
+                <div id="biocircos" style="border: 1px solid #818181;height: 650px; margin-top: 20px; text-align: center; padding-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+    <h2 style="text-align:center">ORFanBase Database Genes</h2>
+    <div class="row">
+        <div class="col s10 offset-s1">
+            <div class="row">
+                <div class="input-field col s5">
+                    <input type="text" id="organismName" name="organismName" class="autocomplete validate" required="required">
+                    <label for="organismName">Organism</label>
+                </div>
+                <div class="input-field col s5">
+                    <select multiple>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">Strict ORFan</option>
+                        <option value="2">Domain restricted gene</option>
+                        <option value="3">Kingdom restricted gene</option>
+                        <option value="4">Phylum restricted gene</option>
+                        <option value="5">Class restricted gene</option>
+                        <option value="6">Order restricted gene</option>
+                        <option value="7">Family restricted gene</option>
+                        <option value="8">Genus restricted gene</option>
+                    </select>
+                    <label>Orfan Level</label>
+                </div>
+            </div>
+        </div>
+        <div id="organismIcon" class="col s1">
+        </div>
+    </div>
+    <div class="section">
+        <div id="savedResultView" class="row">
+            <div class="col s10 offset-s1 center-align">
+
+                <table id="GenesViewTable" class="display" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Organism</th>
+                        <th>Gene ID</th>
+                        <th>Description</th>
+                        <th>Orfan Level</th>
+                        <th>Analysis</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Date</th>
+                        <th>Organism</th>
+                        <th>Gene ID</th>
+                        <th>Description</th>
+                        <th>Orfan Level</th>
+                        <th>Analysis</th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="assets/js/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="assets/js/materialize.min.js"></script>
+<script type="text/javascript" src="assets/js/orfanid-orfanbase.js"></script>
+<script type="text/javascript" src="assets/js/d3.js"></script>
+<script type="text/javascript" src="assets/js/biocircos-1.1.0.js"></script>
+<script type="text/javascript" src="assets/js/echarts.min.js"></script>
+
+<!-- Data configuration -->
+<script src="assets/data/gallery04_SCATTER01.js"></script>
+<script src="assets/data/gallery04_SCATTER02.js"></script>
+<script src="assets/data/gallery04_SCATTER03.js"></script>
+<div th:replace="fragments/footer :: footer">&nbsp;</div>
+</body>
+</html>
