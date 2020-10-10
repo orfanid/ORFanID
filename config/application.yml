@@ -1,11 +1,9 @@
-# PROFILES
 spring:
-  profiles:
-    active: "unix"
+  application.name: ORFanID
   thymeleaf:
         cache: false
-
 server:
+  port: 8085
   error:
     path: /error
     whitelabel:
@@ -15,15 +13,14 @@ logging:
   level:
     org.springframework: INFO
 
----
+db.api:
+  baseUrl: http://localhost:8081
+  keyName: x-api-key
+  keyValue: Janaya
 
-spring:
-  profiles: unix
-
-server:
-  port: 8085
-
+#data.outputdir: /Users/hewapathirana/projects/ORFanFinder/out
 data.outputdir: /dataoutputdir/
 ncbi.blast.programme.location: /usr/local/ncbi/blast/bin/
+#app.dir.root: /Users/hewapathirana/projects/ORFanID/src/main/resources/
 app.dir.root: /app/
 
