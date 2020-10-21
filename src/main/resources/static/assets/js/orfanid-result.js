@@ -217,11 +217,11 @@ function saveResult() {
         url: "/save",
         data: JSON.stringify(data),
         success: function (result) {
-            window.location.href = "/result?sessionid=" + sessionid;
+            window.location.href = "redirect:/results";
         },
         error: function (error) {
             console.log(error);
-            window.location.href = "/result?sessionid=" + sessionid;
+            window.location.href = "redirect:/results";
         }
     });
 }

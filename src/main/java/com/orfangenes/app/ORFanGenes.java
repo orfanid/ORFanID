@@ -78,6 +78,8 @@ public class ORFanGenes {
                 user.setFirstName(FIRST_NAME);
                 user.setLastName(LAST_NAME);
                 user.setEmail(EMAIL);
+
+                user = databaseService.saveUser(user);
             }
 
             analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));

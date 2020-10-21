@@ -78,6 +78,20 @@ public class DatabaseService {
         }
     }
 
+    public User saveUser(User user) throws IOException {
+        String url = "/user/user";
+        Long id = user.getId();
+        if (id == null) {
+            id = -1L;
+            user.setId(id);
+        }
+
+        String payload = this.objectMapper.writeValueAsString(user);
+        log.info("Saving user : " + payload);
+        String response = this.restCall.sendPostRequest(url, payload);
+        return (User) this.objectMapper.readValue(response, User.class);
+    }
+
     public String getDataSummary(String analysisId) {
         String url = "analysis/data/summary/" + analysisId;
         return restCall.sendGetRequestWithRetry(url, null, null);

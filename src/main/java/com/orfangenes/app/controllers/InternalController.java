@@ -203,6 +203,12 @@ public class InternalController {
         } catch (Exception e) {
             log.error("Clamp Analysis Failed: " + e.getMessage());
         }
-        return "redirect:/clampresults?chromosome=" + chromosome;
+        return "redirect:/clampresults?chromosome=" + "all"; // todo hard coded
+    }
+
+    @GetMapping("test-api")
+    @ResponseBody
+    public String testAPI() throws IOException {
+        return databaseService.getUserByEmail("orfanid@gmail.com").toString();
     }
 }

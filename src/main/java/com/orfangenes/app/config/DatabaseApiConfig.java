@@ -13,21 +13,21 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 public class DatabaseApiConfig {
 
-//    @Bean
-//    RestCall restCall(@Value("${db.api.baseUrl}") String baseUrl,
-//                      @Value("${db.api.keyName}") String apiKeyName,
-//                      @Value("${db.api.keyValue}") String apiKeyValue,
-//                      @Value("${spring.application.name}") String appName){
-//        return new RestCall(baseUrl, apiKeyName, apiKeyValue, appName);
-//    }
-
     @Bean
-    RestCall restCall(@Value("http://localhost:8081") String baseUrl,
-                      @Value("x-api-key") String apiKeyName,
-                      @Value("Janaya") String apiKeyValue,
-                      @Value("orfanid") String appName){
+    RestCall restCall(@Value("${db.api.baseUrl}") String baseUrl,
+                      @Value("${db.api.keyName}") String apiKeyName,
+                      @Value("${db.api.keyValue}") String apiKeyValue,
+                      @Value("${spring.application.name}") String appName){
         return new RestCall(baseUrl, apiKeyName, apiKeyValue, appName);
     }
+//
+//    @Bean
+//    RestCall restCall(@Value("http://localhost:8081") String baseUrl,
+//                      @Value("x-api-key") String apiKeyName,
+//                      @Value("Janaya") String apiKeyValue,
+//                      @Value("orfanid") String appName){
+//        return new RestCall(baseUrl, apiKeyName, apiKeyValue, appName);
+//    }
 
 
     @Bean

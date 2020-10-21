@@ -2,7 +2,10 @@ package com.orfangenes.app.controllers;
 
 import com.orfangenes.app.model.InputSequence;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -19,8 +22,10 @@ public class WebPageController {
     }
 
     @RequestMapping("/result")
-    public String result() {
-        return "result";
+    public ModelAndView result(@RequestParam(value = "sessionid") String sessionid) {
+        ModelMap model = new ModelMap();
+        model.addAttribute("sessionid", sessionid);
+        return new ModelAndView("result",model);
     }
 
     @RequestMapping("/orfanbase")
