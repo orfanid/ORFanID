@@ -1,6 +1,7 @@
 package com.orfangenes.app.controllers;
 
 import com.orfangenes.app.ORFanGenes;
+import com.orfangenes.app.dto.UserDto;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.util.Constants;
@@ -119,12 +120,11 @@ public class InternalController {
     }
 
     @PostMapping("/save")
-    @ResponseBody
-    public String saveResult(@RequestBody Map<String, Object> payload) throws Exception {
-        final String analysisId = (String) payload.get("sessionid");
-        final String firstName = (String) payload.get("firstname");
-        final String lastname = (String) payload.get("lastname");
-        final String email = (String) payload.get("email");
+    public String saveResult(@Valid @ModelAttribute("user") UserDto userFromForm, BindingResult result, Model model) throws Exception {
+        final String analysisId = userFromForm.getAnalysisId();
+        final String firstName = userFromForm.getFirstName();
+        final String lastname = userFromForm.getLastName();
+        final String email = userFromForm.getEmail();
 
         Analysis analysis = databaseService.getAnalysisById(analysisId);
         if(analysis !=null){

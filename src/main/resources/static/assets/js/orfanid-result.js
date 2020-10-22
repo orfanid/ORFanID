@@ -195,37 +195,6 @@ $(document).ready(function() {
     });
 });
 
-
-
-function saveResult() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var sessionid = (urlParams.get('sessionid'));
-    var firstname = document.getElementById("firstname").value;
-    var lastname = document.getElementById("lastname").value;
-    var email = document.getElementById("email").value;
-    var data = {
-        "sessionid" : sessionid,
-        "firstname" : firstname,
-        "lastname" : lastname,
-        "email" : email
-    };
-
-    $.ajax({
-        type: "POST",
-        contentType: 'application/json',
-        dataType: "text",
-        url: "/save",
-        data: JSON.stringify(data),
-        success: function (result) {
-            window.location.href = "redirect:/results";
-        },
-        error: function (error) {
-            console.log(error);
-            window.location.href = "redirect:/results";
-        }
-    });
-}
-
 function downloadBlast() {
     let urlParams = new URLSearchParams(window.location.search);
     let sessionid = (urlParams.get('sessionid'));
