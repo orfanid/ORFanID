@@ -12,7 +12,7 @@
 FROM maven:3.3.9-jdk-8-alpine AS build-env
 
 # update the linux OS
-RUN apt-get update
+#RUN apt-get update
 
 # use app folder as the working directory
 WORKDIR /app

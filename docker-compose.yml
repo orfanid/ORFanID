@@ -8,5 +8,6 @@ services:
     ports:
       - "8080:8085"
     volumes:
+      - /home/ubuntu/apps/out:/dataoutputdir
 #      - /home/vinodh/out:/dataoutputdir
-      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
+#      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
