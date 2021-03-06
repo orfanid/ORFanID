@@ -37,7 +37,7 @@ of input sequences, selected e-value, and number of target sequences.
 
 ## 4. Deployment
 
-![ORFanID_Deployment_Architecture](https://github.com/orfanid/ORFanID/blob/api_integration/images/ORFanID_Deployment_Architecture.png)
+![ORFanID_Deployment_Architecture](https://github.com/orfanid/ORFanID/blob/master/images/ORFanID_Deployment_Architecture.png)
 
 ## 4.1 Prerequisite
 
@@ -61,13 +61,12 @@ Following Software packages needs to be installed in your machine:
 #### 4.2.2 Deploy ORFanID App
 
 1. check out ```git@github.com:orfanid/orfanbasePostgres.git``` and open it from your IDE(i.e IntelliJ)
-2. Checkout ```api_integration``` branch
-3. Change the following values based on your environment if you are using it locally
+2. Change the following values based on your environment if you are using it locally
     * ```db.api.baseUrl``` in config > application.yml
     * ```data.outputdir``` in config > application.yml
     * ```app.dir.root``` in config > application.yml
     * ```services.blastservice.volumes``` in docker-compose.yml`    
-4 ```docker-compose up --build -d```
+3 ```docker-compose up --build -d```
 
 #### 4.2.3 Connect both app and api
 
