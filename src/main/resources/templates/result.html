@@ -31,12 +31,17 @@
     <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="assets/js/materialize.min.js"></script>
     <script type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
-    <script type="text/javascript" src="assets/js/result.js"></script>
+    <script type="text/javascript" src="assets/js/orfanid-result.js"></script>
     <script type="text/javascript" src="assets/js/echarts.min.js"></script>
 </head>
 <body>
 <div th:replace="fragments/header :: nav">&nbsp;</div>
 <main>
+    <div class="row">
+        <div class="col s10 offset-s2">
+            <h6 id="analysisid_result">Analysis ID: <span th:text="${sessionid}" /></h6>
+        </div>
+    </div>
     <div class="row">
         <div class="col s5 offset-s1 center-align">
             <h4> ORFan Genes</h4>
@@ -95,20 +100,31 @@
 
     <div id="saveResultModal" class="modal">
         <div class="row">
-            <form class="col s12" onsubmit="saveResult()">
+            <form id="user_details_form" action="/save" th:action="@{/save}" th:object="${user}" method="post">
+            <!--<form class="col s12" onsubmit="saveResult()">-->
                 <div class="modal-content">
-                    <h5>Save your results!</h5>
+                    <h5>Save your valuable results!</h5>
                     <div class="row">
                         <div class="input-field col s10">
-                            <br><br>
+                            <input id="analysisId" type="hidden" name="analysisId" class="form-control" th:value="${sessionid}" >
+                        </div>
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="firstname" type="text" name="firstName" class="form-control validate" placeholder="First Name" required>
+                        </div>
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="lastname" type="text" name="lastName" class="form-control validate" placeholder="Last Name" required>
+                        </div>
+                        <div class="input-field col s10">
                             <i class="material-icons prefix">email</i>
-                            <input id="email" type="email" class="form-control validate" placeholder="Email" required>
+                            <input id="email" type="email" name="email" class="form-control validate" placeholder="Email" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#!" class="modal-close waves-effect waves-red btn-flat">Close</a>
-                    <button id="submit" type="submit" class="btn waves-effect waves-light modal-close">Save </button>
+                    <button id="submit" type="submit" class="btn waves-effect waves-light modal-close">Save</button>
                 </div>
             </form>
         </div>

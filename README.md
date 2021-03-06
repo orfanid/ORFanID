@@ -35,9 +35,74 @@ the dropdown menu.
 1. Click “Submit” and wait for results to load. The time taken for the results to be obtained is dependent on the number 
 of input sequences, selected e-value, and number of target sequences.
 
-## 3. Deploy the ORFanID
+## 4. Deployment
 
-1. Make sure you have installed the [Docker](https://docs.docker.com/get-docker/) in your VM.
-2. Download this repository to your working directory of the machine
-3. Check the docker-compose.yml and  replace the volume mounts to map the location to your local storage. Run the ```docker-compose up --build``` command to build and run the container.
-4. If you want to terminate the instance and remoce the container, you can use ```docker-compose down```
+![ORFanID_Deployment_Architecture](https://github.com/orfanid/ORFanID/blob/api_integration/images/ORFanID_Deployment_Architecture.png)
+
+## 4.1 Prerequisite
+
+Following Software packages needs to be installed in your machine:
+   1. Docker [sudo apt install maven && sudo apt  install docker.io]
+   2. docker-compose [sudo apt  install docker-compose && sudo service docker start && sudo usermod -aG docker ${USER} ]
+   3. Git
+   4. Maven [sudo apt install maven]
+
+(Reboot is required after installing all the softwares)
+    
+    
+### 4.2 Deploy the ORFanID
+
+#### 4.2.1 Deploy database api
+
+1. check out ```git@github.com:orfanid/orfanbasePostgres.git``` and open it from your IDE(i.e IntelliJ)
+2. ```cp config/application.yml src/main/resources ```
+3. ```docker-compose up --build -d```
+
+#### 4.2.2 Deploy ORFanID App
+
+1. check out ```git@github.com:orfanid/orfanbasePostgres.git``` and open it from your IDE(i.e IntelliJ)
+2. Checkout ```api_integration``` branch
+3. Change the following values based on your environment if you are using it locally
+    * ```db.api.baseUrl``` in config > application.yml
+    * ```data.outputdir``` in config > application.yml
+    * ```app.dir.root``` in config > application.yml
+    * ```services.blastservice.volumes``` in docker-compose.yml`    
+4 ```docker-compose up --build -d```
+
+#### 4.2.3 Connect both app and api
+
+```
+docker network connect orfanbasepostgres_orfanid orfanid-app
+// check if webapp got connected with database api
+docker network inspect orfanbasepostgres_orfanid
+```
+  
+### 4.3 Deploy on Cloud/Linux
+
+ ```   
+mkdir -p apps/orfanbase
+mkdir -p apps/orfanid
+
+cd apps/orfanbase
+git clone git@github.com:orfanid/orfanbasePostgres.git
+cd orfanbasePostgres
+cp config/application.yml src/main/resources  
+docker-compose up --build -d
+
+cd apps/orfanid
+git clone git@github.com:orfanid/orfanid.git
+cd orfanid
+Git checkout api_integration     
+
+docker network connect orfanbasepostgres_orfanid orfanid-app
+
+// check if webapp got connected with database api
+docker network inspect orfanbasepostgres_orfanid
+```   
+
+
+### Start server
+Run the ```docker-compose up --build``` command to build and run the container.
+
+### Stop server
+If you want to terminate the instance and remove the container, you can use ```docker-compose down```
