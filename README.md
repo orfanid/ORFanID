@@ -35,7 +35,11 @@ the dropdown menu.
 1. Click “Submit” and wait for results to load. The time taken for the results to be obtained is dependent on the number 
 of input sequences, selected e-value, and number of target sequences.
 
-## 4. Prerequisite
+## 4. Deployment
+
+![ORFanID_Deployment_Architecture](https://github.com/orfanid/ORFanID/blob/api_integration/images/ORFanID_Deployment_Architecture.png)
+
+## 4.1 Prerequisite
 
 Following Software packages needs to be installed in your machine:
    1. Docker [sudo apt install maven && sudo apt  install docker.io]
@@ -46,15 +50,15 @@ Following Software packages needs to be installed in your machine:
 (Reboot is required after installing all the softwares)
     
     
-## 5. Deploy the ORFanID
+### 4.2 Deploy the ORFanID
 
-### 5.1 Deploy database api
+#### 4.2.1 Deploy database api
 
 1. check out ```git@github.com:orfanid/orfanbasePostgres.git``` and open it from your IDE(i.e IntelliJ)
 2. ```cp config/application.yml src/main/resources ```
 3. ```docker-compose up --build -d```
 
-### 5.2 Deploy ORFanID App
+#### 4.2.2 Deploy ORFanID App
 
 1. check out ```git@github.com:orfanid/orfanbasePostgres.git``` and open it from your IDE(i.e IntelliJ)
 2. Checkout ```api_integration``` branch
@@ -65,7 +69,7 @@ Following Software packages needs to be installed in your machine:
     * ```services.blastservice.volumes``` in docker-compose.yml`    
 4 ```docker-compose up --build -d```
 
-### 5.3 Connect both app and api
+#### 4.2.3 Connect both app and api
 
 ```
 docker network connect orfanbasepostgres_orfanid orfanid-app
@@ -73,7 +77,7 @@ docker network connect orfanbasepostgres_orfanid orfanid-app
 docker network inspect orfanbasepostgres_orfanid
 ```
   
-## 6. Deploy on Cloud/Linux
+### 4.3 Deploy on Cloud/Linux
 
  ```   
 mkdir -p apps/orfanbase
