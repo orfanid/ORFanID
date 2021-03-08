@@ -72,7 +72,7 @@ public class InternalController {
         analysis.setEvalue(Integer.parseInt(sequence.getMaxEvalue()));
         analysis.setMaximumTargetSequences(Integer.parseInt(sequence.getMaxTargetSequence()));
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
-        analysis.setSequenceType(sequence.getType());
+        analysis.setSequenceType(sequence.getAccessionType());
 
         try {
             FileHandler.createResultsOutputDir(analysisDir);
