@@ -90,8 +90,8 @@ docker-compose up --build -d
 
 cd apps/orfanid
 git clone git@github.com:orfanid/orfanid.git
-cd orfanid
-Git checkout api_integration     
+cd orfanid     
+docker-compose up --build -d
 
 docker network connect orfanbasepostgres_orfanid orfanid-app
 
