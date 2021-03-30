@@ -17,7 +17,8 @@
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />
-    <link type="text/css" rel="stylesheet" href="assets/css/orfan_styles.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/jquery.dataTables.min.css" media="screen,projection" />
+    <!--<link type="text/css" rel="stylesheet" href="assets/css/orfan_styles.css">-->
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -42,32 +43,32 @@
         <!--</div>-->
     <!--</div>-->
     <h2 style="text-align:center">ORFanBase Database Genes</h2>
-    <div class="row">
-        <div class="col s10 offset-s1">
-            <div class="row">
-                <div class="input-field col s5">
-                    <input type="text" id="organismName" name="organismName" class="autocomplete validate" required="required">
-                    <label for="organismName">Organism</label>
-                </div>
-                <div class="input-field col s5">
-                    <select multiple>
-                        <option value="" disabled selected>Choose your option</option>
-                        <option value="1">Strict ORFan</option>
-                        <option value="2">Domain restricted gene</option>
-                        <option value="3">Kingdom restricted gene</option>
-                        <option value="4">Phylum restricted gene</option>
-                        <option value="5">Class restricted gene</option>
-                        <option value="6">Order restricted gene</option>
-                        <option value="7">Family restricted gene</option>
-                        <option value="8">Genus restricted gene</option>
-                    </select>
-                    <label>Orfan Level</label>
-                </div>
-            </div>
-        </div>
-        <div id="organismIcon" class="col s1">
-        </div>
-    </div>
+    <!--<div class="row">-->
+        <!--<div class="col s10 offset-s1">-->
+            <!--<div class="row">-->
+                <!--<div class="input-field col s5">-->
+                    <!--<input type="text" id="organismName" name="organismName" class="autocomplete validate" required="required">-->
+                    <!--<label for="organismName">Organism</label>-->
+                <!--</div>-->
+                <!--<div class="input-field col s5">-->
+                    <!--<select multiple>-->
+                        <!--<option value="" disabled selected>Choose your option</option>-->
+                        <!--<option value="1">Strict ORFan</option>-->
+                        <!--<option value="2">Domain restricted gene</option>-->
+                        <!--<option value="3">Kingdom restricted gene</option>-->
+                        <!--<option value="4">Phylum restricted gene</option>-->
+                        <!--<option value="5">Class restricted gene</option>-->
+                        <!--<option value="6">Order restricted gene</option>-->
+                        <!--<option value="7">Family restricted gene</option>-->
+                        <!--<option value="8">Genus restricted gene</option>-->
+                    <!--</select>-->
+                    <!--<label>Orfan Level</label>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div id="organismIcon" class="col s1">-->
+        <!--</div>-->
+    <!--</div>-->
     <div class="section">
         <div id="savedResultView" class="row">
             <div class="col s10 offset-s1 center-align">
@@ -101,18 +102,18 @@
     </div>
 </main>
 <!--Import jQuery before materialize.js-->
-<script type="text/javascript" src="assets/js/jquery-1.12.4.js"></script>
-<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="assets/js/materialize.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="assets/js/orfanid-orfanbase.js"></script>
-<script type="text/javascript" src="assets/js/d3.js"></script>
-<script type="text/javascript" src="assets/js/biocircos-1.1.0.js"></script>
-<script type="text/javascript" src="assets/js/echarts.min.js"></script>
+<!--<script type="text/javascript" src="assets/js/d3.js"></script>-->
+<!--<script type="text/javascript" src="assets/js/biocircos-1.1.0.js"></script>-->
+<!--<script type="text/javascript" src="assets/js/echarts.min.js"></script>-->
 
 <!-- Data configuration -->
-<script src="assets/data/gallery04_SCATTER01.js"></script>
-<script src="assets/data/gallery04_SCATTER02.js"></script>
-<script src="assets/data/gallery04_SCATTER03.js"></script>
+<!--<script src="assets/data/gallery04_SCATTER01.js"></script>-->
+<!--<script src="assets/data/gallery04_SCATTER02.js"></script>-->
+<!--<script src="assets/data/gallery04_SCATTER03.js"></script>-->
 <div th:replace="fragments/footer :: footer">&nbsp;</div>
 </body>
 </html>
