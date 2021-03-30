@@ -37,7 +37,7 @@ $(document).ready(function() {
                         '</select></div>'
                 },
                 dom: 'frtlip',
-                "aaSorting": [],
+                "aaSorting": [[ 0, "desc" ]],
                 "columnDefs": [
                     {
                     "targets": 5,
