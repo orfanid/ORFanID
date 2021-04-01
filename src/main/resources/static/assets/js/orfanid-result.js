@@ -11,24 +11,40 @@ $(document).ready(function() {
         type: "POST",
         contentType: 'application/json',
         dataType: "text",
-        url: "/data/summary",
+        url: "/data/analysis",
         data: '{"sessionid":"' + sessionid + '"}',
         success: function (result) {
-            var orfanGenesSummary = JSON.parse(result);
-            $('#orfanGenesSummary').DataTable({
-                "data":orfanGenesSummary,
-                "columns": [
-                    {"data" : "type"},
-                    {"data" : "count"}
-                ],
-                "oLanguage": {
-                    "sStripClasses": "",
-                    "sSearch": "",
-                    "sSearchPlaceholder": "Enter Search Term Here"
-                },
-                dom: 'frt',
-                "aaSorting": []
+            var analysisResults = JSON.parse(result);
+            var organism = analysisResults.organism + '(' + analysisResults.taxonomyId + ')';
+            $('#parameters_organism').text(organism);
+            $('#parameters_sequence_type').text(capitalizeFirstLetter(analysisResults.sequenceType));
+            $('#parameters_evalue').text(analysisResults.evalue);
+            $('#parameters_max_tar_seq').text(analysisResults.maximumTargetSequences);
+            $('#parameters_blast_identity').text(analysisResults.identity + '%');
+            $('#parameters_blast_identity_div').width(analysisResults.identity + '%');
+
+            $.getJSON('assets/data/organism_list.json', function(data) {
+                $.each( data, function( key, val ) {
+                    if(organism == key){
+                        $('#parameters_organism_image').attr("src",val)
+
+                    }
+                });
             });
+            // $('#orfanGenesSummary').DataTable({
+            //     "data":orfanGenesSummary,
+            //     "columns": [
+            //         {"data" : "type"},
+            //         {"data" : "count"}
+            //     ],
+            //     "oLanguage": {
+            //         "sStripClasses": "",
+            //         "sSearch": "",
+            //         "sSearchPlaceholder": "Enter Search Term Here"
+            //     },
+            //     dom: 'frt',
+            //     "aaSorting": []
+            // });
         },
         error: function (error) {
             console.log("error: "+ error);
@@ -194,6 +210,10 @@ $(document).ready(function() {
         }
     });
 });
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function downloadBlast() {
     let urlParams = new URLSearchParams(window.location.search);

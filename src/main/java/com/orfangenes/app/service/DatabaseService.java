@@ -42,6 +42,13 @@ public class DatabaseService {
         }
     }
 
+    public String getAnalysisJsonById(String analysisId) {
+        MultiValueMap<String, String> queryParams =  new LinkedMultiValueMap<>();;
+        queryParams.add("analysisId" , analysisId);
+        String response = restCall.sendGetRequestWithRetry("analysis/analysis", null, queryParams);
+        return response;
+    }
+
     public Analysis saveAnalysis(Analysis analysis) throws IOException {
         String url = "/analysis/analysis";
         Long id = analysis.getId();

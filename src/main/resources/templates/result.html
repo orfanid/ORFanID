@@ -18,6 +18,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico"/>
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css">
+    <link type="text/css" rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="assets/css/orfanid-results.css">
@@ -33,40 +35,98 @@
     <script type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
     <script type="text/javascript" src="assets/js/orfanid-result.js"></script>
     <script type="text/javascript" src="assets/js/echarts.min.js"></script>
+    <style>
+        #myProgress {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        #parameters_blast_identity_div {
+            width: 20%;
+            height:30px;
+            background-color: #2196f3;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="fragments/header :: nav">&nbsp;</div>
 <main>
+    <!--<div class="row">-->
+        <!--<div class="col s10 offset-s2">-->
+            <!--<h6 id="analysisid_result">Analysis ID: <span th:text="${sessionid}" /></h6>-->
+        <!--</div>-->
+    <!--</div>-->
     <div class="row">
-        <div class="col s10 offset-s2">
-            <h6 id="analysisid_result">Analysis ID: <span th:text="${sessionid}" /></h6>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s5 offset-s1 center-align">
-            <h4> ORFan Genes</h4>
-            <table id="orfanGenesSummary" class="table display" cellspacing="0">
-                <thead>
-                <tr>
-                    <th width="60%">Taxonomy Level</th>
-                    <th width="40%">No of orphan Genes</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-        <div class="col s6 center-align">
-            <h4> ORFan gene summary</h4>
-            <div id="genesummary">
+        <div class="card col s10 offset-s1">
+            <div class="row">
+                <div class="col s6 center-align">
+                    <!--<div class="card">-->
+                        <!--<div class="col s10 offset-s1">-->
+                            <h4>Analysis Parameters</h4>
+                            <br><br><br>
+                            <table id="orfanGenesSummary" class="table" cellspacing="0">
+                        <tr>
+                            <th>Organism:</th>
+                            <td>
+
+                                <img id="parameters_organism_image" alt="" class="circle center-align" style="width: 50px; height: 50px;">
+                                <br>
+                                <span id="parameters_organism"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Analysis ID:</th>
+                            <td><span th:text="${sessionid}" /></td>
+                        </tr>
+                        <tr>
+                            <th>Sequence Type:</th>
+                            <td><div class="chip"><span id="parameters_sequence_type"></span></div></td>
+                        </tr>
+                        <tr>
+                            <th>Evalue(e-10):</th>
+                            <td><span id="parameters_evalue"></span></td>
+                        </tr>
+                        <tr>
+                            <th>Maximum Target Sequences:</th>
+                            <td><span id="parameters_max_tar_seq"></span></td>
+                        </tr>
+                        <tr>
+                            <th>Identity:</th>
+                            <td>
+                                <div id="myProgress">
+                                    <div id="parameters_blast_identity_div">
+                                        <span id="parameters_blast_identity"></span></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th width="60%">Taxonomy Level</th>-->
+                            <!--<th width="40%">No of orphan Genes</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                    </table>
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+                <div class="col s6 center-align">
+                    <!--<div class="card">-->
+                        <h4> ORFan gene summary</h4>
+                        <div id="genesummary">
+                        </div>
+                    <!--</div>-->
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="divider"></div>
-
     <div class="section">
         <div id="ORFanGenesTable" class="row">
-            <div class="col s10 offset-s1 center-align">
-                <h3> ORFan Genes</h3>
+            <div class="card col s10 offset-s1 center-align">
+                <h3> ORFan Genes Categorization</h3>
                 <table id="orfanGenes" class="table display">
                     <thead>
                     <tr>

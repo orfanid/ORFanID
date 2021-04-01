@@ -110,6 +110,13 @@ public class InternalController {
         return databaseService.getDataGeneList(analysisId);
     }
 
+    @PostMapping("/data/analysis")
+    @ResponseBody
+    public String getAnalysisData(@RequestBody Map<String, Object> payload) throws IOException {
+        final String analysisId = (String) payload.get("sessionid");
+        return databaseService.getAnalysisJsonById(analysisId);
+    }
+
     @PostMapping("/data/blast")
     @ResponseBody
     public String getBlast(@RequestBody Map<String, Object> payload) {
