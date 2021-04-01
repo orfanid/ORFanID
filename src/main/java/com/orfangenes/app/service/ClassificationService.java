@@ -82,8 +82,9 @@ public class ClassificationService {
                     }// otherwise let loop continue
                 }
             }
+
             genes.forEach(gene -> {
-                gene.setOrfanLevel(classification.get(gene.getGeneId()));
+                gene.setOrfanLevel((classification.get(gene.getGeneId()) != null)?classification.get(gene.getGeneId()):STRICT_ORFAN);
             });
 
         } catch (Exception e) {
