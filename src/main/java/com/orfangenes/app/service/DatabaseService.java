@@ -86,7 +86,7 @@ public class DatabaseService {
     }
 
     public User saveUser(User user) throws IOException {
-        String url = "/user/user";
+        String url = "/user";
         Long id = user.getId();
         if (id == null) {
             id = -1L;

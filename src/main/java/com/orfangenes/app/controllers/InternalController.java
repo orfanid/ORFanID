@@ -1,5 +1,7 @@
 package com.orfangenes.app.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.dto.UserDto;
 import com.orfangenes.app.model.InputSequence;
@@ -8,20 +10,15 @@ import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
-import com.sun.net.httpserver.Authenticator;
+import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,7 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Controller
+@RestController
+@CrossOrigin
 public class InternalController {
 
     @Autowired
@@ -44,6 +42,8 @@ public class InternalController {
     @Autowired
     ORFanGenes orFanGenes;
 
+    private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
+
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
 
@@ -51,10 +51,9 @@ public class InternalController {
     private String APP_DIR;
 
     @PostMapping("/analyse")
-    public String analyse(@Valid @ModelAttribute("sequence") InputSequence sequence, BindingResult result, Model model) {
+    public Analysis analyse(@RequestBody InputSequence sequence) throws JsonProcessingException {
 
         log.info("Analysis started....");
-        Assert.assertFalse("Error", result.hasErrors());
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
         OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String analysisDir = OUTPUT_DIR + sessionID;
@@ -86,39 +85,34 @@ public class InternalController {
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
         }
-        return "redirect:/result?sessionid=" + sessionID;
+        return objectMapper.readValue(databaseService.getAnalysisJsonById(sessionID), Analysis.class);
     }
 
     @PostMapping("/data/summary")
-    @ResponseBody
     public String getAnalysisDataSummary(@RequestBody Map<String, Object> payload) {
         final String analysisId = (String) payload.get("sessionid");
         return databaseService.getDataSummary(analysisId);
     }
 
     @PostMapping("/data/summary/chart")
-    @ResponseBody
     public String getAnalysisDataSummaryChart(@RequestBody Map<String, Object> payload) {
         final String analysisId = (String) payload.get("sessionid");
         return databaseService.getDataSummaryChart(analysisId);
     }
 
     @PostMapping("/data/genes")
-    @ResponseBody
     public String getAnalysisDataGenesList(@RequestBody Map<String, Object> payload) {
         final String analysisId = (String) payload.get("sessionid");
         return databaseService.getDataGeneList(analysisId);
     }
 
     @PostMapping("/data/analysis")
-    @ResponseBody
     public String getAnalysisData(@RequestBody Map<String, Object> payload) throws IOException {
         final String analysisId = (String) payload.get("sessionid");
         return databaseService.getAnalysisJsonById(analysisId);
     }
 
     @PostMapping("/data/blast")
-    @ResponseBody
     public String getBlast(@RequestBody Map<String, Object> payload) {
         final String analysisId = (String) payload.get("sessionid");
         final String geneid = (String) payload.get("geneid");
@@ -127,7 +121,7 @@ public class InternalController {
     }
 
     @PostMapping("/save")
-    public String saveResult(@Valid @ModelAttribute("user") UserDto userFromForm, BindingResult result, Model model) throws Exception {
+    public void saveResult(@Valid @RequestBody UserDto userFromForm) throws Exception {
         final String analysisId = userFromForm.getAnalysisId();
         final String firstName = userFromForm.getFirstName();
         final String lastname = userFromForm.getLastName();
@@ -150,17 +144,14 @@ public class InternalController {
             throw new Exception("Analysis not found for Analysis ID : " + analysisId);
         }
         System.out.println("Data updated!");
-       return "redirect:/orfanbase";
     }
 
     @PostMapping("/orfanbase-genes")
-    @ResponseBody
     public String getOrfanbaseGenes() {
         return databaseService.getOrfanbaseGenes();
     }
 
     @PostMapping("/all-analysis")
-    @ResponseBody
     public String getAllAnalysis() {
         return databaseService.getAllAnalysis();
     }
@@ -185,7 +176,7 @@ public class InternalController {
     }
 
     @PostMapping("/clamp")
-    public String clampAnalyse(@Valid @ModelAttribute("chromosome") String chromosome) {
+    public void clampAnalyse(@RequestBody String chromosome) {
 
         OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String outputFile = OUTPUT_DIR + Constants.FILE_OUTPUT_CLAMP;
@@ -210,7 +201,6 @@ public class InternalController {
         } catch (Exception e) {
             log.error("Clamp Analysis Failed: " + e.getMessage());
         }
-        return "redirect:/clampresults?chromosome=" + "all"; // todo hard coded
     }
 
     @GetMapping("test-api")
