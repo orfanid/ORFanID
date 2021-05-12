@@ -1,9 +1,10 @@
 package com.orfangenes.app.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
-import com.orfangenes.app.dto.UserDto;
+import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.util.Constants;
@@ -89,33 +90,35 @@ public class InternalController {
     }
 
     @PostMapping("/data/summary")
-    public String getAnalysisDataSummary(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getDataSummary(analysisId);
+    public List<GeneSummary> getAnalysisDataSummary(@RequestBody SessionDto sessionDto) throws Exception{
+        final String analysisId = sessionDto.getSessionId();
+        TypeReference<List<GeneSummary>> typeRef = new TypeReference<List<GeneSummary>>() {};
+        return objectMapper.readValue(databaseService.getDataSummary(analysisId), typeRef);
     }
 
     @PostMapping("/data/summary/chart")
-    public String getAnalysisDataSummaryChart(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getDataSummaryChart(analysisId);
+    public SummaryChart getAnalysisDataSummaryChart(@RequestBody SessionDto sessionDto) throws Exception{
+        final String analysisId = sessionDto.getSessionId();
+        return objectMapper.readValue(databaseService.getDataSummaryChart(analysisId), SummaryChart.class);
     }
 
     @PostMapping("/data/genes")
-    public String getAnalysisDataGenesList(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getDataGeneList(analysisId);
+    public List<ORFanGenes> getAnalysisDataGenesList(@RequestBody SessionDto sessionDto) throws Exception{
+        final String analysisId = sessionDto.getSessionId();
+        TypeReference<List<ORFanGenes>> typeRef = new TypeReference<List<ORFanGenes>>() {};
+        return objectMapper.readValue(databaseService.getDataGeneList(analysisId), typeRef);
     }
 
     @PostMapping("/data/analysis")
-    public String getAnalysisData(@RequestBody Map<String, Object> payload) throws IOException {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getAnalysisJsonById(analysisId);
+    public Analysis getAnalysisData(@RequestBody SessionDto sessionDto) throws IOException {
+        final String analysisId = sessionDto.getSessionId();
+        return objectMapper.readValue(databaseService.getAnalysisJsonById(analysisId), Analysis.class);
     }
 
     @PostMapping("/data/blast")
-    public String getBlast(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        final String geneid = (String) payload.get("geneid");
+    public String getBlast(@RequestBody SessionGeneDto sessionGeneDto) {
+        final String analysisId = sessionGeneDto.getSessionId();
+        final String geneid = sessionGeneDto.getGeneId();
         String blastResults = databaseService.getDataBlastResults(analysisId);
         return FileHandler.blastToJSON(blastResults, geneid);
     }
@@ -147,13 +150,15 @@ public class InternalController {
     }
 
     @PostMapping("/orfanbase-genes")
-    public String getOrfanbaseGenes() {
-        return databaseService.getOrfanbaseGenes();
+    public List<Genes> getOrfanbaseGenes() throws Exception {
+        TypeReference<List<Genes>> typeRef = new TypeReference<List<Genes>>() {};
+        return objectMapper.readValue(databaseService.getOrfanbaseGenes(), typeRef);
     }
 
     @PostMapping("/all-analysis")
-    public String getAllAnalysis() {
-        return databaseService.getAllAnalysis();
+    public List<AnalysisResultsTableRaw> getAllAnalysis() throws Exception{
+        TypeReference<List<AnalysisResultsTableRaw>> typeRef = new TypeReference<List<AnalysisResultsTableRaw>>() {};
+        return objectMapper.readValue(databaseService.getAllAnalysis(), typeRef);
     }
 
     @GetMapping("/download/blast/{sessionid}")
