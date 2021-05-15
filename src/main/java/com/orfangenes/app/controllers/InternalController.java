@@ -34,7 +34,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@CrossOrigin
 public class InternalController {
 
     @Autowired
