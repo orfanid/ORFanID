@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,16 @@ public class InternalController {
 
     @Value("${app.dir.root}")
     private String APP_DIR;
+
+    @PostMapping("analyse/list")
+    public List<Analysis> analyseList(@RequestBody List<InputSequence> sequences) throws JsonProcessingException {
+        List<Analysis> analysisList = new ArrayList<>();
+        for (InputSequence sequence : sequences) {
+            Analysis savedAnalysis = analyse(sequence);
+            analysisList.add(savedAnalysis);
+        }
+        return analysisList;
+    }
 
     @PostMapping("/analyse")
     public Analysis analyse(@RequestBody InputSequence sequence) throws JsonProcessingException {
