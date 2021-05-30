@@ -42,6 +42,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
         <!-- lombok to auto-generate getters setters -->
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -17,9 +17,8 @@ import java.util.List;
  */
 @Slf4j
 @Setter
-public class BlastCommandRunner extends Thread {
+public class BlastCommandRunner {
 
-    private String fileNumber;
     private String sequenceType;
     private String out;
     private String maxTargetSeqs;
@@ -31,17 +30,16 @@ public class BlastCommandRunner extends Thread {
         this.BLAST_LOCATION = blastLocation;
     }
 
-    @Override
     public void run() {
         final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
         List<String> command = Arrays.asList(
                 BLAST_LOCATION + programme,
-                "-query", out + File.separator + SEQUENCE + this.fileNumber + FASTA_EXT,
+                "-query", out + File.separator + INPUT_FASTA,
                 "-db", "nr",
                 "-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
                 "-max_target_seqs", this.maxTargetSeqs,
                 "-evalue", this.evalue,
-                "-out", this.out + File.separator + BLAST_RESULTS + this.fileNumber + BLAST_EXT,
+                "-out", this.out + File.separator + BLAST_RESULTS + BLAST_EXT,
                 "-remote");
         try {
             log.info("Executing Blast Command:{}", command.toString());

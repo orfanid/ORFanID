@@ -92,12 +92,19 @@ public class ORFanGenes {
             });
 
             analysis.setGeneList(classifiedGenes);
+            analysis.setStatus(AnalysisStatus.COMPLETED);
 
-            databaseService.saveAnalysis(analysis);
+            databaseService.update(analysis);
 
         } catch (Exception e) {
             log.error("Results classification issue: " + e.getMessage());
             e.printStackTrace();
+            try {
+                analysis.setStatus(AnalysisStatus.ERRORED);
+                databaseService.update(analysis);
+            } catch (Exception e2) {
+                log.error("Error updating analysis");
+            }
         }
 
         return 1; //todo: change

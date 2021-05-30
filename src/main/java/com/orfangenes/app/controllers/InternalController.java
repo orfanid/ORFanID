@@ -7,6 +7,7 @@ import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
+import com.orfangenes.app.service.QueueService;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.model.Analysis;
@@ -43,26 +44,26 @@ public class InternalController {
     @Autowired
     ORFanGenes orFanGenes;
 
+    @Autowired
+    QueueService queueService;
+
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
 
-    @Value("${app.dir.root}")
-    private String APP_DIR;
-
     @PostMapping("analyse/list")
-    public List<Analysis> analyseList(@RequestBody List<InputSequence> sequences) throws JsonProcessingException {
-        List<Analysis> analysisList = new ArrayList<>();
+    public List<String> analyseList(@RequestBody List<InputSequence> sequences) throws JsonProcessingException {
+        List<String> analysisIdList = new ArrayList<>();
         for (InputSequence sequence : sequences) {
-            Analysis savedAnalysis = analyse(sequence);
-            analysisList.add(savedAnalysis);
+            String savedAnalysisId = analyse(sequence);
+            analysisIdList.add(savedAnalysisId);
         }
-        return analysisList;
+        return analysisIdList;
     }
 
     @PostMapping("/analyse")
-    public Analysis analyse(@RequestBody InputSequence sequence) throws JsonProcessingException {
+    public String analyse(@RequestBody InputSequence sequence) throws JsonProcessingException {
 
         log.info("Analysis started....");
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
@@ -84,19 +85,16 @@ public class InternalController {
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
 
+        databaseService.savePendingAnalysis(analysis);
+
         try {
             FileHandler.createResultsOutputDir(analysisDir);
             FileHandler.saveInputSequence(analysisDir, sequence);
-
-            orFanGenes.run(
-                    inputFastaFile,
-                    analysisDir,
-                    analysis,
-                    APP_DIR);
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
         }
-        return objectMapper.readValue(databaseService.getAnalysisJsonById(sessionID), Analysis.class);
+        queueService.sendToQueue(analysis);
+        return sessionID;
     }
 
     @PostMapping("/data/summary")
