@@ -8,6 +8,7 @@ import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.service.QueueService;
+import com.orfangenes.app.service.RabbitQueueService;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.model.Analysis;
@@ -16,6 +17,7 @@ import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -45,6 +47,7 @@ public class InternalController {
     ORFanGenes orFanGenes;
 
     @Autowired
+    @Qualifier("rabbit")
     QueueService queueService;
 
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();

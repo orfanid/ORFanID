@@ -5,26 +5,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.util.Constants;
-import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 @Service
 @Slf4j
-@Qualifier("kafka")
-public class KafkaQueueService implements QueueService {
+@Qualifier("rabbit")
+public class RabbitQueueService implements QueueService {
 
     @Autowired
-    @Qualifier("com.orfangenes.app.kafka.kafkaTemplate")
-    private KafkaTemplate<String, String> template;
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     ORFanGenes orFanGenes;
@@ -38,20 +39,22 @@ public class KafkaQueueService implements QueueService {
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
 
-    @Override
     public void sendToQueue(Analysis analysis) throws JsonProcessingException {
         String analysisObj = objectMapper.writeValueAsString(analysis);
-        template.send("analysis", analysisObj);
+        Message message = MessageBuilder
+                .withBody(analysisObj.getBytes())
+                .setContentType(MessageProperties.CONTENT_TYPE_JSON)
+                .build();
+        rabbitTemplate.send("analysis", message);
     }
 
-    @Override
-    @KafkaListener(id = "analysis-group", topics = "analysis", containerFactory = "com.orfangenes.app.kafka.kafkaListenerContainerFactory")
+    @RabbitListener(queues = "analysis")
     public void processAnalysis(String analysisObj) throws JsonProcessingException {
         log.info("## Received queued message" + analysisObj);
 
         Analysis analysis = objectMapper.readValue(analysisObj, Analysis.class);
 
-        OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
+        OUTPUT_DIR = (OUTPUT_DIR.endsWith("/")) ? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String analysisDir = OUTPUT_DIR + analysis.getAnalysisId();
         log.info("########### analysis  Dir: " + analysisDir);
         String inputFastaFile = analysisDir + File.separator + Constants.INPUT_FASTA;
