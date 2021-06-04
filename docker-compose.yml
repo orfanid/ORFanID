@@ -11,3 +11,12 @@ services:
       - /home/ubuntu/apps/out:/dataoutputdir
 #      - /home/vinodh/out:/dataoutputdir
 #      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - /home/ubuntu/apps/rabbit/data:/var/lib/rabbitmq/
+      - /home/ubuntu/apps/rabbit/log/:/var/log/rabbitmq
