@@ -77,7 +77,7 @@ public class Constants {
     public static final String ANSI_RESET = "\u001B[0m";
 
     public enum AnalysisStatus {
-        PENDING, COMPLETED, ERRORED
+        PENDING, COMPLETED, ERRORED, START_PROCESSING, CANCELLED
     }
 
 }

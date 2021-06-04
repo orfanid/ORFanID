@@ -131,4 +131,9 @@ public class DatabaseService {
         String payload = this.objectMapper.writeValueAsString(analysis);
         restCall.sendPostRequest(url, payload);
     }
+
+    public void cancelAnalysis(String analysisId) {
+        String url = "analysis/cancel/" + analysisId;
+        restCall.sendGetRequestWithRetry(url, null, null);
+    }
 }

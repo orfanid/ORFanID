@@ -1,17 +1,19 @@
 spring:
   application.name: ORFanID
-  thymeleaf:
-        cache: false
+  rabbitmq:
+    host: localhost
+    port: 5672
 server:
-  port: 8085
-  error:
-    path: /error
-    whitelabel:
-      enabled: false
+  port: 8086
 
 logging:
   level:
     org.springframework: INFO
+
+rabbitmq:
+  queue-name: analysis
+  exchange: analysis-exchange
+  concurrent-consumer-count: 1
 
 db.api:
 #  baseUrl: http://localhost:8081
