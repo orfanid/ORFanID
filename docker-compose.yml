@@ -7,6 +7,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:8085"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
     volumes:
       - /home/ubuntu/apps/out:/dataoutputdir
 #      - /home/vinodh/out:/dataoutputdir
@@ -20,3 +27,9 @@ services:
     volumes:
       - /home/ubuntu/apps/rabbit/data:/var/lib/rabbitmq/
       - /home/ubuntu/apps/rabbit/log/:/var/log/rabbitmq
+
+networks:
+  default:
+    external:
+      name: orfanid
+

@@ -1,10 +1,10 @@
 spring:
   application.name: ORFanID
   rabbitmq:
-    host: localhost
-    port: 5672
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
 server:
-  port: 8086
+  port: 80
 
 logging:
   level:
