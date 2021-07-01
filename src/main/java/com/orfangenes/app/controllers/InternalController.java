@@ -86,14 +86,24 @@ public class InternalController {
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
 
-        User user = databaseService.getUserByEmail(sequence.getEmail());
-        if(user == null){
+        User user;
+        if (sequence.getEmail() == null) {
             user = new User();
-            user.setFirstName(sequence.getFirstName());
-            user.setLastName(sequence.getLastName());
-            user.setEmail(sequence.getEmail());
-
+            user.setId(-1l);
+            user.setFirstName(FIRST_NAME);
+            user.setLastName(LAST_NAME);
+            user.setEmail(EMAIL);
             user = databaseService.saveUser(user);
+        } else {
+            user = databaseService.getUserByEmail(sequence.getEmail());
+            if(user == null){
+                user = new User();
+                user.setFirstName(sequence.getFirstName());
+                user.setLastName(sequence.getLastName());
+                user.setEmail(sequence.getEmail());
+
+                user = databaseService.saveUser(user);
+            }
         }
         analysis.setUser(user);
         databaseService.savePendingAnalysis(analysis);
