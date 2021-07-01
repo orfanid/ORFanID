@@ -71,21 +71,21 @@ public class ORFanGenes {
             // save results to the database with default user(orfanid). If user saves the dataset with their information, then the
             // ownership will be changed at that time
 
-            User user = databaseService.getUserByEmail(EMAIL);
-            if(user == null){
-                user = new User();
-                user.setId(-1l);
-                user.setFirstName(FIRST_NAME);
-                user.setLastName(LAST_NAME);
-                user.setEmail(EMAIL);
-
-                user = databaseService.saveUser(user);
-            }
+//            User user = databaseService.getUserByEmail(EMAIL);
+//            if(user == null){
+//                user = new User();
+//                user.setId(-1l);
+//                user.setFirstName(FIRST_NAME);
+//                user.setLastName(LAST_NAME);
+//                user.setEmail(EMAIL);
+//
+//                user = databaseService.saveUser(user);
+//            }
 
             analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
             analysis.setSaved(false);
             analysis.setBlastResults(String.valueOf(trees));
-            analysis.setUser(user);
+//            analysis.setUser(user);
 
             classifiedGenes.forEach(gene -> {
                 gene.setAnalysis(analysis);

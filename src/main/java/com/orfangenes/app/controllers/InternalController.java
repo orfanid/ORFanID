@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.orfangenes.app.util.Constants.*;
+
 @Slf4j
 @RestController
 public class InternalController {
@@ -52,7 +54,7 @@ public class InternalController {
     private String OUTPUT_DIR;
 
     @PostMapping("analyse/list")
-    public List<String> analyseList(@RequestBody List<InputSequence> sequences) throws JsonProcessingException {
+    public List<String> analyseList(@RequestBody List<InputSequence> sequences) throws Exception {
         List<String> analysisIdList = new ArrayList<>();
         for (InputSequence sequence : sequences) {
             String savedAnalysisId = analyse(sequence);
@@ -62,7 +64,7 @@ public class InternalController {
     }
 
     @PostMapping("/analyse")
-    public String analyse(@RequestBody InputSequence sequence) throws JsonProcessingException {
+    public String analyse(@RequestBody InputSequence sequence) throws Exception {
 
         log.info("Analysis started....");
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
@@ -84,6 +86,16 @@ public class InternalController {
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
 
+        User user = databaseService.getUserByEmail(sequence.getEmail());
+        if(user == null){
+            user = new User();
+            user.setFirstName(sequence.getFirstName());
+            user.setLastName(sequence.getLastName());
+            user.setEmail(sequence.getEmail());
+
+            user = databaseService.saveUser(user);
+        }
+        analysis.setUser(user);
         databaseService.savePendingAnalysis(analysis);
 
         try {
