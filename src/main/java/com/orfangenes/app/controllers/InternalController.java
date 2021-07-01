@@ -88,12 +88,15 @@ public class InternalController {
 
         User user;
         if (sequence.getEmail() == null) {
-            user = new User();
-            user.setId(-1l);
-            user.setFirstName(FIRST_NAME);
-            user.setLastName(LAST_NAME);
-            user.setEmail(EMAIL);
-            user = databaseService.saveUser(user);
+            user = databaseService.getUserByEmail(EMAIL);
+            if (user == null) {
+                user = new User();
+                user.setId(-1L);
+                user.setFirstName(FIRST_NAME);
+                user.setLastName(LAST_NAME);
+                user.setEmail(EMAIL);
+                user = databaseService.saveUser(user);
+            }
         } else {
             user = databaseService.getUserByEmail(sequence.getEmail());
             if(user == null){
