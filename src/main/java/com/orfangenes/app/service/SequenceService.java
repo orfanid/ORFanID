@@ -26,6 +26,8 @@ public class SequenceService {
     @Value("${ncbi.blast.programme.location}")
     String BLAST_LOCATION="/usr/local/ncbi/blast/bin/";
 
+    String BLAST_DB_LOCATION = "/db/";
+
 
     public SequenceService(String blastType, String sequenceFile, String outputDir) {
         this.blastType = blastType;
@@ -47,7 +49,7 @@ public class SequenceService {
         log.warn("Running BLAST. Be patient...This will take 2-15 min...");
         long startTime = System.currentTimeMillis();
 
-        BlastCommandRunner blastCommandRunner = new BlastCommandRunner(BLAST_LOCATION);
+        BlastCommandRunner blastCommandRunner = new BlastCommandRunner(BLAST_LOCATION, BLAST_DB_LOCATION);
         blastCommandRunner.setSequenceType(this.blastType);
         blastCommandRunner.setOut(this.outputDir);
         blastCommandRunner.setMaxTargetSeqs(String.valueOf(maxTargetSeqs));

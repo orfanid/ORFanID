@@ -16,6 +16,7 @@ services:
       - rabbitmq
     volumes:
       - /home/ubuntu/apps/out:/dataoutputdir
+      - /home/orfanid/db:/db
 #      - /home/vinodh/out:/dataoutputdir
 #      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
   rabbitmq:

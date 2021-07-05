@@ -23,11 +23,15 @@ public class BlastCommandRunner {
     private String out;
     private String maxTargetSeqs;
     private String evalue;
+    private Integer numberOfProcessors;
 
     String BLAST_LOCATION; // TODO
+    String BLAST_DB_LOCATION;
 
-    public BlastCommandRunner(String blastLocation){
+    public BlastCommandRunner(String blastLocation, String blastDbLocation){
         this.BLAST_LOCATION = blastLocation;
+        this.BLAST_DB_LOCATION = blastDbLocation;
+        numberOfProcessors = Runtime.getRuntime().availableProcessors() - 2;
     }
 
     public void run() {
@@ -35,12 +39,12 @@ public class BlastCommandRunner {
         List<String> command = Arrays.asList(
                 BLAST_LOCATION + programme,
                 "-query", out + File.separator + INPUT_FASTA,
-                "-db", "nr",
+                "-db", BLAST_DB_LOCATION + "nr",
                 "-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
                 "-max_target_seqs", this.maxTargetSeqs,
                 "-evalue", this.evalue,
                 "-out", this.out + File.separator + BLAST_RESULTS + BLAST_EXT,
-                "-remote");
+                "-num_threads", numberOfProcessors.toString());
         try {
             log.info("Executing Blast Command:{}", command.toString());
             ProcessBuilder processBuilder = new ProcessBuilder(command);
