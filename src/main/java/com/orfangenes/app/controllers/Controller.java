@@ -8,6 +8,7 @@ import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.service.QueueService;
+import com.orfangenes.app.util.AccessionSearch;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.model.Analysis;
@@ -29,15 +30,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.orfangenes.app.util.Constants.*;
 
 @Slf4j
 @RestController
-public class InternalController {
+public class Controller {
 
     @Autowired
     DatabaseService databaseService;
@@ -49,6 +52,8 @@ public class InternalController {
     QueueService queueService;
 
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
@@ -85,6 +90,7 @@ public class InternalController {
         analysis.setMaximumTargetSequences(Integer.parseInt(sequence.getMaxTargetSequence()));
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
+        analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
 
         User user;
         if (sequence.getEmail() == null) {
@@ -243,6 +249,32 @@ public class InternalController {
         } catch (Exception e) {
             log.error("Clamp Analysis Failed: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/validate/accessions")
+    public AccessionsValidationDto validateAccessions(@RequestParam("accessions") String accessions, @RequestParam("accessionType") String accessionType) {
+        AccessionsValidationDto accessionsValidationDto = new AccessionsValidationDto();
+        log.info("validating accessions..");
+        List<String> invalidAccessions = new ArrayList<>();
+        if(accessions != null && accessions.length()>1){
+            String[] accessionList = accessions.split(",");
+            for (String accession: accessionList) {
+                try {
+                    String geneSequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
+                } catch (Exception e) {
+                    invalidAccessions.add(accession);
+                    log.error("Error occurred while retrieving sequence for " + accession + ". Please check the accessions or the database type");
+                }
+            }
+        }
+        accessionsValidationDto.setInvalidAccessions(invalidAccessions);
+        if (invalidAccessions.isEmpty()) {
+            accessionsValidationDto.setIsValid(true);
+        } else {
+            accessionsValidationDto.setIsValid(false);
+        }
+        log.info("validating accessions..completed!");
+        return accessionsValidationDto;
     }
 
     @GetMapping("test-api")

@@ -26,5 +26,6 @@ data.outputdir: /dataoutputdir/
 ncbi.blast.programme.location: /usr/local/ncbi/blast/bin/
 #app.dir.root: /Users/hewapathirana/projects/ORFanID/src/main/resources/
 app.dir.root: /app/
-ncbi.blast.db.location: /db/
+ncbi.blast.nr.db.location: /nr_db/
+ncbi.blast.nt.db.location: /nt_db/
 

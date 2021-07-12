@@ -29,7 +29,7 @@ public class ORFanGenes {
     public int run(String query, String outputDir, Analysis analysis, String APP_DIR) {
 
         JSONArray trees;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         Assert.assertTrue("Failure to open the sequence file!", new File(query).exists());
 
@@ -82,7 +82,7 @@ public class ORFanGenes {
 //                user = databaseService.saveUser(user);
 //            }
 
-            analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
+//            analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
             analysis.setSaved(false);
             analysis.setBlastResults(String.valueOf(trees));
 //            analysis.setUser(user);

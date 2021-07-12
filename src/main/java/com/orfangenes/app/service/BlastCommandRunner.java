@@ -26,20 +26,24 @@ public class BlastCommandRunner {
     private Integer numberOfProcessors;
 
     String BLAST_LOCATION; // TODO
-    String BLAST_DB_LOCATION;
+    String BLAST_NR_DB_LOCATION;
+    String BLAST_NT_DB_LOCATION;
 
-    public BlastCommandRunner(String blastLocation, String blastDbLocation){
+    public BlastCommandRunner(String blastLocation, String blastNRDbLocation, String blastNTDbLocation){
         this.BLAST_LOCATION = blastLocation;
-        this.BLAST_DB_LOCATION = blastDbLocation;
+        this.BLAST_NR_DB_LOCATION = blastNRDbLocation;
+        this.BLAST_NT_DB_LOCATION = blastNTDbLocation;
         numberOfProcessors = Runtime.getRuntime().availableProcessors() - 2;
     }
 
     public void run() {
         final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
+        final String db = (sequenceType.equals(TYPE_PROTEIN)) ? "nr" : "nt";
+        final String dbLocation = (sequenceType.equals(TYPE_PROTEIN)) ? BLAST_NR_DB_LOCATION : BLAST_NT_DB_LOCATION;
         List<String> command = Arrays.asList(
                 BLAST_LOCATION + programme,
                 "-query", out + File.separator + INPUT_FASTA,
-                "-db", BLAST_DB_LOCATION + "nr",
+                "-db", dbLocation + db,
                 "-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
                 "-max_target_seqs", this.maxTargetSeqs,
                 "-evalue", this.evalue,
