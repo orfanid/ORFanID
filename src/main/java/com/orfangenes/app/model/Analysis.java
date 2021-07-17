@@ -1,5 +1,6 @@
 package com.orfangenes.app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.orfangenes.app.util.Constants;
 import lombok.*;
@@ -22,6 +23,7 @@ public class Analysis extends AuditModel {
     private Long id;
     @NotBlank
     private String analysisId;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date analysisDate;
     @NotBlank
     @Size(min = 3, max = 100)

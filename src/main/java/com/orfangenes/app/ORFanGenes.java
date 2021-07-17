@@ -1,11 +1,14 @@
 package com.orfangenes.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.service.*;
 import com.orfangenes.app.model.BlastResult;
+import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.ResultsPrinter;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.Gene;
 import com.orfangenes.app.model.User;
+import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.junit.Assert;
@@ -25,6 +28,8 @@ public class ORFanGenes {
 
     @Autowired
     DatabaseService databaseService;
+
+    private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
     public int run(String query, String outputDir, Analysis analysis, String APP_DIR) {
 
@@ -93,6 +98,11 @@ public class ORFanGenes {
 
             analysis.setGeneList(classifiedGenes);
             analysis.setStatus(AnalysisStatus.COMPLETED);
+
+            Analysis savedAnalysis = objectMapper.readValue(databaseService.getAnalysisJsonById(analysis.getAnalysisId()), Analysis.class);
+            if (savedAnalysis.getStatus().equals(Constants.AnalysisStatus.CANCELLED)) {
+                return 1;
+            }
 
             databaseService.update(analysis);
 

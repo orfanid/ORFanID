@@ -53,7 +53,6 @@ public class Controller {
 
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
@@ -90,7 +89,7 @@ public class Controller {
         analysis.setMaximumTargetSequences(Integer.parseInt(sequence.getMaxTargetSequence()));
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
-        analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
+        analysis.setAnalysisDate(new Date());
 
         User user;
         if (sequence.getEmail() == null) {
