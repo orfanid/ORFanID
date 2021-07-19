@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.orfangenes.app.util.Constants.*;
 
@@ -200,7 +201,9 @@ public class Controller {
     @PostMapping("/all-analysis")
     public List<AnalysisResultsTableRaw> getAllAnalysis() throws Exception{
         TypeReference<List<AnalysisResultsTableRaw>> typeRef = new TypeReference<List<AnalysisResultsTableRaw>>() {};
-        return objectMapper.readValue(databaseService.getAllAnalysis(), typeRef);
+        return objectMapper.readValue(databaseService.getAllAnalysis(), typeRef).stream()
+                .filter(analysisResultsTableRaw -> !AnalysisStatus.CANCELLED.equals(analysisResultsTableRaw.getStatus()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/download/blast/{sessionid}")
