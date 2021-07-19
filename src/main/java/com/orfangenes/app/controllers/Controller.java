@@ -195,7 +195,9 @@ public class Controller {
     @PostMapping("/orfanbase-genes")
     public List<Genes> getOrfanbaseGenes() throws Exception {
         TypeReference<List<Genes>> typeRef = new TypeReference<List<Genes>>() {};
-        return objectMapper.readValue(databaseService.getOrfanbaseGenes(), typeRef);
+        return objectMapper.readValue(databaseService.getOrfanbaseGenes(), typeRef).stream()
+                .filter(genes -> genes.getGeneId() != null)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/all-analysis")
