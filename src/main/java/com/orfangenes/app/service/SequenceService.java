@@ -23,8 +23,7 @@ public class SequenceService {
     private String sequenceFile;
     private String outputDir;
 
-    @Value("${ncbi.blast.programme.location}")
-    String BLAST_LOCATION="/usr/local/ncbi/blast/bin/";
+    String BLAST_LOCATION="/blast/bin/";
 
     String BLAST_NR_DB_LOCATION = "/nr_db/";
     String BLAST_NT_DB_LOCATION = "/nt_db/";

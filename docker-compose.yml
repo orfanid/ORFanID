@@ -15,9 +15,11 @@ services:
     links:
       - rabbitmq
     volumes:
-      - /home/ubuntu/apps/out:/dataoutputdir
+      - /home/orfanid/out:/dataoutputdir
       - /home/orfanid/nr_db:/nr_db
       - /home/orfanid/nt_db:/nt_db
+      - /home/orfanid/new_taxdump:/new_taxdump
+      - /home/orfanid/blast_bin/bin:/blast/bin
 #      - /home/vinodh/out:/dataoutputdir
 #      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
   rabbitmq:
@@ -27,8 +29,8 @@ services:
       - 5672:5672
       - 15672:15672
     volumes:
-      - /home/ubuntu/apps/rabbit/data:/var/lib/rabbitmq/
-      - /home/ubuntu/apps/rabbit/log/:/var/log/rabbitmq
+      - /home/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
+      - /home/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
 
 networks:
   default:

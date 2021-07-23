@@ -31,7 +31,7 @@ public class RabbitQueueService implements QueueService {
     @Autowired
     DatabaseService databaseService;
 
-    @Value("${app.dir.root}")
+    @Value("${taxdump.dir}")
     private String APP_DIR;
 
     @Value("${data.outputdir}")
