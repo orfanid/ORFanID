@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /** @author Suresh Hewapathirana */
 @Slf4j
@@ -20,12 +22,14 @@ public class AccessionSearch {
     StringBuilder sequence = new StringBuilder();
     try {
 
+      String ids = Arrays.stream(sequenceIds.split("[\\s,]+")).collect(Collectors.joining(","));
+
       URL url =
           new URL(
               DEFAULT_BASE_URL
                   + EFETCH
                   + "?db=" + sequenceType + "&id="
-                  + sequenceIds
+                  + ids
                   + "&rettype=fasta&retmode=text");
       log.info(url.getPath());
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
