@@ -261,7 +261,7 @@ public class Controller {
         log.info("validating accessions..");
         List<String> invalidAccessions = new ArrayList<>();
         if(accessions != null && accessions.length()>1){
-            String[] accessionList = accessions.split(",");
+            String[] accessionList = accessions.split("[\\s,]+");
             for (String accession: accessionList) {
                 try {
                     String geneSequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
