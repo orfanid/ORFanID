@@ -23,6 +23,6 @@ public class Genes {
     private String organism;
     private int taxonomyId;
     private String analysisId;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date analysisDate;
 }
