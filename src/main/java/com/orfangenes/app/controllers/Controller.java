@@ -97,7 +97,6 @@ public class Controller {
             user = databaseService.getUserByEmail(EMAIL);
             if (user == null) {
                 user = new User();
-                user.setId(-1L);
                 user.setFirstName(FIRST_NAME);
                 user.setLastName(LAST_NAME);
                 user.setEmail(EMAIL);

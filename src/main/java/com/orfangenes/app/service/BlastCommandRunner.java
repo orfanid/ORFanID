@@ -56,7 +56,7 @@ public class BlastCommandRunner {
             Process process = processBuilder.start();
 
             // wait until the command get executed
-            if (!process.waitFor(30, TimeUnit.SECONDS)) {
+            if (!process.waitFor(30, TimeUnit.MINUTES)) {
                 process.destroy();
                 process.waitFor();
                 throw new RuntimeException("BLAST error occurred");
