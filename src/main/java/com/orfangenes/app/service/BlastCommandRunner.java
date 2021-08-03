@@ -62,8 +62,10 @@ public class BlastCommandRunner {
             }
         } catch (IOException ex) {
             log.error("IOError: " + ex.getMessage());
+            throw new RuntimeException("BLAST error occurred");
         } catch (InterruptedException ex) {
             log.error("InterruptedException: " + ex.getMessage());
+            throw new RuntimeException("BLAST error occurred");
         }
     }
 }

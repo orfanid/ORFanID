@@ -79,6 +79,8 @@ public class RabbitQueueService implements QueueService {
                     APP_DIR);
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
+            analysis.setStatus(Constants.AnalysisStatus.ERRORED);
+            databaseService.update(analysis);
         }
     }
 }

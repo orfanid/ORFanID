@@ -55,6 +55,7 @@ public class ORFanGenes {
         } catch (Exception e) {
             log.error("Blast file generation issue: " + e.getMessage());
             e.printStackTrace();
+            throw e;
         }
             Set<Integer> blastHitsTaxIDs = null;
             // Getting unique taxonomy IDs from BLAST result
