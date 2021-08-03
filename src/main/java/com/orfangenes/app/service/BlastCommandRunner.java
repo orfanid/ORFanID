@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -55,7 +56,9 @@ public class BlastCommandRunner {
             Process process = processBuilder.start();
 
             // wait until the command get executed
-            if (process.waitFor() != 0) {
+            if (!process.waitFor(30, TimeUnit.SECONDS)) {
+                process.destroy();
+                process.waitFor();
                 throw new RuntimeException("BLAST error occurred");
             } else {
                 log.info("BLAST successfully completed!!");
