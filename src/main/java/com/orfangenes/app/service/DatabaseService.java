@@ -1,5 +1,6 @@
 package com.orfangenes.app.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.util.RestCall;
 import com.orfangenes.app.util.Utils;
@@ -86,7 +87,7 @@ public class DatabaseService {
     }
 
     public User saveUser(User user) throws IOException {
-        String url = "/user/user";
+        String url = "/user";
         Long id = user.getId();
         if (id == null) {
             id = -1L;
@@ -117,5 +118,22 @@ public class DatabaseService {
     public String getDataBlastResults(String analysisId) {
         String url = "analysis/data/blastresults/" + analysisId;
         return restCall.sendGetRequestWithRetry(url, null, null);
+    }
+
+    public void savePendingAnalysis(Analysis analysis) throws JsonProcessingException {
+        String url = "analysis/pending";
+        String payload = this.objectMapper.writeValueAsString(analysis);
+        restCall.sendPostRequest(url, payload);
+    }
+
+    public void update(Analysis analysis) throws JsonProcessingException {
+        String url = "analysis/update";
+        String payload = this.objectMapper.writeValueAsString(analysis);
+        restCall.sendPostRequest(url, payload);
+    }
+
+    public void cancelAnalysis(String analysisId) {
+        String url = "analysis/cancel/" + analysisId;
+        restCall.sendGetRequestWithRetry(url, null, null);
     }
 }

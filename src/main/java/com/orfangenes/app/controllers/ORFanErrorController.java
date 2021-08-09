@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author Suresh Hewapathirana
  */
-@Controller
-public class ORFanErrorController implements ErrorController {
+//@Controller
+public class ORFanErrorController {
 
     @RequestMapping("/error")
     public String handleError() {
         return "error";
     }
 
-    @Override
+//    @Override
     public String getErrorPath() {
         return "/error";
     }

@@ -6,8 +6,34 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:8085"
+      - "8085:8085"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
     volumes:
-      - /home/ubuntu/apps/out:/dataoutputdir
+      - /home/orfanid/out:/dataoutputdir
+      - /home/orfanid/nr_db:/nr_db
+      - /home/orfanid/nt_db:/nt_db
+      - /home/orfanid/new_taxdump:/new_taxdump
+      - /home/orfanid/blast_bin/bin:/blast/bin
 #      - /home/vinodh/out:/dataoutputdir
 #      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - /home/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
+      - /home/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
+
+networks:
+  default:
+    external:
+      name: orfanid
+

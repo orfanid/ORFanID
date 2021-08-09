@@ -1,11 +1,14 @@
 package com.orfangenes.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.service.*;
 import com.orfangenes.app.model.BlastResult;
+import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.ResultsPrinter;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.Gene;
 import com.orfangenes.app.model.User;
+import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.junit.Assert;
@@ -26,10 +29,12 @@ public class ORFanGenes {
     @Autowired
     DatabaseService databaseService;
 
+    private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
+
     public int run(String query, String outputDir, Analysis analysis, String APP_DIR) {
 
         JSONArray trees;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         Assert.assertTrue("Failure to open the sequence file!", new File(query).exists());
 
@@ -50,6 +55,7 @@ public class ORFanGenes {
         } catch (Exception e) {
             log.error("Blast file generation issue: " + e.getMessage());
             e.printStackTrace();
+            throw e;
         }
             Set<Integer> blastHitsTaxIDs = null;
             // Getting unique taxonomy IDs from BLAST result
@@ -71,33 +77,45 @@ public class ORFanGenes {
             // save results to the database with default user(orfanid). If user saves the dataset with their information, then the
             // ownership will be changed at that time
 
-            User user = databaseService.getUserByEmail(EMAIL);
-            if(user == null){
-                user = new User();
-                user.setId(-1l);
-                user.setFirstName(FIRST_NAME);
-                user.setLastName(LAST_NAME);
-                user.setEmail(EMAIL);
+//            User user = databaseService.getUserByEmail(EMAIL);
+//            if(user == null){
+//                user = new User();
+//                user.setId(-1l);
+//                user.setFirstName(FIRST_NAME);
+//                user.setLastName(LAST_NAME);
+//                user.setEmail(EMAIL);
+//
+//                user = databaseService.saveUser(user);
+//            }
 
-                user = databaseService.saveUser(user);
-            }
-
-            analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
+//            analysis.setAnalysisDate(simpleDateFormat.parse(simpleDateFormat.format(new Date())));
             analysis.setSaved(false);
             analysis.setBlastResults(String.valueOf(trees));
-            analysis.setUser(user);
+//            analysis.setUser(user);
 
             classifiedGenes.forEach(gene -> {
                 gene.setAnalysis(analysis);
             });
 
             analysis.setGeneList(classifiedGenes);
+            analysis.setStatus(AnalysisStatus.COMPLETED);
 
-            databaseService.saveAnalysis(analysis);
+            Analysis savedAnalysis = objectMapper.readValue(databaseService.getAnalysisJsonById(analysis.getAnalysisId()), Analysis.class);
+            if (savedAnalysis.getStatus().equals(Constants.AnalysisStatus.CANCELLED)) {
+                return 1;
+            }
+
+            databaseService.update(analysis);
 
         } catch (Exception e) {
             log.error("Results classification issue: " + e.getMessage());
             e.printStackTrace();
+            try {
+                analysis.setStatus(AnalysisStatus.ERRORED);
+                databaseService.update(analysis);
+            } catch (Exception e2) {
+                log.error("Error updating analysis");
+            }
         }
 
         return 1; //todo: change

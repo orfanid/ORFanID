@@ -1,17 +1,19 @@
 spring:
   application.name: ORFanID
-  thymeleaf:
-        cache: false
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
 server:
   port: 8085
-  error:
-    path: /error
-    whitelabel:
-      enabled: false
 
 logging:
   level:
     org.springframework: INFO
+
+rabbitmq:
+  queue-name: analysis
+  exchange: analysis-exchange
+  concurrent-consumer-count: 1
 
 db.api:
 #  baseUrl: http://localhost:8081
@@ -23,5 +25,7 @@ db.api:
 data.outputdir: /dataoutputdir/
 ncbi.blast.programme.location: /usr/local/ncbi/blast/bin/
 #app.dir.root: /Users/hewapathirana/projects/ORFanID/src/main/resources/
-app.dir.root: /app/
+taxdump.dir: /new_taxdump/
+ncbi.blast.nr.db.location: /nr_db/
+ncbi.blast.nt.db.location: /nt_db/
 

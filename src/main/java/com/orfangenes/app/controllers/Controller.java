@@ -1,27 +1,27 @@
 package com.orfangenes.app.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
-import com.orfangenes.app.dto.UserDto;
+import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
+import com.orfangenes.app.service.QueueService;
+import com.orfangenes.app.util.AccessionSearch;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.FileHandler;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
-import com.sun.net.httpserver.Authenticator;
+import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,13 +30,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.orfangenes.app.util.Constants.*;
 
 @Slf4j
-@Controller
-public class InternalController {
+@RestController
+public class Controller {
 
     @Autowired
     DatabaseService databaseService;
@@ -44,17 +49,29 @@ public class InternalController {
     @Autowired
     ORFanGenes orFanGenes;
 
+    @Autowired
+    QueueService queueService;
+
+    private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
+
+
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
 
-    @Value("${app.dir.root}")
-    private String APP_DIR;
+    @PostMapping("analyse/list")
+    public List<String> analyseList(@RequestBody List<InputSequence> sequences) throws Exception {
+        List<String> analysisIdList = new ArrayList<>();
+        for (InputSequence sequence : sequences) {
+            String savedAnalysisId = analyse(sequence);
+            analysisIdList.add(savedAnalysisId);
+        }
+        return analysisIdList;
+    }
 
     @PostMapping("/analyse")
-    public String analyse(@Valid @ModelAttribute("sequence") InputSequence sequence, BindingResult result, Model model) {
+    public String analyse(@RequestBody InputSequence sequence) throws Exception {
 
         log.info("Analysis started....");
-        Assert.assertFalse("Error", result.hasErrors());
         final String sessionID = System.currentTimeMillis() + "_" + RandomStringUtils.randomAlphanumeric(3);
         OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String analysisDir = OUTPUT_DIR + sessionID;
@@ -73,61 +90,83 @@ public class InternalController {
         analysis.setMaximumTargetSequences(Integer.parseInt(sequence.getMaxTargetSequence()));
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
+        analysis.setAnalysisDate(new Date());
+
+        User user;
+        if (sequence.getEmail() == null) {
+            user = databaseService.getUserByEmail(EMAIL);
+            if (user == null) {
+                user = new User();
+                user.setFirstName(FIRST_NAME);
+                user.setLastName(LAST_NAME);
+                user.setEmail(EMAIL);
+                user = databaseService.saveUser(user);
+            }
+        } else {
+            user = databaseService.getUserByEmail(sequence.getEmail());
+            if(user == null){
+                user = new User();
+                user.setFirstName(sequence.getFirstName());
+                user.setLastName(sequence.getLastName());
+                user.setEmail(sequence.getEmail());
+
+                user = databaseService.saveUser(user);
+            }
+        }
+        analysis.setUser(user);
+        databaseService.savePendingAnalysis(analysis);
 
         try {
             FileHandler.createResultsOutputDir(analysisDir);
             FileHandler.saveInputSequence(analysisDir, sequence);
-
-            orFanGenes.run(
-                    inputFastaFile,
-                    analysisDir,
-                    analysis,
-                    APP_DIR);
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
         }
-        return "redirect:/result?sessionid=" + sessionID;
+        queueService.sendToQueue(analysis);
+        return sessionID;
+    }
+
+    @GetMapping("/analysis/cancel/{analysisId}")
+    public void cancelAnalysis(@PathVariable String analysisId) {
+        databaseService.cancelAnalysis(analysisId);
     }
 
     @PostMapping("/data/summary")
-    @ResponseBody
-    public String getAnalysisDataSummary(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getDataSummary(analysisId);
+    public List<GeneSummary> getAnalysisDataSummary(@RequestBody SessionDto sessionDto) throws Exception{
+        final String analysisId = sessionDto.getSessionId();
+        TypeReference<List<GeneSummary>> typeRef = new TypeReference<List<GeneSummary>>() {};
+        return objectMapper.readValue(databaseService.getDataSummary(analysisId), typeRef);
     }
 
     @PostMapping("/data/summary/chart")
-    @ResponseBody
-    public String getAnalysisDataSummaryChart(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getDataSummaryChart(analysisId);
+    public SummaryChart getAnalysisDataSummaryChart(@RequestBody SessionDto sessionDto) throws Exception{
+        final String analysisId = sessionDto.getSessionId();
+        return objectMapper.readValue(databaseService.getDataSummaryChart(analysisId), SummaryChart.class);
     }
 
     @PostMapping("/data/genes")
-    @ResponseBody
-    public String getAnalysisDataGenesList(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getDataGeneList(analysisId);
+    public List<ORFanGenes> getAnalysisDataGenesList(@RequestBody SessionDto sessionDto) throws Exception{
+        final String analysisId = sessionDto.getSessionId();
+        TypeReference<List<ORFanGenes>> typeRef = new TypeReference<List<ORFanGenes>>() {};
+        return objectMapper.readValue(databaseService.getDataGeneList(analysisId), typeRef);
     }
 
     @PostMapping("/data/analysis")
-    @ResponseBody
-    public String getAnalysisData(@RequestBody Map<String, Object> payload) throws IOException {
-        final String analysisId = (String) payload.get("sessionid");
-        return databaseService.getAnalysisJsonById(analysisId);
+    public Analysis getAnalysisData(@RequestBody SessionDto sessionDto) throws IOException {
+        final String analysisId = sessionDto.getSessionId();
+        return objectMapper.readValue(databaseService.getAnalysisJsonById(analysisId), Analysis.class);
     }
 
     @PostMapping("/data/blast")
-    @ResponseBody
-    public String getBlast(@RequestBody Map<String, Object> payload) {
-        final String analysisId = (String) payload.get("sessionid");
-        final String geneid = (String) payload.get("geneid");
+    public String getBlast(@RequestBody SessionGeneDto sessionGeneDto) {
+        final String analysisId = sessionGeneDto.getSessionId();
+        final String geneid = sessionGeneDto.getGeneId();
         String blastResults = databaseService.getDataBlastResults(analysisId);
         return FileHandler.blastToJSON(blastResults, geneid);
     }
 
     @PostMapping("/save")
-    public String saveResult(@Valid @ModelAttribute("user") UserDto userFromForm, BindingResult result, Model model) throws Exception {
+    public void saveResult(@Valid @RequestBody UserDto userFromForm) throws Exception {
         final String analysisId = userFromForm.getAnalysisId();
         final String firstName = userFromForm.getFirstName();
         final String lastname = userFromForm.getLastName();
@@ -150,19 +189,22 @@ public class InternalController {
             throw new Exception("Analysis not found for Analysis ID : " + analysisId);
         }
         System.out.println("Data updated!");
-       return "redirect:/orfanbase";
     }
 
     @PostMapping("/orfanbase-genes")
-    @ResponseBody
-    public String getOrfanbaseGenes() {
-        return databaseService.getOrfanbaseGenes();
+    public List<Genes> getOrfanbaseGenes() throws Exception {
+        TypeReference<List<Genes>> typeRef = new TypeReference<List<Genes>>() {};
+        return objectMapper.readValue(databaseService.getOrfanbaseGenes(), typeRef).stream()
+                .filter(genes -> genes.getGeneId() != null)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/all-analysis")
-    @ResponseBody
-    public String getAllAnalysis() {
-        return databaseService.getAllAnalysis();
+    public List<AnalysisResultsTableRaw> getAllAnalysis() throws Exception{
+        TypeReference<List<AnalysisResultsTableRaw>> typeRef = new TypeReference<List<AnalysisResultsTableRaw>>() {};
+        return objectMapper.readValue(databaseService.getAllAnalysis(), typeRef).stream()
+                .filter(analysisResultsTableRaw -> !AnalysisStatus.CANCELLED.equals(analysisResultsTableRaw.getStatus()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/download/blast/{sessionid}")
@@ -185,7 +227,7 @@ public class InternalController {
     }
 
     @PostMapping("/clamp")
-    public String clampAnalyse(@Valid @ModelAttribute("chromosome") String chromosome) {
+    public void clampAnalyse(@RequestBody String chromosome) {
 
         OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
         String outputFile = OUTPUT_DIR + Constants.FILE_OUTPUT_CLAMP;
@@ -210,7 +252,32 @@ public class InternalController {
         } catch (Exception e) {
             log.error("Clamp Analysis Failed: " + e.getMessage());
         }
-        return "redirect:/clampresults?chromosome=" + "all"; // todo hard coded
+    }
+
+    @GetMapping("/validate/accessions")
+    public AccessionsValidationDto validateAccessions(@RequestParam("accessions") String accessions, @RequestParam("accessionType") String accessionType) {
+        AccessionsValidationDto accessionsValidationDto = new AccessionsValidationDto();
+        log.info("validating accessions..");
+        List<String> invalidAccessions = new ArrayList<>();
+        if(accessions != null && accessions.length()>1){
+            String[] accessionList = accessions.split("[\\s,]+");
+            for (String accession: accessionList) {
+                try {
+                    String geneSequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
+                } catch (Exception e) {
+                    invalidAccessions.add(accession);
+                    log.error("Error occurred while retrieving sequence for " + accession + ". Please check the accessions or the database type");
+                }
+            }
+        }
+        accessionsValidationDto.setInvalidAccessions(invalidAccessions);
+        if (invalidAccessions.isEmpty()) {
+            accessionsValidationDto.setIsValid(true);
+        } else {
+            accessionsValidationDto.setIsValid(false);
+        }
+        log.info("validating accessions..completed!");
+        return accessionsValidationDto;
     }
 
     @GetMapping("test-api")

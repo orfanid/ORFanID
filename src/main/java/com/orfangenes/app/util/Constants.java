@@ -8,7 +8,7 @@ public class Constants {
     // default user
     public static final String FIRST_NAME = "orfanid";
     public static final String LAST_NAME = "orfanid";
-    public static final String EMAIL = "orfanid@gmail.com";
+    public static final String EMAIL = "info@orfangenes.com";
 
     // Blast Types  TODO: SHould be an Enum
     public static final String TYPE_NUCLEOTIDE = "nucleotide";
@@ -75,5 +75,9 @@ public class Constants {
     public static final String SEQUENCE_SEPARATOR = "\n\n";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
+
+    public enum AnalysisStatus {
+        PENDING, COMPLETED, ERRORED, START_PROCESSING, CANCELLED
+    }
 
 }

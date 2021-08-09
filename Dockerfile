@@ -39,15 +39,6 @@ RUN apt-get update && apt-get install wget bash && apt-get install -y r-base && 
 # use app folder as the working directory
 WORKDIR /app
 
-#Install NCBI BLAST programmes and make it executable. Secondly, download ranklineagefile from NCBI FTP
-RUN wget -q ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.8.1/ncbi-blast-2.8.1+-x64-linux.tar.gz && \
-    tar xf ncbi-blast-2.8.1+-x64-linux.tar.gz && \
-    mkdir -p /usr/local/ncbi/blast/bin && \
-    chmod +x ncbi-blast-2.8.1+/bin/blastp && \
-    cp ncbi-blast-2.8.1+/bin/* /usr/local/ncbi/blast/bin && \
-    wget -q ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz && \
-    tar xf new_taxdump.tar.gz
-
 # Copy the jar file from the "build-env" to the current container
 COPY --from=build-env /app/target/*.jar app.jar
 

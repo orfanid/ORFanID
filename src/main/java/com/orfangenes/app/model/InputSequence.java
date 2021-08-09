@@ -1,6 +1,5 @@
 package com.orfangenes.app.model;
 
-import com.orfangenes.app.util.Constants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +14,9 @@ public class InputSequence {
     private String maxEvalue;
     private String maxTargetSequence;
     private String identity;
+    private String email;
+    private String firstName;
+    private String lastName;
 
     // TODO: THIS IMPLEMENTATION IS INCORRECT
 //    public String getType() {

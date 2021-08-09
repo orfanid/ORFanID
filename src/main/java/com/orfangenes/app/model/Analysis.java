@@ -1,6 +1,8 @@
 package com.orfangenes.app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.orfangenes.app.util.Constants;
 import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -21,6 +23,7 @@ public class Analysis extends AuditModel {
     private Long id;
     @NotBlank
     private String analysisId;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date analysisDate;
     @NotBlank
     @Size(min = 3, max = 100)
@@ -32,6 +35,7 @@ public class Analysis extends AuditModel {
     private int maximumTargetSequences;
     private int identity;
     private String sequenceType;
+    private Constants.AnalysisStatus status;
 
     private User user;
     @ToString.Exclude

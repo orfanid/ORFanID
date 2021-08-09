@@ -23,8 +23,10 @@ public class SequenceService {
     private String sequenceFile;
     private String outputDir;
 
-    @Value("${ncbi.blast.programme.location}")
-    String BLAST_LOCATION="/usr/local/ncbi/blast/bin/";
+    String BLAST_LOCATION="/blast/bin/";
+
+    String BLAST_NR_DB_LOCATION = "/nr_db/";
+    String BLAST_NT_DB_LOCATION = "/nt_db/";
 
 
     public SequenceService(String blastType, String sequenceFile, String outputDir) {
@@ -34,44 +36,26 @@ public class SequenceService {
     }
 
     public void findHomology( String out, int maxTargetSeqs, int eValue){
-        String inputSequence = getSequenceFromFile(this.sequenceFile);
-        List<String> sequenceBatches = separateSequenceToBatches(inputSequence);
-        for (int fileCount = 0; fileCount <sequenceBatches.size() ; fileCount++) {
-            createSequenceFile(out, sequenceBatches.get(fileCount) , fileCount+1);
-        }
-        runBlastCommands(maxTargetSeqs, eValue, sequenceBatches.size());
-        combineBlastResults(sequenceBatches.size());
+//        String inputSequence = getSequenceFromFile(this.sequenceFile);
+//        List<String> sequenceBatches = separateSequenceToBatches(inputSequence);
+//        for (int fileCount = 0; fileCount <sequenceBatches.size() ; fileCount++) {
+//            createSequenceFile(out, sequenceBatches.get(fileCount) , fileCount+1);
+//        }
+        runBlastCommands(maxTargetSeqs, eValue);
+//        combineBlastResults(sequenceBatches.size());
     }
 
-    private void runBlastCommands(int maxTargetSeqs, int evalue, int fileCount) {
+    private void runBlastCommands(int maxTargetSeqs, int evalue) {
         log.warn("Running BLAST. Be patient...This will take 2-15 min...");
         long startTime = System.currentTimeMillis();
 
-        BlastCommandRunner[] blastCommands = new BlastCommandRunner[fileCount];
-        for (int i = 0; i < fileCount; i++) {
-            BlastCommandRunner blastCommandRunner = new BlastCommandRunner(BLAST_LOCATION);
-            blastCommandRunner.setFileNumber(Integer.toString(i + 1));
-            blastCommandRunner.setSequenceType(this.blastType);
-            blastCommandRunner.setOut(this.outputDir);
-            blastCommandRunner.setMaxTargetSeqs(String.valueOf(maxTargetSeqs));
-            blastCommandRunner.setEvalue("1e-" + evalue);
-            blastCommandRunner.start();
-            blastCommands[i] = blastCommandRunner;
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage());
-            }
-        }
+        BlastCommandRunner blastCommandRunner = new BlastCommandRunner(BLAST_LOCATION, BLAST_NR_DB_LOCATION, BLAST_NT_DB_LOCATION);
+        blastCommandRunner.setSequenceType(this.blastType);
+        blastCommandRunner.setOut(this.outputDir);
+        blastCommandRunner.setMaxTargetSeqs(String.valueOf(maxTargetSeqs));
+        blastCommandRunner.setEvalue("1e-" + evalue);
+        blastCommandRunner.run();
 
-        // Wait for all blast commands to finish running
-        try {
-            for (BlastCommandRunner command : blastCommands) {
-                command.join();
-            }
-        } catch (InterruptedException e) {
-            log.error(e.getMessage());
-        }
         long stopTime = System.currentTimeMillis();
         log.info("BLAST successfully Completed!! Time taken: " + (stopTime - startTime) + "ms");
     }
