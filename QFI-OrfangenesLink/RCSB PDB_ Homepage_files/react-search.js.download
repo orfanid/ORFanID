@@ -1,0 +1,157 @@
+/* script that allows search react components to talk to jquery */
+
+var template = 'search.pug'
+
+var reactDispatchAction // this will be initialized in the react app to point to the search.dispatchAction function
+
+var dt = new Date()
+var month = dt.getMonth() + 1
+if (month < 10) month = '0' + month
+var day = dt.getDate()
+if (day < 10) day = '0' + day
+//var datePickerEndDate = month + '/' + day + '/' + dt.getFullYear()
+var datePickerOptions = { autoclose: true, startView: 2, startDate: "01/01/1976" } // , endDate: datePickerEndDate
+
+// call react function to set tab
+function help() {
+    reactDispatchAction('SET_VIEW', { tab: 'TAB_HELP' })
+}
+
+// 
+function setDatePicker(id, type) {
+    console.log('react-search.setDatePicker: ', id, type)
+    if ($('#' + id).length) {
+        var selector = (type === 'range') ? '#' + id + ' .input-daterange' : '#' + id + ' .input-group.date'
+        //var selector = (type === 'range') ? '#' + id + ' .input-daterange' : '#' + id + ' .input-date' // autoclose does not work
+        $(selector).datepicker(datePickerOptions)
+    }
+}
+
+// remove datepicker obj when it is unmounted
+function removeDatePicker(id) {
+    console.log('react-search.removeDatePicker: ', id)
+    if ($('#' + id).length) $('#' + id).datepicker('remove')
+}
+
+function setDispatchAction(func) {
+    reactDispatchAction = func
+}
+
+// for dev view objects
+function toggleAll(id) {
+    //console.log('toggleAll', id)
+    var o = $('#tbody' + id)
+    if (o.is(':visible')) {
+        o.hide()
+        o.find('tbody').hide()
+    } else {
+        o.show()
+        o.find('tbody').show()
+    }
+}
+
+// for dev view objects
+function toggleStateObj(id) {
+    //console.log('toggleStateObj', id)
+    var o = $('#tbody' + id)
+    if (o.is(':visible')) o.hide()
+    else o.show()
+}
+
+/*
+Note: during development the non-minimized version of the bootstrap-datepicker.js library is used, because some modifications were made to that file
+<td className='calendar-input'>
+    <div id={this.calendarId}>
+        <div className="input-group date"> // el
+            <input
+                type="text"
+                value={value}
+                id={guid}
+                name={rule.id}
+                className="form-control"
+                placeholder={placeholder}
+                autoComplete='off' />
+            <span className="input-group-addon">{s.calendarIcon}</span>
+
+            // range
+            <div id={this.calendarId}>
+                <div className="input-daterange input-group" id="datepicker"> // el
+                    <input type="text" className="input-sm form-control" name="start" />
+                    <span className="input-group-addon">to</span>
+                    <input type="text" className="input-sm form-control" name="end" />
+                </div>
+            </div>
+
+*/
+function updateSearch(element, value) {
+    console.log('updateSearch: ' + value)
+    /*
+    for(var p in element) {
+        if (typeof element[p] !== 'function') {
+            console.log(p + ' = ' + element[p])
+        }
+    }
+    console.log('----------')
+    */
+
+    var el = element[0]
+    /*
+    for(var p in el) {
+        if (typeof el[p] !== 'function') {
+            console.log(p + ' = ' + el[p])
+        }
+    }
+    */
+
+    console.log('el.nodeName=' + el.nodeName)
+    console.log('el.className=' + el.className)
+    console.log('el.id=' + el.id)
+
+    var limit, terminal_id
+    if (el.nodeName === 'INPUT') { // DIV|INPUT
+        console.log('range')
+        limit = (el.name === 'start') ? 'from' : 'to'
+        terminal_id = el.id.replace(el.name, '')
+    } else {
+        console.log('el.children.length=' + el.children.length)
+        console.log('el.children[0].id=' + el.children[0].id)
+        console.log('el.children[0].name=' + el.children[0].name)
+
+        if (el.children[0]) {
+            var input = el.children[0]
+            terminal_id = input.name
+        }
+    }
+    console.log('updateSearch:', limit, terminal_id, value)
+    reactDispatchAction('QB_ATTRIBUTE_SET_VALUE', { limit, terminal_id, value })
+}
+
+// track in google analytics
+function sendGtag(event_category, event_action, event_label) {
+    if (typeof gtag !== 'undefined') { // for classic
+        gtag('event', event_action, { event_category, event_label })
+    }
+}
+
+function loadSearch(counter) {
+    if (!counter) counter = { n: 0 }
+    console.log('loadSearch:', 'counter.n=' + counter.n)
+
+    if (window.React && document.body) {
+        console.log('loadSearch: RC.isProductionServer=' + RC.isProductionServer)
+        var search = document.createElement('script')
+        var ts = (RC.isProductionServer) ? Math.floor(Date.now() / 600000) : Date.now()
+        search.src = (RC.isProductionServer) ? '/build/js/search.min.js?ts=' + ts : '/build/js/search.js?ts=' + ts
+        
+        document.body.appendChild(search)
+        search.onload = search.onreadystatechange = function() {
+            console.log('search loaded')
+        }
+    } else {
+        counter.n++
+        if (counter.n < 20) setTimeout(() => loadSearch(counter), 250)
+        else console.log('ERROR: UNABLE TO LOAD SEARCH COMPONENT AFTER ' + counter.n + ' ATTEMPTS')
+    }
+}
+
+loadSearch()

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" async="" src="./RCSB PDB_ Homepage_files/analytics.js.download"></script>
+        <script type="text/javascript" async="" src="./RCSB PDB_ Homepage_files/analytics.js(1).download"></script>
+        <script type="text/javascript" async="" src="./RCSB PDB_ Homepage_files/js"></script>
+        <script type="text/javascript" async="" src="./RCSB PDB_ Homepage_files/js(1)"></script>
+        <script type="text/javascript" async="" src="./RCSB PDB_ Homepage_files/analytics.js(2).download"></script>
+        <script src="./RCSB PDB_ Homepage_files/react.min.js.download"></script>
+        <script src="./RCSB PDB_ Homepage_files/reactDOM.min.js.download"></script>
+        <script src="./RCSB PDB_ Homepage_files/search-data"></script>
+        <script src="./RCSB PDB_ Homepage_files/react-search.js.download"></script>
+        <title>Home</title>
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/bootstrap.min.css" />
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/glyph.less" />
+
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/font-awesome.min.css" />
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/main.css" />
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/search.css" />
+        <script>
+            window.addEventListener(
+                "DOMContentLoaded",
+                function () {
+                    lazyImage.observeArray(document.querySelectorAll("img[data-src]"));
+                },
+                false
+            );
+
+            window.addEventListener("load", function () {
+                // load the JIRA feedback button only after everything else has been loaded
+                var script = document.createElement("script");
+                script.src = "/js/jira-fdbck.js";
+                script.type = "text/javascript";
+                document.getElementsByTagName("head")[0].appendChild(script);
+                var link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.href = "//cdn.rcsb.org/jira-feedback/css/jira-fdbck.css";
+                document.getElementsByTagName("head")[0].appendChild(link);
+                // load the ekko-lightbox css only after everything else has been loaded
+                var link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.href = "/css/ekko-lightbox.css";
+                document.getElementsByTagName("head")[0].appendChild(link);
+            });
+        </script>
+        <script src="./RCSB PDB_ Homepage_files/jquery-3.3.1.min.js.download"></script>
+        <script src="./RCSB PDB_ Homepage_files/bootstrap.min.js.download"></script>
+        <script src="./RCSB PDB_ Homepage_files/ekko-lightbox.min.js.download" defer=""></script>
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/features.css" />
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/panels.css" />
+        <link rel="stylesheet" href="./RCSB PDB_ Homepage_files/responsive.css" />
+        <script src="file:///C:/js/jira-fdbck.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="file://cdn.rcsb.org/jira-feedback/css/jira-fdbck.css" />
+        <link rel="stylesheet" href="file:///C:/css/ekko-lightbox.css" />
+        <script src="file:///C:/js/jira-fdbck.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="file://cdn.rcsb.org/jira-feedback/css/jira-fdbck.css" />
+        <link rel="stylesheet" href="file:///C:/css/ekko-lightbox.css" />
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top hidden-print" id="nav" role="navigation">
+            <div
+                class="hide hidden-print"
+                id="UnsupportedBrowser"
+                style="width: 100%; border-bottom: 2px solid #ffa500; background-color: #ffffff; color: #000000; display: inline-block; font-size: 0.9em; line-height: 2em; text-align: center; font-weight: bold; font-style: italic;"
+            >
+                <span class="label label-warning" style="font-size: 100%;">Warning</span> You are using a web browser that we do not support. Our website will not work properly. Please update to a newer version or download a new web
+                browser, such as Chrome or Firefox.
+            </div>
+            <div class="container">
+                <div class="pull-right" id="mypdb-menu-container">
+                    <div class="dropdown pull-right" style="margin-top: 10px;">
+                        <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">Dropdown button<span class="caret"></span></button>
+                        <ul class="dropdown-menu" style="margin-top: 0px;">
+                            <li>
+                                <a href="#"><img src="./RCSB PDB_ Homepage_files/google-sm.png" style="margin-right: 5px;" />Sign in with Google</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Brand and toggle get grouped for better mobile display-->
+                <div class="navbar-header">
+                    <button class="navbar-toggle pull-left" type="button" data-toggle="collapse" data-target="#navbar-collapse-RCSB">
+                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Logo</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-RCSB" style="max-height: 420px;">
+                    <ul class="nav navbar-nav pull-left">
+                        <li class="dropdown" id="headnav_deposit">
+                            <a class="dropdown-toggle" href="" data-toggle="dropdown" aria-expanded="false">Link 1&nbsp;<b class="caret"></b></a>
+                            <div class="dropdown-menu multi-column" id="DepositDropdownNav">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-2 col-md-2">
+                                        <ul class="dropdown-menu" id="head-deposit_prepare">
+                                            <li><h4>Heading</h4></li>
+                                            <li><a href="" target="_blank" rel="noopener">Sub link 1</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropdown" id="">
+                            <a class="dropdown-toggle" href="" data-toggle="dropdown" aria-expanded="false">Link 2</b></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <style>
+            #header{
+                background-image:unset !important;
+            }
+            #mypdb-menu-container{
+                display:none;
+            }
+            .pdb50 {
+                padding: 0 1px 0 0;
+                width: 300px;
+                display: inline-block;
+                bottom: -30px;
+                position: absolute;
+                right: 102px;
+                margin-left: 5px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .pdb50:hover {
+                opacity: 0.8 !important;
+                filter: alpha(opacity=70) !important;
+                box-shadow: 0 0 0px #000000 !important;
+            }
+            .beta-test {
+                background: #325880;
+                color: #fe9a2e;
+                padding: 3px 15px;
+                height: 26px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                position: absolute;
+                bottom: -32px;
+                right: 110px;
+                list-style-type: none;
+            }
+            .instance {
+                background: #325880;
+                color: #cef;
+                padding: 3px 15px;
+                height: 26px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                position: absolute;
+                bottom: -32px;
+                right: 110px;
+                list-style-type: none;
+                font-size: 12px;
+                line-height: 22px;
+            }
+        </style>
+        <div id="header">
+            <div class="container">
+                <div class="row" style="margin-bottom: 20px;">
+                    <div class="col-sm-12 col-md-6 col-lg-5" id="logo_container">
+                        <a href=""><img style="width:150px; float:left; position:relative; bottom:10px;" id="" src="https://png.pngitem.com/pimgs/s/485-4852378_sample-logo-png-transparent-png.png" data-src="" alt="" /></a>
+                        <h2 class="hidden-xs" id="tagline">
+                            <a
+                                id="CurrentStructureCount"
+                                href=""
+                            >
+                                
+                            </a>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit
+                        </h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <!-- search bar-->
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-7 hidden-print" id="search-bar-container2">
+                        <div id="search-bar-component2" class="search-bar">
+                            <div id="menu-container-6505e724-c789-444d-a652-8873c37a5b471">
+                                <table class="search-bar-table"> 
+                                    <tr>
+                                        <td class="search-bar-input"><input type="text" id="11" placeholder="Enter search terms." autocomplete="off" spellcheck="false" /></td>
+                                        <td>
+                                            <div id="search-icon"><span class="glyphicon glyphicon-search search-btn"></span></div>
+                                        </td>
+                                    </tr>
+                                    <tr id="search-bar-links1">
+                                        <td>
+                                            <a href="#">Advanced Search</a>
+                                            <div style="width: 5px; display: inline-block;"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="hidden-xs hidden-print" id="PDBmembers">
+                    <li>
+                        <a href=""><img id="" style="width: 95px;" src="data:image/png;base64,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" data-src="" alt="" /></a>
+                    </li>
+                </ul>
+                <ul class="fa-ul pdb50">
+                    <li>
+                        <a href="" rel="noopener" alt=""><img style="width: 300px;" src="https://contactcentresummit.co.uk/wp-content/uploads/2014/11/Dummy-banner-homepage.png" /></a>
+                    </li>
+                </ul>
+                <div id="socialmedia_section" style="display: none;">
+                    <ul class="fa-ul hidden-print">
+                        <li>
+                            <a href="#" target="_blank" rel="noopener" title="" data-placement="top" data-toggle="tooltip" data-original-title="Facebook"><i class="fa fa-facebook-square fa-lg"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" target="_blank" rel="noopener" title="" data-placement="top" data-toggle="tooltip" data-original-title="Twitter"><i class="fa fa-twitter fa-lg"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" target="_blank" rel="noopener" title="" data-placement="top" data-toggle="tooltip" data-original-title="YouTube">
+                                <i class="fa fa-youtube-play fa-lg"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" target="_blank" rel="noopener" title="" data-placement="top" data-toggle="tooltip" data-original-title="Github"><i class="fa fa-github fa-lg"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container" id="maincontentcontainer">
+            <style>
+                .navy {
+                    background-image: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(59, 87, 126, 1), rgba(59, 87, 126, 1), rgba(255, 255, 255, 1));
+                    /*linear-gradient(to right, rgba(255,255,255,1), rgba(59,87,126,1), rgba(59,87,126,1),rgba(255,255,255,1));*/
+                    /*linear-gradient(to right, rgba(108,147,191,1), rgba(59,87,126,1), rgba(59,87,126,1),rgba(108,147,191,1));*/
+                    margin-top: -20px;
+                }
+                .alignRight {
+                    text-align: right;
+                }
+                .jobsImage {
+                    height: 40px;
+                    width: auto;
+                }
+                .tagline {
+                    color: #fff;
+                    font-size: 140%;
+                    font-weight: 400;
+                }
+                .vertPosition {
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                }
+                .blue {
+                    background-color: #51b7ef;
+                    color: #fff;
+                }
+                .padRight {
+                    padding-right: 10px;
+                }
+                @media only screen and (max-width: 768px) {
+                    .navy {
+                        background-color: #325880;
+                        background-image: url("#");
+                        background-repeat: no-repeat;
+                        background-position: top right;
+                        padding-top: 10px;
+                        padding-bottom: 10px;
+                    }
+                }
+
+                @media only screen and (max-width: 992px) {
+                    .tagline {
+                        font-size: 110%;
+                    }
+                }
+            </style>
+            <div class="row navy">
+                <div class="col-sm-4"></div>
+                <div class="col-md-8 col-sm-8 vertPosition alignRight">
+                    <span class="tagline padRight">Some sample title text</span><a class="btn btn-sm btn-info" href="" role="button">Sample Button</a>
+                </div>
+            </div>
+            <div id="homepage_panelslides">
+                <div class="row" id="panel">
+                    <div class="col-xs-12 col-sm-12 col-md-2" id="panel_mainnav">
+                        <ul>
+                            <li class="active" id="mainnav_welcome">
+                                <a href="" aria-label="Welcome"><span class="glyphicon glyphicon-bookmark"></span><span class="mainnav_title hidden-xs">Welcome</span></a>
+                            </li>
+                            <li class="" id="mainnav_welcome">
+                                <a href="" aria-label="Welcome"><span class="glyphicon glyphicon-bookmark"></span><span class="mainnav_title hidden-xs">Deposit</span></a>
+                            </li>
+                            <li class="" id="mainnav_welcome">
+                                <a href="" aria-label="Welcome"><span class="glyphicon glyphicon-bookmark"></span><span class="mainnav_title hidden-xs">Search</span></a>
+                            </li>
+                            <li class="" id="mainnav_welcome">
+                                <a href="http://orfangenes.com/#/orfanBase" aria-label="Welcome"><span class="glyphicon glyphicon-bookmark"></span><span class="mainnav_title hidden-xs">Visualize</span></a>
+                            </li>
+                            <li class="" id="mainnav_welcome">
+                                <a href="http://orfangenes.com/#/input" aria-label="Welcome"><span class="glyphicon glyphicon-bookmark"></span><span class="mainnav_title hidden-xs">Analyze</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel_content col-xs-12 col-sm-12 col-md-10" id="panel_toggle-content" style="">
+                        <div class="panel_detailcontent" id="welcome_rcsb_panel">
+                            <div class="col-xs-12 col-sm-5 col-md-6 col-lg-7">
+                                <h2 class="visible-xs">Welcome</h2>
+                                <h3>Section Title</h3>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </p>
+                                
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="padding-right: 2px;">
+                                        <a href="">
+                                            <img src="https://placeholder.com/wp-content/uploads/2019/06/lorem-ipsum.png" class="img-responsive" style="margin-top: 0; margin-left: 0;" alt="" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-7 col-md-6 col-lg-5" id="HomepageMoleculeOfTheMonth">
+                                <h4>Featured Content</h4>
+                                <div id="HomepageImage">
+                                    <a href="">
+                                        <img
+                                            class="img-responsive"
+                                            src="https://lipsum.cafe/wp-content/uploads/2021/04/lorem-ipsum.jpg"
+                                        />
+                                    </a>
+                                </div>
+                                <h5>Content subtitle</h5>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="homepage_middlesection">
+                <article>
+                    <div class="row" id="middlesection">
+                        <div class="hidden-xs col-sm-4 pull-left" id="lateststructure">
+                            <!-- TODO: NEED TO WORK ON EMDB - Short and Long images-->
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3>Whats New?</h3>
+                                    <span class="date hidden-xs hidden-sm">
+                                        <a
+                                            href="#" style="color: #fff !important;"
+                                        >
+                                            Tue Aug 17 2021
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="carousel slide" id="carousel-lateststructure" data-ride="carousel" data-interval="false">
+                                        <ol class="carousel-indicators">
+                                            <li class="active" data-target="#carousel-lateststructure" data-slide-to="0"></li>
+                                            <li data-target="#carousel-lateststructure" data-slide-to="1" class=""></li>
+                                            <li data-target="#carousel-lateststructure" data-slide-to="2" class=""></li>
+                                        </ol>
+                                        <div class="carousel-inner center-block">
+                                            <div class="item active">
+                                                <a href=""><img src="https://media.istockphoto.com/photos/group-portrait-of-a-creative-business-team-standing-outdoors-three-picture-id1146473249?k=6&m=1146473249&s=612x612&w=0&h=W1xeAt6XW3evkprjdS4mKWWtmCVjYJnmp-LHvQstitU=" data-src="" /></a>
+                                                <div class="feature_block">
+                                                    <a href=""><h3>Title</h3></a>
+                                                    <hr />
+                                                    <h5>Lorem ipsum dolor sit amet,didunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <a href=""><img src="https://media.istockphoto.com/photos/group-portrait-of-a-creative-business-team-standing-outdoors-three-picture-id1146473249?k=6&m=1146473249&s=612x612&w=0&h=W1xeAt6XW3evkprjdS4mKWWtmCVjYJnmp-LHvQstitU=" data-src="" /></a>
+                                                <div class="feature_block">
+                                                    <a href=""><h3>Title</h3></a>
+                                                    <hr />
+                                                    <h5>Lorem ipsum dolor sit amet,  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <a href=""><img src="https://media.istockphoto.com/photos/group-portrait-of-a-creative-business-team-standing-outdoors-three-picture-id1146473249?k=6&m=1146473249&s=612x612&w=0&h=W1xeAt6XW3evkprjdS4mKWWtmCVjYJnmp-LHvQstitU=" data-src="" /></a>
+                                                <div class="feature_block">
+                                                    <a href=""><h3>Title</h3></a>
+                                                    <hr />
+                                                    <h5>Lorem ipsum dolor sit amet, didunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a class="left carousel-control" href="#" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                                        <a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4" id="newfeatures">
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><h3>More Features</h3></div>
+                                <div class="panel-body no-padding">
+                                    <article>
+                                        <div class="col-xs-12">
+                                            <div class="row eachFeatures">
+                                                <div class="col-xs-3 min-LR-padding">
+                                                    <a href="">
+                                                        <img
+                                                            class="news_img news_thumbnail img-thumbnail"
+                                                            style="width: 100px;"
+                                                            src="data:image/jpeg;base64,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"
+                                                            
+                                                        />
+                                                    </a>
+                                                </div>
+                                                <div class="col-xs-9 min-LR-padding default-content-list">
+                                                    <a href="">
+                                                        <h4 style="color: #337ab7;">Feature 1</h4>
+                                                    </a>
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <a href="#">See  feature archive</a>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4" id="news">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="" data-toggle="tab"><h3 style="margin-top: 5px; margin-bottom: 10px;">News</h3></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="" aria-expanded="true">
+                                        <h3 style="margin-top: 5px; margin-bottom: 6px;">Publications<span class="caret"></span></h3>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Published in Journals &amp; Books</a></li>
+                                        <hr />
+                                        <li><a href="#" data-toggle="tab">Molecule of the Month</a></li>
+                                        <hr />
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="news_content">
+                                <div class="tab-pane active" id="rcsbnews">
+                                    <ul class="default-content-list" id="weeklyRCSBnews">
+                                        <article>
+                                            <li>
+                                                <div class="col-xs-3 min-LR-padding">
+                                                    <a href="#">
+                                                        <img
+                                                            class="news_img news_thumbnail img-thumbnail"
+                                                            style="width: 100px;"
+                                                            src="data:image/jpeg;base64,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"
+                                                        />
+                                                    </a>
+                                                </div>
+                                                <div class="col-xs-9 min-LR-padding default-content-list">
+                                                    <h4><a href="#">News 1</a></h4>
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        </article>
+                                    </ul>
+                                    <div class="clearfixs"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div id="footer_statistics">
+                <article>
+                    <div class="row">
+                        <ul>
+                            <li>
+                                <a class="hidden-print querySearchLink" href="">Link 1</a>
+                            </li>
+                            <li>
+                                <a class="hidden-print querySearchLink" href="">Link 2</a>
+                            </li>
+                            <li>
+                                <a class="hidden-print querySearchLink" href="">Link 3</a>
+                            </li>
+                            <li>
+                                <a class="hidden-print querySearchLink" href="">Link 4</a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="hidden-print" id="footer_main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                        <ul class="col-xs-4 col-sm-12">
+                            <li><span class="row_header">About</span></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Team</a></li>
+                            <li><a href="#">Careers</a></li>
+                        </ul>
+                        <ul class="col-xs-4 col-sm-12">
+                            <li><span class="row_header">Help</span></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Service</a></li>
+                        </ul>
+                        <ul class="col-xs-4 col-sm-12" style="display: none;">
+                            <li><span class="row_header">RCSB Partners</span></li>
+                            <li><a href="http://ndbserver.rutgers.edu/" target="_blank" rel="noopener">Nucleic Acid Database</a></li>
+                        </ul>
+                        <ul class="col-xs-4 col-sm-12" style="display: none;">
+                            <li>
+                                <span class="row_header"><a href="https://www.wwpdb.org/" target="_blank" rel="noopener" style="text-decoration: none; color: black;">wwPDB Partners</a></span>
+                            </li>
+                            <li><a href="https://www.rcsb.org/">RCSB PDB</a></li>
+                            <li><a href="https://www.ebi.ac.uk/pdbe/" target="_blank" rel="noopener">PDBe</a></li>
+                            <li><a href="https://www.pdbj.org/" target="_blank" rel="noopener">PDBj</a></li>
+                            <li><a href="https://bmrb.io/" target="_blank" rel="noopener">BMRB</a></li>
+                            <li><a href="https://emdb-empiar.org/" target="_blank" rel="noopener">EMDB</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 text-center" style="display: none;">
+                        <p>RCSB PDB (<a href="http://nar.oxfordjournals.org/content/28/1/235.abstract" target="blank">citation</a>) is hosted by</p>
+                        <img
+                            src="file://cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_Rutgers.png"
+                            data-src="//cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_Rutgers.png"
+                            alt="Logo_Rutgers.png"
+                            usemap="#rutgers-map"
+                            height="26"
+                            style="padding: 0px 10px; border-right: 1px solid #000000;"
+                        />
+                        <img
+                            src="file://cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_UCSD-SDSC.png"
+                            data-src="//cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_UCSD-SDSC.png"
+                            alt="Logo_UCSD.png"
+                            usemap="#UCSD-SDSC-map"
+                            height="26"
+                            style="padding: 0px 10px; border-right: 1px solid #000000;"
+                        />
+                        <img
+                            src="file://cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_UCSF.png"
+                            data-src="//cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_UCSF.png"
+                            alt="Logo_UCSF.png"
+                            usemap="#UCSF-map"
+                            height="26"
+                            style="padding-left: 10px;"
+                        />
+                        <map name="rutgers-map"><area shape="rect" coords="0,0,115,26" href="http://www.rutgers.edu/" alt="Rutgers" target="_blank" rel="noopener" /></map>
+                        <map name="UCSD-SDSC-map">
+                            <area shape="rect" coords="0,0,150,26" href="http://ucsd.edu/" alt="UCSD" target="_blank" rel="noopener" />
+                            <area shape="rect" coords="151,0,255,26" href="http://www.sdsc.edu/" alt="SDSC" target="_blank" rel="noopener" />
+                        </map>
+                        <map name="UCSF-map"><area shape="rect" coords="0,0,64,26" href="http://www.ucsf.edu/" alt="UCSF" target="_blank" rel="noopener" /></map>
+                        <p>
+                            RCSB PDB is a member of the
+                            <span id="pdbmembers_footer">
+                                <a href="#" target="_blank" rel="noopener">
+                                    <img class="wwpdblogo" src="file://cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_wwpdb.png" data-src="//cdn.rcsb.org/rcsb-pdb//v2/common/images/Logo_wwpdb.png" alt="wwPDB" />
+                                </a>
+                                <a href="https://www.emdataresource.org/" target="_blank" rel="noopener">
+                                    <img
+                                        id="emdatabanklogo_footer"
+                                        src="file://cdn.rcsb.org/rcsb-pdb//v2/common/images/EMDataResourcelogo.png"
+                                        data-src="//cdn.rcsb.org/rcsb-pdb//v2/common/images/EMDataResourcelogo.png"
+                                        alt="EMDataResource"
+                                    />
+                                </a>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer_grant">
+            <div class="container">
+                <div class="row">
+                    <p>
+                        Copyright 2021
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="jira-fdbck">
+            <!-- Contact Us button -->
+            <button type="button" class="btn btn-warning btn-xs pull-right jira-fdbck-btn hidden-print" id="contactus">Contact Us</button>
+        </div>
+        <script src="./RCSB PDB_ Homepage_files/search.min.js.download"></script>
+        <script src="file:///C:/build/js/search.min.js?ts=2716341"></script>
+        <script src="file:///C:/build/js/search.min.js?ts=2716342"></script>
+    </body>
+</html>
