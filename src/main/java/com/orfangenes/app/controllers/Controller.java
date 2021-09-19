@@ -130,7 +130,6 @@ public class Controller {
     @GetMapping("/kill/{analysisId}")
     public void killProcess(@PathVariable String analysisId) {
         ProcessHolder.killProcess(analysisId);
-        databaseService.cancelAnalysis(analysisId);
     }
 
     @GetMapping("/analysis/cancel/{analysisId}")
