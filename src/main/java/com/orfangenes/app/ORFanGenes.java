@@ -46,7 +46,7 @@ public class ORFanGenes {
         List<BlastResult> blastResults = null;
         try {
             sequenceService = new SequenceService(analysis.getSequenceType(), query, outputDir);
-            sequenceService.findHomology(outputDir, analysis.getMaximumTargetSequences(), analysis.getEvalue());
+            sequenceService.findHomology(outputDir, analysis.getMaximumTargetSequences(), analysis.getEvalue(), analysis.getAnalysisId());
             HomologyProcessingService processor = new HomologyProcessingService(outputDir);
             blastResults = processor.getBlastResults();
             blastResults = blastResults.stream()

@@ -35,21 +35,21 @@ public class SequenceService {
         this.outputDir = outputDir;
     }
 
-    public void findHomology( String out, int maxTargetSeqs, int eValue){
+    public void findHomology( String out, int maxTargetSeqs, int eValue, String analysisId){
 //        String inputSequence = getSequenceFromFile(this.sequenceFile);
 //        List<String> sequenceBatches = separateSequenceToBatches(inputSequence);
 //        for (int fileCount = 0; fileCount <sequenceBatches.size() ; fileCount++) {
 //            createSequenceFile(out, sequenceBatches.get(fileCount) , fileCount+1);
 //        }
-        runBlastCommands(maxTargetSeqs, eValue);
+        runBlastCommands(maxTargetSeqs, eValue, analysisId);
 //        combineBlastResults(sequenceBatches.size());
     }
 
-    private void runBlastCommands(int maxTargetSeqs, int evalue) {
+    private void runBlastCommands(int maxTargetSeqs, int evalue, String analysisId) {
         log.warn("Running BLAST. Be patient...This will take 2-15 min...");
         long startTime = System.currentTimeMillis();
 
-        BlastCommandRunner blastCommandRunner = new BlastCommandRunner(BLAST_LOCATION, BLAST_NR_DB_LOCATION, BLAST_NT_DB_LOCATION);
+        BlastCommandRunner blastCommandRunner = new BlastCommandRunner(BLAST_LOCATION, BLAST_NR_DB_LOCATION, BLAST_NT_DB_LOCATION, analysisId);
         blastCommandRunner.setSequenceType(this.blastType);
         blastCommandRunner.setOut(this.outputDir);
         blastCommandRunner.setMaxTargetSeqs(String.valueOf(maxTargetSeqs));

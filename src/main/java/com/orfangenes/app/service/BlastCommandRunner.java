@@ -29,12 +29,14 @@ public class BlastCommandRunner {
     String BLAST_LOCATION; // TODO
     String BLAST_NR_DB_LOCATION;
     String BLAST_NT_DB_LOCATION;
+    String analysisId;
 
-    public BlastCommandRunner(String blastLocation, String blastNRDbLocation, String blastNTDbLocation){
+    public BlastCommandRunner(String blastLocation, String blastNRDbLocation, String blastNTDbLocation, String analysisId){
         this.BLAST_LOCATION = blastLocation;
         this.BLAST_NR_DB_LOCATION = blastNRDbLocation;
         this.BLAST_NT_DB_LOCATION = blastNTDbLocation;
         numberOfProcessors = Runtime.getRuntime().availableProcessors() - 2;
+        this.analysisId = analysisId;
     }
 
     public void run() {
@@ -54,14 +56,19 @@ public class BlastCommandRunner {
             log.info("Executing Blast Command:{}", command.toString());
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             Process process = processBuilder.start();
+            ProcessHolder.addProcess(analysisId, process);
 
             // wait until the command get executed
             if (!process.waitFor(30, TimeUnit.MINUTES)) {
                 process.destroy();
-                process.waitFor();
+                if (process.isAlive()) {
+                    process.destroyForcibly();
+                }
+                ProcessHolder.removeProcess(analysisId);
                 throw new RuntimeException("BLAST error occurred");
             } else {
                 log.info("BLAST successfully completed!!");
+                ProcessHolder.removeProcess(analysisId);
             }
         } catch (IOException ex) {
             log.error("IOError: " + ex.getMessage());

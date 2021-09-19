@@ -7,6 +7,7 @@ import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
+import com.orfangenes.app.service.ProcessHolder;
 import com.orfangenes.app.service.QueueService;
 import com.orfangenes.app.util.AccessionSearch;
 import com.orfangenes.app.util.Constants;
@@ -124,6 +125,11 @@ public class Controller {
         }
         queueService.sendToQueue(analysis);
         return sessionID;
+    }
+
+    @GetMapping("/kill/{analysisId}")
+    public void killProcess(@PathVariable String analysisId) {
+        ProcessHolder.killProcess(analysisId);
     }
 
     @GetMapping("/analysis/cancel/{analysisId}")
