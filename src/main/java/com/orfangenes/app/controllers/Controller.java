@@ -9,12 +9,9 @@ import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.service.ProcessHolder;
 import com.orfangenes.app.service.QueueService;
-import com.orfangenes.app.util.AccessionSearch;
-import com.orfangenes.app.util.Constants;
-import com.orfangenes.app.util.FileHandler;
+import com.orfangenes.app.util.*;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
-import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +127,7 @@ public class Controller {
     @GetMapping("/kill/{analysisId}")
     public void killProcess(@PathVariable String analysisId) {
         ProcessHolder.killProcess(analysisId);
+        databaseService.cancelAnalysis(analysisId);
     }
 
     @GetMapping("/analysis/cancel/{analysisId}")
