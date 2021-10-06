@@ -9,6 +9,7 @@ import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.DatabaseService;
 import com.orfangenes.app.service.ProcessHolder;
 import com.orfangenes.app.service.QueueService;
+import com.orfangenes.app.service.ValidationService;
 import com.orfangenes.app.util.*;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
@@ -24,15 +25,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.orfangenes.app.util.Constants.*;
@@ -50,11 +49,19 @@ public class Controller {
     @Autowired
     QueueService queueService;
 
+    @Autowired
+    ValidationService validationService;
+
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
+
+    @GetMapping("validate-organism/{organismName}")
+    private Map<String, Boolean> isValidOrganism(@PathVariable String organismName) throws IOException {
+        return validationService.validate(organismName);
+    }
 
     @PostMapping("analyse/list")
     public List<String> analyseList(@RequestBody List<InputSequence> sequences) throws Exception {
