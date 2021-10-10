@@ -136,4 +136,9 @@ public class DatabaseService {
         String url = "analysis/cancel/" + analysisId;
         restCall.sendGetRequestWithRetry(url, null, null);
     }
+
+    public void deleteAnalysis(String analysisId) {
+        String url = "analysis/analysis/" + analysisId;
+        restCall.sendDeleteRequest(url, "");
+    }
 }

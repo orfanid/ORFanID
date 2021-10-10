@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
-import com.orfangenes.app.service.DatabaseService;
-import com.orfangenes.app.service.ProcessHolder;
-import com.orfangenes.app.service.QueueService;
-import com.orfangenes.app.service.ValidationService;
+import com.orfangenes.app.service.*;
 import com.orfangenes.app.util.*;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
@@ -52,14 +49,22 @@ public class Controller {
     @Autowired
     ValidationService validationService;
 
+    @Autowired
+    private AnalysisService analysisService;
+
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
 
+    @DeleteMapping("/analysis/delete/{id}")
+    public void deleteAnalysis(@PathVariable String id) throws Exception {
+        analysisService.deleteAnalysis(id);
+    }
+
     @GetMapping("validate-organism/{organismName}")
-    private Map<String, Boolean> isValidOrganism(@PathVariable String organismName) throws IOException {
+    public Map<String, Boolean> isValidOrganism(@PathVariable String organismName) throws IOException {
         return validationService.validate(organismName);
     }
 
