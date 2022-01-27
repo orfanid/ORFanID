@@ -4,6 +4,7 @@ import static com.orfangenes.app.util.Constants.*;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.BooleanUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class BlastCommandRunner {
     private String maxTargetSeqs;
     private String evalue;
     private Integer numberOfProcessors;
+    private Boolean isPsiBlast;
 
     String BLAST_LOCATION; // TODO
     String BLAST_NR_DB_LOCATION;
@@ -40,7 +42,7 @@ public class BlastCommandRunner {
     }
 
     public void run() {
-        final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
+        final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? (BooleanUtils.isTrue(isPsiBlast)) ? "psiblast" : "blastp" : "blastn";
         final String db = (sequenceType.equals(TYPE_PROTEIN)) ? "nr" : "nt";
         final String dbLocation = (sequenceType.equals(TYPE_PROTEIN)) ? BLAST_NR_DB_LOCATION : BLAST_NT_DB_LOCATION;
         List<String> command = Arrays.asList(
