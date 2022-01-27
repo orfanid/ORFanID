@@ -16,7 +16,7 @@ rabbitmq:
   concurrent-consumer-count: 1
 
 db.api:
-#  baseUrl: http://localhost:8081
+  #  baseUrl: http://localhost:8081
   baseUrl: http://orfanbase-api:8081
   keyName: x-api-key
   keyValue: Janaya

@@ -4,6 +4,7 @@ import static com.orfangenes.app.util.Constants.*;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.BooleanUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,20 +26,23 @@ public class BlastCommandRunner {
     private String maxTargetSeqs;
     private String evalue;
     private Integer numberOfProcessors;
+    private Boolean isPsiBlast;
 
     String BLAST_LOCATION; // TODO
     String BLAST_NR_DB_LOCATION;
     String BLAST_NT_DB_LOCATION;
+    String analysisId;
 
-    public BlastCommandRunner(String blastLocation, String blastNRDbLocation, String blastNTDbLocation){
+    public BlastCommandRunner(String blastLocation, String blastNRDbLocation, String blastNTDbLocation, String analysisId){
         this.BLAST_LOCATION = blastLocation;
         this.BLAST_NR_DB_LOCATION = blastNRDbLocation;
         this.BLAST_NT_DB_LOCATION = blastNTDbLocation;
         numberOfProcessors = Runtime.getRuntime().availableProcessors() - 2;
+        this.analysisId = analysisId;
     }
 
     public void run() {
-        final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? "blastp" : "blastn";
+        final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? (BooleanUtils.isTrue(isPsiBlast)) ? "psiblast" : "blastp" : "blastn";
         final String db = (sequenceType.equals(TYPE_PROTEIN)) ? "nr" : "nt";
         final String dbLocation = (sequenceType.equals(TYPE_PROTEIN)) ? BLAST_NR_DB_LOCATION : BLAST_NT_DB_LOCATION;
         List<String> command = Arrays.asList(
@@ -54,14 +58,19 @@ public class BlastCommandRunner {
             log.info("Executing Blast Command:{}", command.toString());
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             Process process = processBuilder.start();
+            ProcessHolder.addProcess(analysisId, process);
 
             // wait until the command get executed
             if (!process.waitFor(30, TimeUnit.MINUTES)) {
                 process.destroy();
-                process.waitFor();
+                if (process.isAlive()) {
+                    process.destroyForcibly();
+                }
+                ProcessHolder.removeProcess(analysisId);
                 throw new RuntimeException("BLAST error occurred");
             } else {
                 log.info("BLAST successfully completed!!");
+                ProcessHolder.removeProcess(analysisId);
             }
         } catch (IOException ex) {
             log.error("IOError: " + ex.getMessage());

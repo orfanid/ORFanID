@@ -17,6 +17,7 @@ public class InputSequence {
     private String email;
     private String firstName;
     private String lastName;
+    private Boolean isPsiBlast;
 
     // TODO: THIS IMPLEMENTATION IS INCORRECT
 //    public String getType() {

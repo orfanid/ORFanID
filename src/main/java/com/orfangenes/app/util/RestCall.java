@@ -62,9 +62,8 @@ public class RestCall {
         return response.getBody();
     }
 
-    public String sendDeleteRequest(String url, String payload) {
+    public void sendDeleteRequest(String url, String payload) {
         url = baseUrl + url;
-        ResponseEntity<String> response;
         try {
             //  create headers
             HttpHeaders headers = createHeaders();
@@ -73,20 +72,14 @@ public class RestCall {
             HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity(payload, headers);
 
             log.info("DELETE Request : " + url);
-            response = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
+            restTemplate.delete(UriComponentsBuilder.fromHttpUrl(url).build().toUri());
 
-            if (response.getStatusCode() != HttpStatus.OK) {
-                String errorMessage = "[DELETE] Received invalid response for : " + url + " : " + response;
-                log.error(errorMessage);
-                throw new IllegalStateException(errorMessage);
-            }
         } catch (HttpStatusCodeException e) {
             throw e;
         } catch (RestClientException e) {
             log.error(e.getMessage(), e);
             throw e;
         }
-        return response.getBody();
     }
 
 

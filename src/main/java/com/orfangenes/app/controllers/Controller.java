@@ -6,14 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
-import com.orfangenes.app.service.DatabaseService;
-import com.orfangenes.app.service.QueueService;
-import com.orfangenes.app.util.AccessionSearch;
-import com.orfangenes.app.util.Constants;
-import com.orfangenes.app.util.FileHandler;
+import com.orfangenes.app.service.*;
+import com.orfangenes.app.util.*;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
-import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +22,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.orfangenes.app.util.Constants.*;
@@ -52,11 +46,27 @@ public class Controller {
     @Autowired
     QueueService queueService;
 
+    @Autowired
+    ValidationService validationService;
+
+    @Autowired
+    private AnalysisService analysisService;
+
     private final ObjectMapper objectMapper = Utils.getJacksonObjectMapper();
 
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
+
+    @DeleteMapping("/analysis/delete/{id}")
+    public void deleteAnalysis(@PathVariable String id) throws Exception {
+        analysisService.deleteAnalysis(id);
+    }
+
+    @GetMapping("validate-organism/{organismName}")
+    public Map<String, Boolean> isValidOrganism(@PathVariable String organismName) throws IOException {
+        return validationService.validate(organismName);
+    }
 
     @PostMapping("analyse/list")
     public List<String> analyseList(@RequestBody List<InputSequence> sequences) throws Exception {
@@ -91,6 +101,7 @@ public class Controller {
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
         analysis.setAnalysisDate(new Date());
+        analysis.setIsPsiBlast(sequence.getIsPsiBlast());
 
         User user;
         if (sequence.getEmail() == null) {
@@ -124,6 +135,11 @@ public class Controller {
         }
         queueService.sendToQueue(analysis);
         return sessionID;
+    }
+
+    @GetMapping("/kill/{analysisId}")
+    public void killProcess(@PathVariable String analysisId) {
+        ProcessHolder.killProcess(analysisId);
     }
 
     @GetMapping("/analysis/cancel/{analysisId}")

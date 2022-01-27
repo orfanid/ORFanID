@@ -36,6 +36,7 @@ public class Analysis extends AuditModel {
     private int identity;
     private String sequenceType;
     private Constants.AnalysisStatus status;
+    private Boolean isPsiBlast;
 
     private User user;
     @ToString.Exclude
