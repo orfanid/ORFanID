@@ -101,6 +101,7 @@ public class Controller {
         analysis.setIdentity(Integer.parseInt(sequence.getIdentity()));
         analysis.setSequenceType(sequence.getAccessionType());
         analysis.setAnalysisDate(new Date());
+        analysis.setIsPsiBlast(sequence.getIsPsiBlast());
 
         User user;
         if (sequence.getEmail() == null) {
