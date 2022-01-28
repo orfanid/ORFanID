@@ -25,7 +25,11 @@ public class HomologyProcessingService {
         try {
             Scanner scanner = new Scanner(new File(blastResultsFileName));
             while (scanner.hasNextLine()) {
-                BlastResult result = new BlastResult(scanner.nextLine());
+                String line = scanner.nextLine();
+                if(line == null || line.length() < 50) {
+                    continue;
+                }
+                BlastResult result = new BlastResult(line);
                 if (result.getMultiplesTaxIdCount() == 0) {
                     blastResults.add(result);
                 } else {
