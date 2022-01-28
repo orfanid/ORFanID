@@ -8,6 +8,7 @@ import org.apache.commons.lang.BooleanUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +46,7 @@ public class BlastCommandRunner {
         final String programme = (sequenceType.equals(TYPE_PROTEIN)) ? (BooleanUtils.isTrue(isPsiBlast)) ? "psiblast" : "blastp" : "blastn";
         final String db = (sequenceType.equals(TYPE_PROTEIN)) ? "nr" : "nt";
         final String dbLocation = (sequenceType.equals(TYPE_PROTEIN)) ? BLAST_NR_DB_LOCATION : BLAST_NT_DB_LOCATION;
-        List<String> command = Arrays.asList(
+        List<String> fixedCommand = Arrays.asList(
                 BLAST_LOCATION + programme,
                 "-query", out + File.separator + INPUT_FASTA,
                 "-db", dbLocation + db,
@@ -54,6 +55,12 @@ public class BlastCommandRunner {
                 "-evalue", this.evalue,
                 "-out", this.out + File.separator + BLAST_RESULTS + BLAST_EXT,
                 "-num_threads", numberOfProcessors.toString());
+
+        List<String> command = new ArrayList<>(fixedCommand);
+        if (BooleanUtils.isTrue(isPsiBlast)) {
+            command.add("-num_iterations");
+            command.add("0");
+        }
         try {
             log.info("Executing Blast Command:{}", command.toString());
             ProcessBuilder processBuilder = new ProcessBuilder(command);
