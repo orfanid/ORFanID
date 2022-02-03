@@ -28,6 +28,7 @@ public class BlastCommandRunner {
     private String evalue;
     private Integer numberOfProcessors;
     private Boolean isPsiBlast;
+    private Integer numIteration;
 
     String BLAST_LOCATION; // TODO
     String BLAST_NR_DB_LOCATION;
@@ -59,7 +60,7 @@ public class BlastCommandRunner {
         List<String> command = new ArrayList<>(fixedCommand);
         if (BooleanUtils.isTrue(isPsiBlast)) {
             command.add("-num_iterations");
-            command.add("0");
+            command.add(numIteration == null ? "0" : String.valueOf(numIteration));
         }
         try {
             log.info("Executing Blast Command:{}", command.toString());

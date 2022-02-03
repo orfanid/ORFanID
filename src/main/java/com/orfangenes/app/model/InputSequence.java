@@ -18,6 +18,7 @@ public class InputSequence {
     private String firstName;
     private String lastName;
     private Boolean isPsiBlast;
+    private Integer num_iteration;
 
     // TODO: THIS IMPLEMENTATION IS INCORRECT
 //    public String getType() {
