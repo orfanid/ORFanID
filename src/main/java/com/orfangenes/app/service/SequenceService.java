@@ -4,16 +4,13 @@ import static com.orfangenes.app.util.Constants.*;
 
 import com.orfangenes.app.model.Gene;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -24,8 +21,10 @@ public class SequenceService {
     private String outputDir;
 
     String BLAST_LOCATION="/blast/bin/";
+    String DIAMOND_LOCATION="/diamond/bin/";
 
     String BLAST_NR_DB_LOCATION = "/nr_db/";
+    String DIAMOND_NR_DB_LOCATION = "/diamond_nr_db/";
     String BLAST_NT_DB_LOCATION = "/nt_db/";
 
 
@@ -35,13 +34,17 @@ public class SequenceService {
         this.outputDir = outputDir;
     }
 
-    public void findHomology( String out, int maxTargetSeqs, int eValue, String analysisId, Boolean isPsiBlast, Integer numIteration){
+    public void findHomology(String out, int maxTargetSeqs, int eValue, String analysisId, Boolean isPsiBlast, Integer numIteration, String executionType){
 //        String inputSequence = getSequenceFromFile(this.sequenceFile);
 //        List<String> sequenceBatches = separateSequenceToBatches(inputSequence);
 //        for (int fileCount = 0; fileCount <sequenceBatches.size() ; fileCount++) {
 //            createSequenceFile(out, sequenceBatches.get(fileCount) , fileCount+1);
 //        }
-        runBlastCommands(maxTargetSeqs, eValue, analysisId, isPsiBlast, numIteration);
+        if (executionType.equals("blast")) {
+            runBlastCommands(maxTargetSeqs, eValue, analysisId, isPsiBlast, numIteration);
+        } else {
+            runDiamondBlastCommands(maxTargetSeqs, eValue, analysisId, numIteration);
+        }
 //        combineBlastResults(sequenceBatches.size());
     }
 
@@ -60,6 +63,22 @@ public class SequenceService {
 
         long stopTime = System.currentTimeMillis();
         log.info("BLAST successfully Completed!! Time taken: " + (stopTime - startTime) + "ms");
+    }
+
+    private void runDiamondBlastCommands(int maxTargetSeqs, int evalue, String analysisId, Integer numIteration) {
+        log.warn("Running DIAMOND. Be patient...This will take 2-15 min...");
+        long startTime = System.currentTimeMillis();
+
+        DiamondCommandRunner diamondCommandRunner = new DiamondCommandRunner(DIAMOND_LOCATION, DIAMOND_NR_DB_LOCATION, analysisId);
+        diamondCommandRunner.setSequenceType(this.blastType);
+        diamondCommandRunner.setOut(this.outputDir);
+        diamondCommandRunner.setMaxTargetSeqs(String.valueOf(maxTargetSeqs));
+        diamondCommandRunner.setEvalue("1e-" + evalue);
+        diamondCommandRunner.setNumIteration(numIteration);
+        diamondCommandRunner.run();
+
+        long stopTime = System.currentTimeMillis();
+        log.info("DIAMOND successfully Completed!! Time taken: " + (stopTime - startTime) + "ms");
     }
 
     private void combineBlastResults(int fileCount) {

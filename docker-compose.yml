@@ -15,11 +15,13 @@ services:
     links:
       - rabbitmq
     volumes:
-      - /home/orfanid/out:/dataoutputdir
-      - /home/orfanid/nr_db:/nr_db
-      - /home/orfanid/nt_db:/nt_db
-      - /home/orfanid/new_taxdump:/new_taxdump
-      - /home/orfanid/blast_bin/bin:/blast/bin
+      - /mnt/data/orfanid/orfanid/out:/dataoutputdir
+      - /mnt/data/orfanid/orfanid/nr_db:/nr_db
+      - /mnt/data/orfanid/orfanid/diamond_dir/nr_fasta:/diamond_nr_db
+      - /mnt/data/orfanid/orfanid/nt_db:/nt_db
+      - /mnt/data/orfanid/orfanid/new_taxdump:/new_taxdump
+      - /mnt/data/orfanid/orfanid/blast_bin/bin:/blast/bin
+      - /mnt/data/orfanid/orfanid/diamond_dir/bin:/diamond/bin
 #      - /home/vinodh/out:/dataoutputdir
 #      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
   rabbitmq:
@@ -29,8 +31,8 @@ services:
       - 5672:5672
       - 15672:15672
     volumes:
-      - /home/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
-      - /home/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
+      - /mnt/data/orfanid/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
+      - /mnt/data/orfanid/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
 
 networks:
   default:

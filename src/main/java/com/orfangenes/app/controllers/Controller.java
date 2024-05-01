@@ -103,6 +103,7 @@ public class Controller {
         analysis.setAnalysisDate(new Date());
         analysis.setIsPsiBlast(sequence.getIsPsiBlast());
         analysis.setNumIteration(sequence.getNum_iteration());
+        analysis.setExecutionType(sequence.getExecutionType() == null ? "blast" : sequence.getExecutionType());
 
         User user;
         if (sequence.getEmail() == null) {
