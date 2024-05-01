@@ -36,7 +36,11 @@ public class BlastResult implements Serializable {
         this.send = Integer.parseInt(resultData[9]);
         this.evalue = Double.parseDouble(resultData[10]);
         this.bbibtscore = Double.parseDouble(resultData[11]);
-        setStaxid(resultData[12]);
+        try {
+            setStaxid(resultData[12]);
+        } catch (Exception e) {
+            setStaxid("");
+        }
         setQueryid(resultData[0]);
     }
 
