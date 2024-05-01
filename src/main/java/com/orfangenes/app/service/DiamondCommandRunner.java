@@ -50,7 +50,7 @@ public class DiamondCommandRunner {
                 "blastp",
                 "-q", out + File.separator + INPUT_FASTA,
                 "--db", dbLocation + db,
-                "--outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
+                "--outfmt", "6", "qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "staxids",
                 "--max-target-seqs", this.maxTargetSeqs,
                 "--evalue", this.evalue,
                 "--out", this.out + File.separator + BLAST_RESULTS + BLAST_EXT,
