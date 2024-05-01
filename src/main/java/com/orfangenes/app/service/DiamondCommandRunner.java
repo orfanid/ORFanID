@@ -49,7 +49,7 @@ public class DiamondCommandRunner {
         List<String> fixedCommand = Arrays.asList(
                 DIAMOND_LOCATION + programme,
                 "blastp",
-                "--q", out + File.separator + INPUT_FASTA,
+                "-q", out + File.separator + INPUT_FASTA,
                 "--db", dbLocation + db,
                 "--outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids",
                 "--max-target-seqs", this.maxTargetSeqs,
