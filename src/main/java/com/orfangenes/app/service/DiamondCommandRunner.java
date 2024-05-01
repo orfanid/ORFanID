@@ -4,8 +4,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.BooleanUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +64,8 @@ public class DiamondCommandRunner {
             ProcessHolder.addProcess(analysisId, process);
 
             // wait until the command get executed
-            if (!process.waitFor(30, TimeUnit.MINUTES)) {
+            printInputAndErrorStreams(process);
+            if (process.waitFor() != 0) {
                 process.destroy();
                 if (process.isAlive()) {
                     process.destroyForcibly();
@@ -83,5 +83,35 @@ public class DiamondCommandRunner {
             log.error("InterruptedException: " + ex.getMessage());
             throw new RuntimeException("Diamond BLAST error occurred");
         }
+    }
+
+    private void printInputAndErrorStreams(Process process) throws IOException {
+        printInputSteam(process);
+        printErrorStream(process);
+    }
+
+    private void printErrorStream(Process process) throws IOException {
+        InputStream errorStream = process.getErrorStream();
+        printStream(errorStream);
+    }
+
+    private void printInputSteam(Process process) throws IOException {
+        InputStream inputStream = process.getInputStream();
+        printStream(inputStream);
+    }
+
+    private void printStream(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String s;
+        while ((s = bufferedReader.readLine()) != null) {
+            System.out.println("line - " + s);
+        }
+    }
+
+    private Long extractMineIdFromFileName(String fileName) {
+        String[] splitByExtension = fileName.split("\\.");
+        String[] split = splitByExtension[0].split("-");
+        Long mineId = Long.valueOf(split[split.length - 1]);
+        return mineId;
     }
 }
