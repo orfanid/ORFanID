@@ -1,0 +1,31 @@
+spring:
+  application.name: ORFanID
+  rabbitmq:
+    host: localhost
+    port: 5672
+server:
+  port: 8085
+
+logging:
+  level:
+    org.springframework: INFO
+
+rabbitmq:
+  queue-name: analysis
+  exchange: analysis-exchange
+  concurrent-consumer-count: 1
+
+db.api:
+  baseUrl: http://localhost:8081
+  #  baseUrl: http://orfanbase-api:8081
+  keyName: x-api-key
+  keyValue: Janaya
+
+#data.outputdir: /Users/hewapathirana/projects/ORFanFinder/out
+data.outputdir: /mnt/data/orfanid/orfanid/out/
+ncbi.blast.programme.location: /usr/local/ncbi/blast/bin/
+#app.dir.root: /Users/hewapathirana/projects/ORFanID/src/main/resources/
+taxdump.dir: /mnt/data/orfanid/orfanid/new_taxdump/
+ncbi.blast.nr.db.location: /nr_db/
+ncbi.blast.nt.db.location: /nt_db/
+
