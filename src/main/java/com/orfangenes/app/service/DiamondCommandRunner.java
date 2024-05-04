@@ -64,7 +64,7 @@ public class DiamondCommandRunner {
             ProcessHolder.addProcess(analysisId, process);
 
             // wait until the command get executed
-            printInputAndErrorStreams(process);
+//            printInputAndErrorStreams(process);
             if (process.waitFor() != 0) {
                 process.destroy();
                 if (process.isAlive()) {
