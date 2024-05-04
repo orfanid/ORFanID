@@ -20,12 +20,12 @@ public class SequenceService {
     private String sequenceFile;
     private String outputDir;
 
-    String BLAST_LOCATION="/blast/bin/";
-    String DIAMOND_LOCATION="/diamond/bin/";
+    String BLAST_LOCATION="/mnt/data/orfanid/orfanid/blast_bin/bin/";
+    String DIAMOND_LOCATION="/mnt/data/orfanid/orfanid/diamond_dir/bin/";
 
-    String BLAST_NR_DB_LOCATION = "/nr_db/";
-    String DIAMOND_NR_DB_LOCATION = "/diamond_nr_db/";
-    String BLAST_NT_DB_LOCATION = "/nt_db/";
+    String BLAST_NR_DB_LOCATION = "/mnt/data/orfanid/orfanid/nr_db/";
+    String DIAMOND_NR_DB_LOCATION = "/mnt/data/orfanid/orfanid/diamond_dir/nr_fasta/";
+    String BLAST_NT_DB_LOCATION = "/mnt/data/orfanid/orfanid/nt_db/";
 
 
     public SequenceService(String blastType, String sequenceFile, String outputDir) {

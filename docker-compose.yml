@@ -1,29 +1,27 @@
 version: '3'
 services:
-  blastservice:
-    container_name: orfanid-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8085:8085"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - RABBIT_PORT=5672
-    depends_on:
-      - rabbitmq
-    links:
-      - rabbitmq
-    volumes:
-      - /mnt/data/orfanid/orfanid/out:/dataoutputdir
-      - /mnt/data/orfanid/orfanid/nr_db:/nr_db
-      - /mnt/data/orfanid/orfanid/diamond_dir/nr_fasta:/diamond_nr_db
-      - /mnt/data/orfanid/orfanid/nt_db:/nt_db
-      - /mnt/data/orfanid/orfanid/new_taxdump:/new_taxdump
-      - /mnt/data/orfanid/orfanid/blast_bin/bin:/blast/bin
-      - /mnt/data/orfanid/orfanid/diamond_dir/bin:/diamond/bin
-#      - /home/vinodh/out:/dataoutputdir
-#      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
+#  blastservice:
+#    container_name: orfanid-app
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8085:8085"
+#    environment:
+#      - RABBIT_HOST=rabbitmq
+#      - RABBIT_PORT=5672
+#    depends_on:
+#      - rabbitmq
+#    links:
+#      - rabbitmq
+#    volumes:
+#      - /mnt/data/orfanid/orfanid/out:/dataoutputdir
+#      - /mnt/data/orfanid/orfanid/nr_db:/nr_db
+#      - /mnt/data/orfanid/orfanid/diamond_dir/nr_fasta:/diamond_nr_db
+#      - /mnt/data/orfanid/orfanid/nt_db:/nt_db
+#      - /mnt/data/orfanid/orfanid/new_taxdump:/new_taxdump
+#      - /mnt/data/orfanid/orfanid/blast_bin/bin:/blast/bin
+#      - /mnt/data/orfanid/orfanid/diamond_dir/bin:/diamond/bin
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq

@@ -15,6 +15,6 @@ public class AnalysisService {
 
     public void deleteAnalysis(String id) throws IOException {
         databaseService.deleteAnalysis(id);
-        FileUtils.deleteDirectory(new File("/dataoutputdir/"+id));
+        FileUtils.deleteDirectory(new File("/mnt/data/orfanid/orfanid/out/"+id));
     }
 }
