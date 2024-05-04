@@ -60,7 +60,7 @@ public class DiamondCommandRunner {
         try {
             log.info("Executing Diamond Blast Command:{}", command.toString());
             ProcessBuilder processBuilder = new ProcessBuilder(command);
-            processBuilder.redirectOutput(new File("/dev/null"));
+            processBuilder.inheritIO();
             Process process = processBuilder.start();
             ProcessHolder.addProcess(analysisId, process);
 
