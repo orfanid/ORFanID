@@ -60,11 +60,12 @@ public class DiamondCommandRunner {
         try {
             log.info("Executing Diamond Blast Command:{}", command.toString());
             ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.redirectOutput(new File("/dev/null"));
             Process process = processBuilder.start();
             ProcessHolder.addProcess(analysisId, process);
 
             // wait until the command get executed
-            printInputAndErrorStreams(process);
+//            printInputAndErrorStreams(process);
             if (process.waitFor() != 0) {
                 process.destroy();
                 if (process.isAlive()) {
