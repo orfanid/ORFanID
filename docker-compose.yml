@@ -31,8 +31,8 @@ services:
       - 5672:5672
       - 15672:15672
     volumes:
-      - /mnt/data/orfanid/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
-      - /mnt/data/orfanid/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
+      - /home/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
+      - /home/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
 
 networks:
   default:
