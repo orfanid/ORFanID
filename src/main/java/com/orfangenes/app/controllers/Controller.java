@@ -217,6 +217,13 @@ public class Controller {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/orfanbase-genes/paged")
+    public PagedResults<Genes> getOrfanbaseGenesPaged(@RequestParam(name = "page", defaultValue = "0") String page,
+                                              @RequestParam(name = "size", defaultValue = "10") String size) throws Exception {
+        TypeReference<PagedResults<Genes>> typeRef = new TypeReference<PagedResults<Genes>>() {};
+        return objectMapper.readValue(databaseService.getOrfanbaseGenesPaged(page, size), typeRef);
+    }
+
     @PostMapping("/all-analysis")
     public List<AnalysisResultsTableRaw> getAllAnalysis() throws Exception{
         TypeReference<List<AnalysisResultsTableRaw>> typeRef = new TypeReference<List<AnalysisResultsTableRaw>>() {};
