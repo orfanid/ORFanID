@@ -7,6 +7,7 @@ import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.dto.*;
 import com.orfangenes.app.model.InputSequence;
 import com.orfangenes.app.service.*;
+import com.orfangenes.app.service.validator.FastaValidator.*;
 import com.orfangenes.app.util.*;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.model.User;
@@ -57,6 +58,36 @@ public class Controller {
 
     @Value("${data.outputdir}")
     private String OUTPUT_DIR;
+
+    @PostMapping("/validate-sequence")
+    public Map<String, String> validateSequence(@RequestBody Map<String, String> input) {
+        try {
+            FastaValidator FV=new FastaValidator(new FastaCallbackHandler());
+            FV.setSequencetype(FastaValidator.Sequencetype.valueOf(input.get("type")));
+            return FV.validate(input.get("sequence"));
+        } catch (java.io.IOException e) //io error
+        {
+            System.out.println("ERROR: "+e.getMessage());
+            e.printStackTrace();
+        }
+        catch (InvalidCharacterException e) //invalid character(s) found in fasta file
+        {
+            System.out.println("ERROR: "+e.getMessage()+" (line: "+e.getLine()+", char: "+e.getCharacter()+")");
+        }
+        catch (FastaFormatException e) //file not in fasta format
+        {
+            System.out.println("ERROR: "+e.getMessage()+" (line: "+e.getLine()+")");
+        }
+        catch (FastaHandlingException e)//error from callback methods; thrown by user
+        {
+            System.out.println("ERROR: "+e.getMessage());
+        } catch (FastaValidatorException e) {
+            System.out.println("ERROR: "+e.getMessage());
+        }
+        Map<String,String> result=new HashMap<>();
+        result.put("status","FAILED");
+        return result;
+    }
 
     @DeleteMapping("/analysis/delete/{id}")
     public void deleteAnalysis(@PathVariable String id) throws Exception {
