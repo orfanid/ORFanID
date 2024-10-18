@@ -73,6 +73,11 @@ public class DatabaseService {
         return restCall.sendGetRequestWithRetry(url, null, null);
     }
 
+    public String getAllAnalysisPaged(int page, int size, String sortByDate) {
+        String url = "/analysis/paged?size=" + size + "&page=" + page + "&sortByDate=" + sortByDate;
+        return restCall.sendGetRequestWithRetry(url, null, null);
+    }
+
     /** =========================== USER =========================== */
 
     public User getUserByEmail(String email) throws IOException {
