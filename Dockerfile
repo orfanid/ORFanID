@@ -34,7 +34,7 @@ FROM openjdk:8-jdk
 # install wget progrmme to download tools from the command-line
 # install bash to run the NCBI balstp/blastn programmes in command-line
 # create a directory called "dataoutputdir" to save analysis files
-RUN apt-get update && apt-get install wget bash && apt-get install -y r-base && mkdir /dataoutputdir
+RUN apt-get update && apt-get install wget && apt-get install -y r-base && mkdir /dataoutputdir
 
 # use app folder as the working directory
 WORKDIR /app

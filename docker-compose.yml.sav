@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   blastservice:
     container_name: orfanid-app
@@ -12,6 +12,8 @@ services:
       - RABBIT_PORT=5672
     depends_on:
       - rabbitmq
+    links:
+      - rabbitmq
     volumes:
       - /home/orfanid/out:/dataoutputdir
       - /home/orfanid/nr_db:/nr_db
@@ -21,19 +23,20 @@ services:
       - /home/orfanid/blast_bin/bin:/blast/bin
       - /home/orfanid/diamond_dir/bin:/diamond/bin
     restart: unless-stopped
-
+#      - /home/vinodh/out:/dataoutputdir
+#      - /Users/hewapathirana/projects/ORFanFinder/out:/dataoutputdir
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
     volumes:
       - /home/orfanid/rabbitmq_data/data:/var/lib/rabbitmq/
       - /home/orfanid/rabbitmq_data/log/:/var/log/rabbitmq
-    restart: unless-stopped
-
+   restart: unless-stopped
 networks:
   default:
     external:
       name: orfanid
+
