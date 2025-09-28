@@ -14,9 +14,9 @@ services:
       - rabbitmq
     volumes:
       - /home/orfanid/out:/dataoutputdir
-      - /home/orfanid/nr_db:/nr_db
+      - /home/orfanid/nr_db_new:/nr_db
       - /home/orfanid/diamond_dir/nr_fasta:/diamond_nr_db
-      - /home/orfanid/nt_db:/nt_db
+      - /home/orfanid/nt_db_new:/nt_db
       - /home/orfanid/new_taxdump:/new_taxdump
       - /home/orfanid/blast_bin/bin:/blast/bin
       - /home/orfanid/diamond_dir/bin:/diamond/bin
