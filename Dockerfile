@@ -28,7 +28,7 @@ RUN mvn clean package -DskipTests
 ###################### PACKAGE STAGE ######################
 
 # use openjdk:8-jdk image to run the pakagedjar. This image already has java installed.
-FROM openjdk:8-jdk
+FROM eclipse-temurin:8-jdk
 
 # update the OS,
 # install wget progrmme to download tools from the command-line
