@@ -54,33 +54,37 @@ public class RabbitQueueService implements QueueService {
 
     @RabbitListener(queues = "${rabbitmq.queue-name}", concurrency = "${rabbitmq.concurrent-consumer-count}")
     public void processAnalysis(String analysisObj) throws JsonProcessingException {
-        log.info("## Received queued message" + analysisObj);
-
-        Analysis analysis = objectMapper.readValue(analysisObj, Analysis.class);
-
-        Analysis savedAnalysis = objectMapper.readValue(databaseService.getAnalysisJsonById(analysis.getAnalysisId()), Analysis.class);
-        if (savedAnalysis.getStatus().equals(Constants.AnalysisStatus.CANCELLED)) {
-            return;
-        } else {
-            savedAnalysis.setStatus(Constants.AnalysisStatus.START_PROCESSING);
-            databaseService.update(savedAnalysis);
-        }
-
-        OUTPUT_DIR = (OUTPUT_DIR.endsWith("/")) ? OUTPUT_DIR : OUTPUT_DIR + File.separator;
-        String analysisDir = OUTPUT_DIR + analysis.getAnalysisId();
-        log.info("########### analysis  Dir: " + analysisDir);
-        String inputFastaFile = analysisDir + File.separator + Constants.INPUT_FASTA;
-
         try {
-            orFanGenes.run(
-                    inputFastaFile,
-                    analysisDir,
-                    analysis,
-                    APP_DIR);
+            log.info("## Received queued message" + analysisObj);
+
+            Analysis analysis = objectMapper.readValue(analysisObj, Analysis.class);
+
+            Analysis savedAnalysis = objectMapper.readValue(databaseService.getAnalysisJsonById(analysis.getAnalysisId()), Analysis.class);
+            if (savedAnalysis.getStatus().equals(Constants.AnalysisStatus.CANCELLED)) {
+                return;
+            } else {
+                savedAnalysis.setStatus(Constants.AnalysisStatus.START_PROCESSING);
+                databaseService.update(savedAnalysis);
+            }
+
+            OUTPUT_DIR = (OUTPUT_DIR.endsWith("/")) ? OUTPUT_DIR : OUTPUT_DIR + File.separator;
+            String analysisDir = OUTPUT_DIR + analysis.getAnalysisId();
+            log.info("########### analysis  Dir: " + analysisDir);
+            String inputFastaFile = analysisDir + File.separator + Constants.INPUT_FASTA;
+
+            try {
+                orFanGenes.run(
+                        inputFastaFile,
+                        analysisDir,
+                        analysis,
+                        APP_DIR);
+            } catch (Exception e) {
+                log.error("Analysis Failed: " + e.getMessage());
+                analysis.setStatus(Constants.AnalysisStatus.ERRORED);
+                databaseService.update(analysis);
+            }
         } catch (Exception e) {
-            log.error("Analysis Failed: " + e.getMessage());
-            analysis.setStatus(Constants.AnalysisStatus.ERRORED);
-            databaseService.update(analysis);
+            log.error("Analysis Failed before mining: " + e.getMessage());
         }
     }
 }
