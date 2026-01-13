@@ -78,7 +78,8 @@ $(document).ready(function() {
             Plotly.newPlot('genesummary', data, layout);
         },
         error: function (error) {
-            console.log("Error occured in ORFanGenes Summary Chart: "+ error);
+            console.log("Error occured in ORFanGenes Summary Chart: ");
+            console.error(error);
         }
     });
 
