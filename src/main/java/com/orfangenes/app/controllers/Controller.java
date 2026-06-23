@@ -250,9 +250,10 @@ public class Controller {
 
     @GetMapping("/orfanbase-genes/paged")
     public PagedResults<Genes> getOrfanbaseGenesPaged(@RequestParam(name = "page", defaultValue = "0") String page,
-                                              @RequestParam(name = "size", defaultValue = "10") String size) throws Exception {
+                                              @RequestParam(name = "size", defaultValue = "10") String size,
+                                              @RequestParam(defaultValue = "desc") String sortByDate) throws Exception {
         TypeReference<PagedResults<Genes>> typeRef = new TypeReference<PagedResults<Genes>>() {};
-        return objectMapper.readValue(databaseService.getOrfanbaseGenesPaged(page, size), typeRef);
+        return objectMapper.readValue(databaseService.getOrfanbaseGenesPaged(page, size, sortByDate), typeRef);
     }
 
     @GetMapping("/all-analysis/paged")

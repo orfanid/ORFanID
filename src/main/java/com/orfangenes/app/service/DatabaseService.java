@@ -147,8 +147,8 @@ public class DatabaseService {
         restCall.sendDeleteRequest(url, "");
     }
 
-    public String getOrfanbaseGenesPaged(String page, String size) {
-        String url = "/gene/paged?size=" + size + "&page=" + page;
+    public String getOrfanbaseGenesPaged(String page, String size, String sortByDate) {
+        String url = "/gene/paged?size=" + size + "&page=" + page + "&sortByDate=" + sortByDate;
         return restCall.sendGetRequestWithRetry(url, null, null);
     }
 }
