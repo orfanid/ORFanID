@@ -69,13 +69,13 @@ public class BlastCommandRunner {
             ProcessHolder.addProcess(analysisId, process);
 
             // wait until the command get executed
-            if (!process.waitFor(30, TimeUnit.MINUTES)) {
+            if (!process.waitFor(90, TimeUnit.MINUTES)) {
                 process.destroy();
                 if (process.isAlive()) {
                     process.destroyForcibly();
                 }
                 ProcessHolder.removeProcess(analysisId);
-                throw new RuntimeException("BLAST error occurred");
+                throw new RuntimeException("BLAST timed out after 90 minutes");
             } else {
                 log.info("BLAST successfully completed!!");
                 ProcessHolder.removeProcess(analysisId);
