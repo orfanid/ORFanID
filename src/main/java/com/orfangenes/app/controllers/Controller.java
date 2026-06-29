@@ -165,6 +165,9 @@ public class Controller {
             FileHandler.saveInputSequence(analysisDir, sequence);
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
+            analysis.setStatus(AnalysisStatus.ERRORED);
+            databaseService.update(analysis);
+            throw e;
         }
         queueService.sendToQueue(analysis);
         return sessionID;

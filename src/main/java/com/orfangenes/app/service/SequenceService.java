@@ -148,31 +148,45 @@ public class SequenceService {
         List<Gene> genes = new ArrayList<>();
 
         String inputSequence = getSequenceFromFile(this.sequenceFile);
-        String[] sequences = inputSequence.split(SEQUENCE_SEPARATOR);
+        String[] lines = inputSequence.split(LINE_SEPARATOR);
+        String currentHeader = null;
+        StringBuilder sequenceString = new StringBuilder();
 
-        for (String sequence : sequences) {
-            if (sequence.equals(LINE_SEPARATOR)) {
+        for (String line : lines) {
+            String trimmedLine = line.trim();
+            if (trimmedLine.isEmpty()) {
                 continue;
             }
-            Gene gene = new Gene();
-            String[] lines = sequence.split(LINE_SEPARATOR);
-
-            // 1) process comment line
-            String commentLine = lines[0];
-            String[] comments = commentLine.split(" ", 2);
-            gene.setGeneId(comments[0].substring(1));
-            gene.setDescription(comments[1]);
-            gene.setTaxonomyId(inputTax);
-
-            // 2) process sequence lines
-            StringBuilder sequenceString = new StringBuilder();
-            for (int i = 1; i < lines.length; i++) {
-                sequenceString.append(lines[i]);
+            if (trimmedLine.startsWith(">")) {
+                if (currentHeader != null) {
+                    addGene(genes, currentHeader, sequenceString.toString(), inputTax);
+                }
+                currentHeader = trimmedLine.substring(1).trim();
+                sequenceString = new StringBuilder();
+            } else {
+                sequenceString.append(trimmedLine);
             }
-            gene.setSequence(sequenceString.toString());
-            gene.setLength(sequenceString.length());
-            genes.add(gene);
         }
+
+        if (currentHeader != null) {
+            addGene(genes, currentHeader, sequenceString.toString(), inputTax);
+        }
+
         return genes;
+    }
+
+    private void addGene(List<Gene> genes, String commentLine, String sequence, int inputTax) {
+        if (sequence == null || sequence.isEmpty()) {
+            return;
+        }
+
+        Gene gene = new Gene();
+        String[] comments = commentLine.split(" ", 2);
+        gene.setGeneId(comments[0]);
+        gene.setDescription(comments.length > 1 ? comments[1] : "");
+        gene.setTaxonomyId(inputTax);
+        gene.setSequence(sequence);
+        gene.setLength(sequence.length());
+        genes.add(gene);
     }
 }
