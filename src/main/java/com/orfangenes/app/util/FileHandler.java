@@ -10,6 +10,9 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.orfangenes.app.util.Constants.*;
 
@@ -32,10 +35,15 @@ public class FileHandler {
             String accessionType = sequence.getAccessionType();
             try {
                 genesequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
+                genesequence = normalizeSubmittedSequence(genesequence, accessionType);
                 sequence.setSequence(genesequence);
             } catch (Exception e) {
                 log.error("Gene sequence not found from provided accession", e.getMessage());
+                throw new IllegalArgumentException("Gene sequence not found from provided accession", e);
             }
+        } else {
+            genesequence = normalizeSubmittedSequence(genesequence, sequence.getAccessionType());
+            sequence.setSequence(genesequence);
         }
 
         try {
@@ -47,6 +55,89 @@ public class FileHandler {
             log.error("File not found: " + e.getMessage());
         } catch (IOException e) {
             log.error("IO Error: " + e.getMessage());
+        }
+    }
+
+    static String normalizeSubmittedSequence(String inputSequence, String sequenceType) {
+        String normalizedInput = inputSequence == null ? "" : inputSequence.replace("\r\n", "\n").replace("\r", "\n").trim();
+        if (normalizedInput.isEmpty()) {
+            throw new IllegalArgumentException("Sequence cannot be empty");
+        }
+
+        if (normalizedInput.startsWith(">")) {
+            return normalizeFastaSequence(normalizedInput, sequenceType);
+        }
+
+        String cleanedSequence = normalizedInput.replaceAll("\\s+", "").toUpperCase();
+        validateSequenceCharacters(cleanedSequence, sequenceType, "Query_1");
+        return ">Query_1 submitted sequence" + LINE_SEPARATOR + cleanedSequence + LINE_SEPARATOR;
+    }
+
+    private static String normalizeFastaSequence(String fastaSequence, String sequenceType) {
+        String[] lines = fastaSequence.split("\\n");
+        String currentHeader = null;
+        StringBuilder currentSequence = new StringBuilder();
+        List<String> normalizedRecords = new ArrayList<>();
+        int generatedId = 1;
+
+        for (String line : lines) {
+            String trimmedLine = line.trim();
+            if (trimmedLine.isEmpty()) {
+                continue;
+            }
+            if (trimmedLine.startsWith(">")) {
+                if (currentHeader != null) {
+                    generatedId = addNormalizedRecord(normalizedRecords, currentHeader, currentSequence.toString(), sequenceType, generatedId);
+                }
+                currentHeader = trimmedLine.substring(1).trim();
+                currentSequence = new StringBuilder();
+            } else {
+                if (currentHeader == null) {
+                    throw new IllegalArgumentException("FASTA sequence line found before a header");
+                }
+                currentSequence.append(trimmedLine);
+            }
+        }
+
+        if (currentHeader != null) {
+            addNormalizedRecord(normalizedRecords, currentHeader, currentSequence.toString(), sequenceType, generatedId);
+        }
+
+        if (normalizedRecords.isEmpty()) {
+            throw new IllegalArgumentException("No FASTA sequence records found");
+        }
+
+        return String.join(LINE_SEPARATOR, normalizedRecords) + LINE_SEPARATOR;
+    }
+
+    private static int addNormalizedRecord(List<String> normalizedRecords, String header, String sequence, String sequenceType, int generatedId) {
+        String cleanedSequence = sequence.replaceAll("\\s+", "").toUpperCase();
+        if (cleanedSequence.isEmpty()) {
+            throw new IllegalArgumentException("FASTA record is missing sequence characters");
+        }
+        validateSequenceCharacters(cleanedSequence, sequenceType, header);
+
+        String normalizedHeader = header == null ? "" : header.trim();
+        if (normalizedHeader.isEmpty()) {
+            normalizedHeader = "Query_" + generatedId;
+            generatedId++;
+        }
+
+        normalizedRecords.add(">" + normalizedHeader + LINE_SEPARATOR + cleanedSequence);
+        return generatedId;
+    }
+
+    private static void validateSequenceCharacters(String sequence, String sequenceType, String sequenceLabel) {
+        Pattern allowedCharacters = TYPE_PROTEIN.equals(sequenceType)
+                ? Pattern.compile("^[ACDEFGHIKLMNPQRSTVWYBXZUOJ*]+$", Pattern.CASE_INSENSITIVE)
+                : Pattern.compile("^[ACGTUNRYKMSWBDHV]+$", Pattern.CASE_INSENSITIVE);
+
+        if (!allowedCharacters.matcher(sequence).matches()) {
+            throw new IllegalArgumentException("Invalid characters found in " + sequenceLabel + " for " + sequenceType + " sequence input");
+        }
+
+        if (TYPE_NUCLEOTIDE.equals(sequenceType) && Pattern.compile("[EFILPQXZJO]", Pattern.CASE_INSENSITIVE).matcher(sequence).find()) {
+            throw new IllegalArgumentException(sequenceLabel + " looks like protein sequence but nucleotide was selected");
         }
     }
 
