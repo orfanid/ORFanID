@@ -39,6 +39,23 @@ public class Analysis extends AuditModel {
     private Boolean isPsiBlast;
     private Integer numIteration;
     private String executionType;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date startedAt;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date finishedAt;
+    private Long durationSeconds;
+    private Long queueDurationSeconds;
+    private String submittedInput;
+    private String inputType;
+    private Integer inputSequenceCount;
+    private Integer minInputLength;
+    private Integer maxInputLength;
+    private Integer averageInputLength;
+    private String normalizedFastaPreview;
+    private String validationWarnings;
+    private String errorMessage;
+    private String program;
+    private String serverNode;
 
     private User user;
     @ToString.Exclude

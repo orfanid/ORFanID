@@ -1,32 +1,25 @@
-package com.orfangenes.app.dto;
+package com.orfangenes.app.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.orfangenes.app.util.Constants;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-/**
- * @author Suresh Hewapathirana
- */
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class AnalysisResultsTableRaw {
+@AllArgsConstructor
+public class AnalysisAdminMetadata {
 
     private String analysisId;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
-    private Date analysisDate;
-    private String organism;
-    private String email;
-    private int numberOfGenes;
-    private Constants.AnalysisStatus status;
-    private String executionType;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date submittedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startedAt;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date finishedAt;
     private Long durationSeconds;
     private Long queueDurationSeconds;
@@ -40,5 +33,6 @@ public class AnalysisResultsTableRaw {
     private String validationWarnings;
     private String errorMessage;
     private String program;
+    private Integer numIterations;
     private String serverNode;
 }

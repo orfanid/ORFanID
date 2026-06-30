@@ -105,6 +105,8 @@ public class ORFanGenes {
                 return 1;
             }
 
+            AnalysisAdminMetadataStore.markFinished(outputDir, analysis);
+            AnalysisAdminMetadataStore.applyToAnalysis(analysis, outputDir);
             databaseService.update(analysis);
 
         } catch (Exception e) {
@@ -112,6 +114,8 @@ public class ORFanGenes {
             e.printStackTrace();
             try {
                 analysis.setStatus(AnalysisStatus.ERRORED);
+                AnalysisAdminMetadataStore.markErrored(outputDir, analysis, e.getMessage());
+                AnalysisAdminMetadataStore.applyToAnalysis(analysis, outputDir);
                 databaseService.update(analysis);
             } catch (Exception e2) {
                 log.error("Error updating analysis");

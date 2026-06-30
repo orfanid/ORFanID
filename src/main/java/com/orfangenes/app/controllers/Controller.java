@@ -158,14 +158,18 @@ public class Controller {
             }
         }
         analysis.setUser(user);
+        AnalysisAdminMetadataStore.createInitialMetadata(analysisDir, analysis, sequence);
         databaseService.savePendingAnalysis(analysis);
 
         try {
             FileHandler.createResultsOutputDir(analysisDir);
             FileHandler.saveInputSequence(analysisDir, sequence);
+            AnalysisAdminMetadataStore.recordNormalizedInput(analysisDir);
         } catch (Exception e) {
             log.error("Analysis Failed: " + e.getMessage());
             analysis.setStatus(AnalysisStatus.ERRORED);
+            AnalysisAdminMetadataStore.markErrored(analysisDir, analysis, e.getMessage());
+            AnalysisAdminMetadataStore.applyToAnalysis(analysis, analysisDir);
             databaseService.update(analysis);
             throw e;
         }
@@ -176,11 +180,13 @@ public class Controller {
     @GetMapping("/kill/{analysisId}")
     public void killProcess(@PathVariable String analysisId) {
         ProcessHolder.killProcess(analysisId);
+        markAnalysisCancelledInMetadata(analysisId, "Process killed by admin");
     }
 
     @GetMapping("/analysis/cancel/{analysisId}")
     public void cancelAnalysis(@PathVariable String analysisId) {
         databaseService.cancelAnalysis(analysisId);
+        markAnalysisCancelledInMetadata(analysisId, "Analysis cancelled");
     }
 
     @PostMapping("/data/summary")
@@ -206,7 +212,9 @@ public class Controller {
     @PostMapping("/data/analysis")
     public Analysis getAnalysisData(@RequestBody SessionDto sessionDto) throws IOException {
         final String analysisId = sessionDto.getSessionId();
-        return objectMapper.readValue(databaseService.getAnalysisJsonById(analysisId), Analysis.class);
+        Analysis analysis = objectMapper.readValue(databaseService.getAnalysisJsonById(analysisId), Analysis.class);
+        AnalysisAdminMetadataStore.applyToAnalysis(analysis, getAnalysisDir(analysisId));
+        return analysis;
     }
 
     @PostMapping("/data/blast")
@@ -263,7 +271,11 @@ public class Controller {
     public PagedAnalysis getAllAnalysisPaged(@RequestParam(defaultValue = "0") int page,
                                              @RequestParam(defaultValue = "10") int size,
                                              @RequestParam(defaultValue = "desc") String sortByDate) throws Exception{
-        return objectMapper.readValue(databaseService.getAllAnalysisPaged(page, size, sortByDate), PagedAnalysis.class);
+        PagedAnalysis pagedAnalysis = objectMapper.readValue(databaseService.getAllAnalysisPaged(page, size, sortByDate), PagedAnalysis.class);
+        if (pagedAnalysis.getResults() != null) {
+            pagedAnalysis.getResults().forEach(this::enrichAnalysisRow);
+        }
+        return pagedAnalysis;
     }
 
     @PostMapping("/all-analysis")
@@ -271,7 +283,33 @@ public class Controller {
         TypeReference<List<AnalysisResultsTableRaw>> typeRef = new TypeReference<List<AnalysisResultsTableRaw>>() {};
         return objectMapper.readValue(databaseService.getAllAnalysis(), typeRef).stream()
                 .filter(analysisResultsTableRaw -> !AnalysisStatus.CANCELLED.equals(analysisResultsTableRaw.getStatus()))
+                .peek(this::enrichAnalysisRow)
                 .collect(Collectors.toList());
+    }
+
+    private void enrichAnalysisRow(AnalysisResultsTableRaw row) {
+        if (row != null && row.getAnalysisId() != null) {
+            AnalysisAdminMetadataStore.applyToTableRow(row, getAnalysisDir(row.getAnalysisId()));
+        }
+    }
+
+    private String getAnalysisDir(String analysisId) {
+        OUTPUT_DIR = (OUTPUT_DIR.endsWith("/"))? OUTPUT_DIR : OUTPUT_DIR + File.separator;
+        return OUTPUT_DIR + analysisId;
+    }
+
+    private void markAnalysisCancelledInMetadata(String analysisId, String message) {
+        try {
+            Analysis analysis = databaseService.getAnalysisById(analysisId);
+            if (analysis == null) {
+                analysis = new Analysis();
+                analysis.setAnalysisId(analysisId);
+            }
+            analysis.setStatus(AnalysisStatus.CANCELLED);
+            AnalysisAdminMetadataStore.markErrored(getAnalysisDir(analysisId), analysis, message);
+        } catch (Exception e) {
+            log.warn("Unable to update admin metadata for cancelled analysis {}", analysisId, e);
+        }
     }
 
     @GetMapping("/download/blast/{sessionid}")
