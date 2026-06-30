@@ -3,6 +3,7 @@ package com.orfangenes.app;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.service.*;
 import com.orfangenes.app.model.BlastResult;
+import com.orfangenes.app.util.AnalysisAdminMetadataStore;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.ResultsPrinter;
 import com.orfangenes.app.model.Analysis;
