@@ -45,7 +45,9 @@ public class AnalysisAdminMetadataStore {
 
     public static void recordNormalizedInput(String analysisDir) {
         AnalysisAdminMetadata metadata = read(analysisDir);
-        metadata.setNormalizedFastaPreview(readInputFastaPreview(analysisDir));
+        String normalizedFastaPreview = readInputFastaPreview(analysisDir);
+        metadata.setNormalizedFastaPreview(normalizedFastaPreview);
+        setInputLengthSummary(metadata, normalizedFastaPreview);
         write(analysisDir, metadata);
     }
 
@@ -174,10 +176,42 @@ public class AnalysisAdminMetadataStore {
         if (inputSequence.getAccession() != null && !inputSequence.getAccession().trim().isEmpty()) {
             return "accession";
         }
+        if (isAccessionInput(inputSequence.getSequence())) {
+            return "accession";
+        }
         if (inputSequence.getSequence() != null && inputSequence.getSequence().trim().startsWith(">")) {
             return "fasta_sequence";
         }
         return "raw_sequence";
+    }
+
+    private static boolean isAccessionInput(String input) {
+        if (input == null) {
+            return false;
+        }
+
+        String normalized = input.trim();
+        if (normalized.isEmpty() || normalized.startsWith(">")) {
+            return false;
+        }
+
+        String[] tokens = normalized.split("[\\s,;]+");
+        for (String token : tokens) {
+            if (token.trim().isEmpty()) {
+                continue;
+            }
+            if (!isAccessionToken(token.trim())) {
+                return false;
+            }
+        }
+        return tokens.length > 0;
+    }
+
+    private static boolean isAccessionToken(String token) {
+        String normalized = token.toUpperCase();
+        return normalized.matches("^[A-Z]{1,4}_[A-Z0-9]+(\\.[0-9]+)?$")
+                || normalized.matches("^[A-Z]{1,4}[0-9]{5,}(\\.[0-9]+)?$")
+                || normalized.matches("^[0-9]{5,}$");
     }
 
     private static String getProgramName(Analysis analysis) {
