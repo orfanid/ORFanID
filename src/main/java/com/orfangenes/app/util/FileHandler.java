@@ -29,10 +29,10 @@ public class FileHandler {
 
     public static void saveInputSequence(String outputPath, InputSequence sequence) {
         String genesequence = sequence.getSequence();
+        String accessionType = sequence.getAccessionType();
 
         if (genesequence == null || genesequence.equals("")) {
             String accession = sequence.getAccession(); // 16128551,226524729,16127995
-            String accessionType = sequence.getAccessionType();
             try {
                 genesequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
                 genesequence = normalizeSubmittedSequence(genesequence, accessionType);
@@ -41,8 +41,19 @@ public class FileHandler {
                 log.error("Gene sequence not found from provided accession", e.getMessage());
                 throw new IllegalArgumentException("Gene sequence not found from provided accession", e);
             }
+        } else if (isAccessionInput(genesequence)) {
+            String accession = genesequence;
+            try {
+                genesequence = AccessionSearch.fetchSequenceByAccession(accessionType, accession);
+                genesequence = normalizeSubmittedSequence(genesequence, accessionType);
+                sequence.setAccession(accession);
+                sequence.setSequence(genesequence);
+            } catch (Exception e) {
+                log.error("Gene sequence not found from provided accession", e.getMessage());
+                throw new IllegalArgumentException("Gene sequence not found from provided accession", e);
+            }
         } else {
-            genesequence = normalizeSubmittedSequence(genesequence, sequence.getAccessionType());
+            genesequence = normalizeSubmittedSequence(genesequence, accessionType);
             sequence.setSequence(genesequence);
         }
 
@@ -56,6 +67,35 @@ public class FileHandler {
         } catch (IOException e) {
             log.error("IO Error: " + e.getMessage());
         }
+    }
+
+    private static boolean isAccessionInput(String input) {
+        if (input == null) {
+            return false;
+        }
+
+        String normalized = input.trim();
+        if (normalized.isEmpty() || normalized.startsWith(">")) {
+            return false;
+        }
+
+        String[] tokens = normalized.split("[\\s,;]+");
+        for (String token : tokens) {
+            if (token.trim().isEmpty()) {
+                continue;
+            }
+            if (!isAccessionToken(token.trim())) {
+                return false;
+            }
+        }
+        return tokens.length > 0;
+    }
+
+    private static boolean isAccessionToken(String token) {
+        String normalized = token.toUpperCase();
+        return normalized.matches("^[A-Z]{1,4}_[A-Z0-9]+(\\.[0-9]+)?$")
+                || normalized.matches("^[A-Z]{1,4}[0-9]{5,}(\\.[0-9]+)?$")
+                || normalized.matches("^[0-9]{5,}$");
     }
 
     static String normalizeSubmittedSequence(String inputSequence, String sequenceType) {

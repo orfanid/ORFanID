@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.ORFanGenes;
 import com.orfangenes.app.model.Analysis;
 import com.orfangenes.app.util.Constants;
+import com.orfangenes.app.util.AnalysisAdminMetadataStore;
 import com.orfangenes.app.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -73,6 +74,9 @@ public class RabbitQueueService implements QueueService {
             String inputFastaFile = analysisDir + File.separator + Constants.INPUT_FASTA;
 
             try {
+                AnalysisAdminMetadataStore.markStarted(analysisDir, savedAnalysis);
+                AnalysisAdminMetadataStore.applyToAnalysis(savedAnalysis, analysisDir);
+                databaseService.update(savedAnalysis);
                 orFanGenes.run(
                         inputFastaFile,
                         analysisDir,
@@ -81,6 +85,8 @@ public class RabbitQueueService implements QueueService {
             } catch (Exception e) {
                 log.error("Analysis Failed: " + e.getMessage());
                 analysis.setStatus(Constants.AnalysisStatus.ERRORED);
+                AnalysisAdminMetadataStore.markErrored(analysisDir, analysis, e.getMessage());
+                AnalysisAdminMetadataStore.applyToAnalysis(analysis, analysisDir);
                 databaseService.update(analysis);
             }
         } catch (Exception e) {

@@ -3,6 +3,7 @@ package com.orfangenes.app;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orfangenes.app.service.*;
 import com.orfangenes.app.model.BlastResult;
+import com.orfangenes.app.util.AnalysisAdminMetadataStore;
 import com.orfangenes.app.util.Constants;
 import com.orfangenes.app.util.ResultsPrinter;
 import com.orfangenes.app.model.Analysis;
@@ -105,6 +106,8 @@ public class ORFanGenes {
                 return 1;
             }
 
+            AnalysisAdminMetadataStore.markFinished(outputDir, analysis);
+            AnalysisAdminMetadataStore.applyToAnalysis(analysis, outputDir);
             databaseService.update(analysis);
 
         } catch (Exception e) {
@@ -112,6 +115,8 @@ public class ORFanGenes {
             e.printStackTrace();
             try {
                 analysis.setStatus(AnalysisStatus.ERRORED);
+                AnalysisAdminMetadataStore.markErrored(outputDir, analysis, e.getMessage());
+                AnalysisAdminMetadataStore.applyToAnalysis(analysis, outputDir);
                 databaseService.update(analysis);
             } catch (Exception e2) {
                 log.error("Error updating analysis");
