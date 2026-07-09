@@ -260,11 +260,73 @@ public class Controller {
     }
 
     @GetMapping("/orfanbase-genes/paged")
-    public PagedResults<Genes> getOrfanbaseGenesPaged(@RequestParam(name = "page", defaultValue = "0") String page,
+    public PagedResults<OrfanbaseGeneTableRow> getOrfanbaseGenesPaged(@RequestParam(name = "page", defaultValue = "0") String page,
                                               @RequestParam(name = "size", defaultValue = "10") String size,
                                               @RequestParam(defaultValue = "desc") String sortByDate) throws Exception {
-        TypeReference<PagedResults<Genes>> typeRef = new TypeReference<PagedResults<Genes>>() {};
+        TypeReference<PagedResults<OrfanbaseGeneTableRow>> typeRef = new TypeReference<PagedResults<OrfanbaseGeneTableRow>>() {};
         return objectMapper.readValue(databaseService.getOrfanbaseGenesPaged(page, size, sortByDate), typeRef);
+    }
+
+    @GetMapping("/orfanbase-genes/search")
+    public PagedResults<OrfanbaseGeneTableRow> searchOrfanbaseGenes(
+            @RequestParam(name = "query", defaultValue = "") String query,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(defaultValue = "desc") String sortByDate) throws Exception {
+        final int searchPageSize = 10;
+        final String normalizedQuery = query == null ? "" : query.trim().toLowerCase();
+        final List<OrfanbaseGeneTableRow> matches = new ArrayList<>();
+        final TypeReference<PagedResults<OrfanbaseGeneTableRow>> typeRef =
+                new TypeReference<PagedResults<OrfanbaseGeneTableRow>>() {};
+
+        PagedResults<OrfanbaseGeneTableRow> firstPage = objectMapper.readValue(
+                databaseService.getOrfanbaseGenesPaged("0", String.valueOf(searchPageSize), sortByDate),
+                typeRef);
+        collectMatchingOrfanbaseRows(firstPage, normalizedQuery, matches);
+
+        long total = firstPage.getTotal();
+        int totalPages = (int) Math.ceil((double) total / searchPageSize);
+        for (int pageIndex = 1; pageIndex < totalPages; pageIndex++) {
+            PagedResults<OrfanbaseGeneTableRow> currentPage = objectMapper.readValue(
+                    databaseService.getOrfanbaseGenesPaged(String.valueOf(pageIndex), String.valueOf(searchPageSize), sortByDate),
+                    typeRef);
+            collectMatchingOrfanbaseRows(currentPage, normalizedQuery, matches);
+        }
+
+        int safeSize = size > 0 ? size : 10;
+        int safePage = Math.max(page, 0);
+        int startIndex = Math.min(safePage * safeSize, matches.size());
+        int endIndex = Math.min(startIndex + safeSize, matches.size());
+
+        PagedResults<OrfanbaseGeneTableRow> results = new PagedResults<>();
+        results.setTotal(matches.size());
+        results.setData(matches.subList(startIndex, endIndex));
+        return results;
+    }
+
+    private void collectMatchingOrfanbaseRows(PagedResults<OrfanbaseGeneTableRow> page,
+                                              String normalizedQuery,
+                                              List<OrfanbaseGeneTableRow> matches) {
+        if (page == null || page.getData() == null) {
+            return;
+        }
+
+        page.getData().stream()
+                .filter(row -> row.getGeneId() != null)
+                .filter(row -> normalizedQuery.isEmpty() || orfanbaseRowMatches(row, normalizedQuery))
+                .forEach(matches::add);
+    }
+
+    private boolean orfanbaseRowMatches(OrfanbaseGeneTableRow row, String normalizedQuery) {
+        return Arrays.asList(
+                row.getGeneId(),
+                row.getDescription(),
+                row.getOrfanLevel(),
+                row.getOrganism(),
+                row.getAnalysisId(),
+                String.valueOf(row.getTaxonomyId()),
+                row.getAnalysisDate() == null ? "" : row.getAnalysisDate().toString()
+        ).stream().anyMatch(value -> value != null && value.toLowerCase().contains(normalizedQuery));
     }
 
     @GetMapping("/all-analysis/paged")
