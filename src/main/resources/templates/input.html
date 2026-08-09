@@ -34,12 +34,14 @@
         <div class="row">
             <div class="col s4 offset-s1">
                 <div class="file-field input-field">
+                    <!-- Changed by Daniel Dirksen 7/17/21 -->
                     <div class="btn">
                         <input id="fastafile" type="file" accept=".fasta" onchange="setFileContent(this.value);">
                         <i class="large material-icons" style="height: 50px; width: 50px;">cloud_upload</i>
                     </div>
                     <div class="file-path-wrapper">
-                        <input class="file-path validate"  id="fastaFileName" type="text" placeholder="Upload file">
+                        <input class="file-path"  id="fastaFileName" type="text" placeholder="Upload file">
+                        <span id="fastafile_helper" class="helper-text" style="font-size: small; color: #818181"></span>
                     </div>
                 </div>
             </div>
@@ -67,6 +69,7 @@
                 <div class="row">
                     <div class="col s10">
                         <div class="input-field">
+                            <!-- Changed by Daniel Dirksen 7/17/21 -->
                             <input id="ncbi_accession_input" class="validate" name="accession" type="text" data-length="100">
                             <label for="ncbi_accession_input">NCBI or Uniprot Accession(s) seperated by comma</label>
                             <span id="ncbi_accession_input_helper" class="helper-text" style="font-size: small; color: #818181"></span>
@@ -78,8 +81,10 @@
         <div class="row">
             <div class="col offset-s1 s10">
                 <div class="input-field">
+                    <!-- Changed by Daniel Dirksen 7/17/21 -->
                     <textarea id="genesequence" name="sequence" class="materialize-textarea validate" raw="5" data-length="10000" style="overflow-y:scroll;"></textarea>
                     <label for="genesequence">Gene Sequence</label>
+                    <span id="ncbi_accession_input_helper" class="helper-text" style="font-size: small; color: #818181"></span>
                 </div>
             </div>
         </div>
@@ -87,8 +92,9 @@
             <div class="col s10 offset-s1">
                 <div class="row">
                     <div class="input-field col s12">
+                        <!-- Changed by Daniel Dirksen 7/17/21 -->
                         <input type="text" id="organismName" name="organismName" class="autocomplete validate" required="required">
-                        <label for="organismName">Organism</label>
+                        <label class="active" for="organismName">Organism</label>
                     </div>
                 </div>
             </div>
